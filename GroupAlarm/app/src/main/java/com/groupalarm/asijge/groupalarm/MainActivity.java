@@ -4,9 +4,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.groupalarm.asijge.groupalarm.Data.Alarm;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private List<Alarm> alarms = new LinkedList<Alarm>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +35,18 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+
+        if (id == R.id.action_new) {
+            // Start the editor activity with a new Alarm.
             return true;
         }
+
+        if (id == R.id.action_delete) {
+            // Start the remove activity.
+            // Send list of alarms?
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
