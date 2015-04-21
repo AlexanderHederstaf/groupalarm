@@ -36,3 +36,5 @@ proguard/
 GroupAlarm/.idea/workspace.xml
 GroupAlarm/.idea/gradle.xml
 GroupAlarm/.idea/libraries/appcompat_v7_22_0_0.xml
+GroupAlarm/.idea/misc.xml
+GroupAlarm/app/app.iml

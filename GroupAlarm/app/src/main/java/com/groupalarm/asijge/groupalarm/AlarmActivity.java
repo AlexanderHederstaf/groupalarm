@@ -4,14 +4,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TimePicker;
 
 
 public class AlarmActivity extends ActionBarActivity {
+
+    private TimePicker timePickerAlarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+        timePickerAlarm = (TimePicker) findViewById(R.id.timePickerAlarm);
     }
 
 
@@ -35,5 +39,21 @@ public class AlarmActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void editTime() {
+
+    }
+
+    public void editMessage() {
+
+    }
+
+    public void editSnooze() {
+
+    }
+
+    public void editDay() {
+
     }
 }
