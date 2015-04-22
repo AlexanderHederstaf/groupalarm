@@ -142,4 +142,9 @@ public class Alarm {
         }
         return activeDays;  // safe copy with only active days, i.e. days where the alarm is set.
     }
+
+    @Override
+    public String toString() {
+        return getHour() + " : " + getMinute();
+    }
 }
