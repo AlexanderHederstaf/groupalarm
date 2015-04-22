@@ -20,6 +20,8 @@ public class Alarm {
 
     private boolean[] days;
 
+    private Snooze snoozeInterval;
+
 
     /**
      * Enum representing the intervals to snooze.
@@ -89,6 +91,12 @@ public class Alarm {
     public void setDay (int day, boolean value) { this.days[day] = value; }
 
     /**
+     * A method for setting the snooze interval for this Alarm.
+     * @param snoozeInterval A value of the enum Snooze.
+     */
+    public void setSnoozeInterval (Snooze snoozeInterval) { this.snoozeInterval = snoozeInterval; }
+
+    /**
      * A method for getting access to the hour to which the Alarm is set to ring.
      * @return The hour to which this Alarm is set.
      */
@@ -145,4 +153,10 @@ public class Alarm {
         }
         return activeDays;  // safe copy with only active days, i.e. days where the alarm is set.
     }
+
+    /**
+     * A method that returns the value of the snoozeInterval for this Alarm.
+     * @return A value of the enum type Snooze.
+     */
+    public Snooze getSnoozeInterval() { return snoozeInterval; }
 }
