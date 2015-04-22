@@ -1,9 +1,8 @@
 package com.groupalarm.asijge.groupalarm;
 
 import android.test.InstrumentationTestCase;
-
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-
+import junit.framework.Assert;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,20 +43,30 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
 
         // Checking to see if this Alarm gets set to the right hour and minute. This should not work.
         //assertException(alarm.setTime(999,....
-        alarm.setTime(34,63);
-        if (alarm.getHour() < 0 || alarm.getHour() > 23) {
-            throw new IllegalArgumentException("Invalid hour:" + alarm.getHour());
-        }
-        if (alarm.getMinute() < 0 || alarm.getMinute() > 59) {
-            throw new IllegalArgumentException("Invalid minute:" + alarm.getMinute());
-        }
+        try {
+            alarm.setTime(34,63);
+            Assert.fail("Should have thrown IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
+              //success
+          }
 
-        // Checking to see if the Alarm gets set to active
+         // Checking to see if this Alarm gets set to the right day.
+        alarm.setDay(dayOfWeek, active);
+        assertEquals(active, alarm.getDays()[dayOfWeek]);
+
+        // Checking to see if this Alarm gets set to an existing day, i.e. a number between 0-6. This should not work.
+        try {
+            alarm.setDay(8, active);
+            Assert.fail("Should have thrown IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
+              //success
+          }
+
+        //Checking to see if the Alarm gets set to active
         alarm.setActive(active);
         assertEquals(active, alarm.getStatus());
 
         // Checking to see if the method for getting a field with days and status works
-        alarm.setDay(dayOfWeek,active);
         day[dayOfWeek] = active;
         for (int i = 0; i < 7; ++i) {
                 assertEquals(day[i], alarm.getDays()[i]);
