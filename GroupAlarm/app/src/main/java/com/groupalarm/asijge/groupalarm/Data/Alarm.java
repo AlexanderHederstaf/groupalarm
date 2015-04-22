@@ -1,6 +1,6 @@
 package com.groupalarm.asijge.groupalarm.Data;
 
-import android.util.Pair;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * This class contains the data relevant for setting Alarms.
  */
-public class Alarm {
+public class Alarm implements Serializable {
     private int hour;
     private int minute;
 

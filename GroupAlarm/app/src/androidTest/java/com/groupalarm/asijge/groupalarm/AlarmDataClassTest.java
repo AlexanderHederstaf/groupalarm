@@ -5,7 +5,6 @@ import android.test.InstrumentationTestCase;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 /**
