@@ -93,7 +93,7 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * A method for setting this Alarm to the days with the boolean true
+     * A method for setting this Alarm to the day with the chosen boolean, true (active) or false (not active)
      * @param day A list with pairs of integers representing the days of the week
      *            and a boolean representing the status, activated or deactivated.
      */
@@ -154,8 +154,8 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * Get the unique Id representation of this Alarm.
-     * @return
+     * Get the unique ID representation of this Alarm.
+     * @return An int representing the unigue ID for this Alarm.
      */
     public int getId() {
         return uniqueId;
@@ -181,6 +181,10 @@ public class Alarm implements Serializable {
      */
     public Snooze getSnoozeInterval() { return snoozeInterval; }
 
+    /**
+     * Get the unique ID representation, i.e. hashCode, of this Alarm.
+     * @return An int representing the unigue ID and hashCode for this Alarm.
+     */
     @Override
     public int hashCode() {
         return uniqueId;
