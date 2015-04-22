@@ -1,21 +1,34 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TimePicker;
 
+import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
-public class AlarmActivity extends ActionBarActivity {
+
+public class EditAlarmActivity extends ActionBarActivity {
 
     private TimePicker timePickerAlarm;
+    private Intent parentIntent;
+    private Alarm newAlarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+        parentIntent = getIntent();
+        newAlarm = (Alarm) parentIntent.getSerializableExtra("alarm");
+        //newAlarm = new Alarm();
         timePickerAlarm = (TimePicker) findViewById(R.id.timePickerAlarm);
+        editMessage("test edit message");
+        parentIntent.putExtra("newAlarm", newAlarm);
+        setResult(RESULT_OK, parentIntent);
+        finish();
     }
 
 
@@ -41,19 +54,24 @@ public class AlarmActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void editTime() {
 
+    public void editTime(int hour, int min) {
+        newAlarm.setTime(hour, min);
     }
 
-    public void editMessage() {
-
+    public void editMessage(String message) {
+        newAlarm.setMessage(message);
     }
 
-    public void editSnooze() {
-
+    public void editSnooze(Alarm.Snooze value) {
+        newAlarm.setSnoozeInterval(value);
     }
 
-    public void editDay() {
+    public void editDay(int day, boolean value) {
+        newAlarm.setDay(day, value);
+    }
 
+    public void editActive(boolean active) {
+        newAlarm.setActive(active);
     }
 }

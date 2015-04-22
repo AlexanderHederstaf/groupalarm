@@ -76,11 +76,13 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
         if (id == R.id.action_new) {
             // Start the editor activity with a new Alarm.
-            Intent newAlarmActivity = new Intent(this, AlarmActivity.class);
-            startActivity(newAlarmActivity);
+            Alarm newAlarm = new Alarm();
+            Intent newAlarmActivity = new Intent(this, EditAlarmActivity.class);
+            newAlarmActivity.putExtra("alarm", newAlarm);
+            startActivityForResult(newAlarmActivity, 999);
+
             return true;
         }
 
@@ -93,7 +95,21 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        // Check which request we're responding to
+        if (requestCode == 999) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("newAlarm");
+                updatedNewAlarm.setTime(11, 23);
+
+            }
+        }
     }
 }

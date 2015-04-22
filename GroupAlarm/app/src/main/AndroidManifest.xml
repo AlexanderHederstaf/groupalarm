@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AlarmActivity"
+            android:name=".EditAlarmActivity"
             android:label="@string/title_activity_alarm" >
         </activity>
         <activity
