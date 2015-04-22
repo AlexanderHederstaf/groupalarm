@@ -26,6 +26,15 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     // A set that contain the alarms.
     private static Set<Alarm> alarms = new HashSet<Alarm>();
 
+    public static List<Alarm> getAlarms() {
+        List<Alarm> list = new LinkedList<Alarm>();
+        for (Alarm a : alarms) {
+            list.add(a);
+            // TODO: Create copy of alarm instead of the alarm itself.
+        }
+        return list;
+    }
+
     public static void addAlarm(Alarm alarm) {
         Log.d(TAG, "Adding alarm with id: " + alarm.getId());
         alarms.add(alarm);
@@ -117,7 +126,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     private static PendingIntent createIntent(Context context, Alarm alarm){
         Intent intent = new Intent(context, AlarmService.class);
-        
+
         // put extra
         // start the service and "show" something when Alarm goes off.
         return PendingIntent.getService(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
