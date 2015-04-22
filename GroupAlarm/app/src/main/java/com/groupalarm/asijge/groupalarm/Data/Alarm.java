@@ -11,22 +11,15 @@ import java.util.List;
  * This class contains the data relevant for setting Alarms.
  */
 public class Alarm {
-    private Pair<Integer,Integer> time;
+    private int hour;
+    private int minute;
 
     private String message;
 
     private boolean active;
 
-    private List<Pair<Days, Boolean>> day;
+    private boolean[] days;
 
-
-    /**
-     * Enum representing the days of the week.
-     */
-    public enum Days {
-        MONDAY, TUESDAY, WEDNESDAY,
-        THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
 
     /**
      * Enum representing the intervals to snooze.
@@ -55,18 +48,21 @@ public class Alarm {
      */
     public Alarm() {
     //
-        time = new Pair<Integer,Integer>(0,0);
+        hour = 0;
+        minute = 0;
         message = "";
         active = false;
-        day = new ArrayList<Pair<Days, Boolean>>();
+        days = new boolean[7];
     }
 
     /**
      * A method for setting this Alarm to this chosen time.
-     * @param time A pair of hours, minutes.
+     * @param hour An int representing the hour
+     * @param minute An int representing the minute
      */
-    public void setTime(Pair<Integer,Integer> time) {
-        this.time = time;
+        public void setTime(int hour, int minute) {
+        this.hour = hour;
+        this.minute = minute;
     }
 
     /**
@@ -86,11 +82,18 @@ public class Alarm {
     }
 
     /**
+     * A method for setting this Alarm to the days with the boolean true
+     * @param day A list with pairs of integers representing the days of the week
+     *            and a boolean representing the status, activated or deactivated.
+     */
+    public void setDay (int day, boolean value) { this.days[day] = value; }
+
+    /**
      * A method for getting access to the hour to which the Alarm is set to ring.
      * @return The hour to which this Alarm is set.
      */
     public int getHour() {
-        return time.first;
+        return hour;
     }
 
     /**
@@ -98,7 +101,7 @@ public class Alarm {
      * @return The minute to which this Alarm is set.
      */
     public int getMinute() {
-        return time.second;
+        return minute;
     }
 
     /**
@@ -121,23 +124,23 @@ public class Alarm {
      * A method that returns a list of all the Days and the Status on that day.
      * @return A list of the Days and the Status on that day.
      */
-    public List<Pair<Days, Boolean>> getDays() {
-        List<Pair<Days, Boolean>> copyOfDay = new ArrayList<Pair<Days, Boolean>>();
-        for (Pair<Days, Boolean> pair: day) {
-            copyOfDay.add(new Pair<Days, Boolean>(pair.first, pair.second));
+    public boolean[] getDays() {
+        boolean[] tmp = new boolean[7];
+        for (int i = 0; i < 7; ++i) {
+            tmp[i] = days[i];
         }
-            return copyOfDay;  // safe copy
+        return tmp;
     }
 
     /**
      * A method that returns a list of the Days this Alarm is set to active.
      * @return A list of the Days this Alarm is set to active.
      */
-    public List<Days> getActiveDays() {
-        List<Days> activeDays = new ArrayList<Days>();
-        for (Pair<Days, Boolean> pair: day) {
-            if (pair.second == true) {
-                activeDays.add(pair.first);
+    public List<Integer> getActiveDays() {
+        List<Integer> activeDays = new ArrayList<Integer>();
+        for (int i = 0; i < 7; ++i) {
+            if (days[i]) {
+                activeDays.add(i);
             }
         }
         return activeDays;  // safe copy with only active days, i.e. days where the alarm is set.
