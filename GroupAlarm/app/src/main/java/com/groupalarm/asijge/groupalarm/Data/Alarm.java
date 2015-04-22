@@ -22,6 +22,8 @@ public class Alarm implements Serializable {
 
     private Snooze snoozeInterval;
 
+    private static int placeholder = 0;
+    private final int uniqueId;
 
     /**
      * Enum representing the intervals to snooze.
@@ -55,6 +57,7 @@ public class Alarm implements Serializable {
         message = "";
         active = false;
         days = new boolean[7];
+        uniqueId = placeholder++; //placeholder ID
     }
 
     /**
@@ -141,6 +144,14 @@ public class Alarm implements Serializable {
     }
 
     /**
+     * Get the unique Id representation of this Alarm.
+     * @return
+     */
+    public int getId() {
+        return uniqueId;
+    }
+
+    /**
      * A method that returns a list of the Days this Alarm is set to active.
      * @return A list of the Days this Alarm is set to active.
      */
@@ -159,4 +170,14 @@ public class Alarm implements Serializable {
      * @return A value of the enum type Snooze.
      */
     public Snooze getSnoozeInterval() { return snoozeInterval; }
+
+    @Override
+    public int hashCode() {
+        return uniqueId;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (other instanceof Alarm) ? (this.uniqueId == ((Alarm)other).uniqueId) : false;
+    }
 }

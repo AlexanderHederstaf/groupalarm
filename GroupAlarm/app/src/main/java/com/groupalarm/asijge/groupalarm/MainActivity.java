@@ -5,15 +5,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
-
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-
-    private List<Alarm> alarms = new LinkedList<Alarm>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
