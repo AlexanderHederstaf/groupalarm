@@ -1,7 +1,5 @@
 package com.groupalarm.asijge.groupalarm.Data;
 
-import android.util.Pair;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

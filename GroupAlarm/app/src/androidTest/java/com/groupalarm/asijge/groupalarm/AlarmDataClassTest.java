@@ -1,12 +1,10 @@
 package com.groupalarm.asijge.groupalarm;
 
 import android.test.InstrumentationTestCase;
-import android.util.Pair;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
