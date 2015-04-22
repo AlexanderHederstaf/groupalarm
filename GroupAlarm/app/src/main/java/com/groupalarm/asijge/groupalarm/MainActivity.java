@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
@@ -24,8 +25,6 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private List<Alarm> alarms = new LinkedList<Alarm>();
-
     ListView listView;
     List<ListRowItem> rowItems;
 
@@ -34,23 +33,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Alarm alarm = new Alarm();
-        alarm.setTime(13,30);
-
-        Alarm alarm2 = new Alarm();
-        alarm2.setTime(17,50);
-
-        alarms.add(alarm);
-        alarms.add(alarm2);
-
-        String[] timeList = new String[] {"" + alarm.toString(), "13:37"};
-
-        Integer[] imageList = new Integer[] {R.drawable.ic_alarm_image, R.drawable.ic_alarm_image};
-
-
         rowItems = new ArrayList<ListRowItem>();
-        for (int i = 0; i < timeList.length; i++) {
-            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarms.get(i));
+        for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
+            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
             rowItems.add(item);
         }
 
