@@ -5,19 +5,19 @@ package com.groupalarm.asijge.groupalarm.Data;
  */
 public class ListRowItem {
 
-    private String imageLocation;
+    private int imageLocation;
     private Alarm alarm;
 
-    public ListRowItem(String imageLoc, Alarm alarm) {
+    public ListRowItem(int imageLoc, Alarm alarm) {
         this.imageLocation = imageLoc;
         this.alarm = alarm;
     }
 
-    public String getImageLocation() {
+    public Integer getImageLocation() {
         return imageLocation;
     }
 
-    public void setImageLocation(String imageLocation) {
+    public void setImageLocation(int imageLocation) {
         this.imageLocation = imageLocation;
     }
 

@@ -23,41 +23,39 @@ public class MainActivity extends ActionBarActivity {
 
     private List<Alarm> alarms = new LinkedList<Alarm>();
 
+    ListView listView;
+    List<ListRowItem> rowItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listview;
-        List<ListRowItem> rowItems;
-
         Alarm alarm = new Alarm();
-        alarm.setTime(Pair<13,30>);
+        alarm.setTime(13,30);
+
+        Alarm alarm2 = new Alarm();
+        alarm2.setTime(17,50);
+
+        alarms.add(alarm);
+        alarms.add(alarm2);
+
+        String[] timeList = new String[] {"" + alarm.toString(), "13:37"};
+
+        Integer[] imageList = new Integer[] {R.drawable.ic_alarm_image, R.drawable.ic_alarm_image};
 
 
-
-
-        /*
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < alarms.size(); ++i) {
-            list.add(alarms.get(i).toString());
+        rowItems = new ArrayList<ListRowItem>();
+        for (int i = 0; i < timeList.length; i++) {
+            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarms.get(i));
+            rowItems.add(item);
         }
 
+        listView = (ListView) findViewById(R.id.alarmlist);
+        CustomListViewAdapter adapter = new CustomListViewAdapter(this,
+                R.layout.alarm_list_item, rowItems);
+        listView.setAdapter(adapter);
 
-        String[] values = new String[] { "16:00", "13:50", "08:30" };
-
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, list);
-
-        listview.setAdapter(adapter);
-        */
     }
 
 
@@ -91,30 +89,5 @@ public class MainActivity extends ActionBarActivity {
 
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
     }
 }
