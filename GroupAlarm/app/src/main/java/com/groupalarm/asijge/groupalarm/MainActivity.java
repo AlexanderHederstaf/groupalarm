@@ -29,6 +29,8 @@ public class MainActivity extends ActionBarActivity {
 
     ListView listView;
     List<ListRowItem> rowItems;
+    CustomListViewAdapter adapter;
+    Runnable runListUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         listView = (ListView) findViewById(R.id.alarmlist);
-        CustomListViewAdapter adapter = new CustomListViewAdapter(this,
+        adapter = new CustomListViewAdapter(this,
                 R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -52,6 +54,20 @@ public class MainActivity extends ActionBarActivity {
                    //TODO: Add code for what happens when you click on a alarm
             }
         });
+
+        runListUpdate = new Runnable(){
+            public void run(){
+                //reload content
+                rowItems.clear();
+                for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
+                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+                    rowItems.add(item);
+                }
+                adapter.notifyDataSetChanged();
+                listView.invalidateViews();
+                listView.refreshDrawableState();
+            }
+        };
 
     }
 
@@ -73,10 +89,12 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_new) {
             // Start the editor activity with a new Alarm.
             Alarm newAlarm = new Alarm();
+            newAlarm.setTime(13,37);
             Intent newAlarmActivity = new Intent(this, EditAlarmActivity.class);
             newAlarmActivity.putExtra("alarm", newAlarm);
             startActivityForResult(newAlarmActivity, 999);
-
+            AlarmManagerHelper.addAlarm(newAlarm);
+            runOnUiThread(runListUpdate);
             return true;
         }
 
@@ -106,4 +124,5 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
+
 }
