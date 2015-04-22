@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RemoveActivity">
 
-    <item android:id="@+id/action_cancel"
+   <item android:id="@+id/action_cancel"
         android:title="Cancel"
         android:orderInCategory="100"
         app:showAsAction="always" />
@@ -12,6 +12,38 @@
         android:title="Delete"
         android:orderInCategory="200"
         app:showAsAction="always" />
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:orientation= "vertical">
+        <Listview
+            android:id= "@+id/Listview"/>
+
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id = "@+id/check_box"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentLeft = "True"/>
+
+    <TextView
+        android:id = "@+id/name"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_toRightOf = "@+id/check_box"
+        android:textStyle = "bold"/>
+
+    <TextView
+        android:id = "@+id/list"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_below = "@+id/name"
+        android:textStyle = "bold"/>
+
+
 
 
 </menu>

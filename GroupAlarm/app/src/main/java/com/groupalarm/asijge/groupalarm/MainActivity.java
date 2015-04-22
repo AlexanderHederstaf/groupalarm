@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class MainActivity extends ActionBarActivity {
 
         if (id == R.id.action_delete) {
             // Start the remove activity.
+            Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);//Oklart
+            //removeAlarmActivity.putExtra("Alarms", (Serializable)alarms);//???
+            startActivity(removeAlarmActivity);
             // Send list of alarms?
             return true;
         }
