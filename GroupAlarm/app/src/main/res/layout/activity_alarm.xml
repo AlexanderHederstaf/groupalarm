@@ -48,12 +48,11 @@
                 android:text="Alarm message:"
                 android:id="@+id/labelAlarmMessage" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text=""
-                android:id="@+id/textViewAlarmMessage" />
+                android:id="@+id/editTextAlarmMessage"
+                android:background="@android:color/transparent" />
 
             <View
                 android:background="#777"
@@ -69,12 +68,33 @@
                 android:text="Snooze interval:"
                 android:id="@+id/labelSnooze" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="10 min"
-                android:id="@+id/textViewSnoozeInterval" />
+                android:orientation="horizontal">
+
+                <RadioButton android:id="@+id/radio_snooze_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 min"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/radio_snooze_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 min"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/radio_snooze_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10 min"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/radio_snooze_15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 min"
+                    android:onClick="onRadioButtonClicked"/>
+
+            </RadioGroup>
 
             <View
                 android:background="#777"
@@ -90,12 +110,47 @@
                 android:text="Alarm day:"
                 android:id="@+id/labelAlarmDay" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="M T W T F S S"
-                android:id="@+id/textViewAlarmDay" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <CheckBox android:id="@+id/checkbox_monday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mo"
+                    android:onClick="onCheckboxClicked"/>
+                <CheckBox android:id="@+id/checkbox_tuesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tu"
+                    android:onClick="onCheckboxClicked"/>
+                <CheckBox android:id="@+id/checkbox_wednesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="W"
+                    android:onClick="onCheckboxClicked"/>
+                <CheckBox android:id="@+id/checkbox_thursday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Th"
+                    android:onClick="onCheckboxClicked"/>
+                <CheckBox android:id="@+id/checkbox_friday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="F"
+                    android:onClick="onCheckboxClicked"/>
+                <CheckBox android:id="@+id/checkbox_saturday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="S"
+                    android:onClick="onCheckboxClicked"/>
+                <CheckBox android:id="@+id/checkbox_sunday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Su"
+                    android:onClick="onCheckboxClicked"/>
+            </LinearLayout>
 
             <View
                 android:background="#777"

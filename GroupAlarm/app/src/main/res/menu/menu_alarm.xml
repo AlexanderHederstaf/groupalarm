@@ -4,4 +4,15 @@
     tools:context="com.groupalarm.asijge.groupalarm.EditAlarmActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/editAlarm_save"
+        android:title="Save"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/editAlarm_cancel"
+        android:title="Cancel"
+        android:orderInCategory="200"
+        app:showAsAction="always" />
+
 </menu>

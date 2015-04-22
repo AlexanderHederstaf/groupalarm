@@ -90,11 +90,11 @@ public class MainActivity extends ActionBarActivity {
             // Start the editor activity with a new Alarm.
             Alarm newAlarm = new Alarm();
             newAlarm.setTime(13,37);
+
             Intent newAlarmActivity = new Intent(this, EditAlarmActivity.class);
             newAlarmActivity.putExtra("alarm", newAlarm);
             startActivityForResult(newAlarmActivity, 999);
-            AlarmManagerHelper.addAlarm(newAlarm);
-            runOnUiThread(runListUpdate);
+
             return true;
         }
 
@@ -113,14 +113,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
         // Check which request we're responding to
         if (requestCode == 999) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("newAlarm");
-                updatedNewAlarm.setTime(11, 23);
-
+                AlarmManagerHelper.addAlarm(updatedNewAlarm);
+                runOnUiThread(runListUpdate); // update list gui
             }
         }
     }
