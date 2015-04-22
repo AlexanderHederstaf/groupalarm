@@ -1,12 +1,11 @@
 package com.groupalarm.asijge.groupalarm;
 
 import android.test.InstrumentationTestCase;
-import android.util.Pair;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.List;
 
 /**
@@ -45,12 +44,14 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
         assertEquals(minute, alarm.getMinute());
 
         // Checking to see if this Alarm gets set to the right hour and minute. This should not work.
-
         //assertException(alarm.setTime(999,....
-
         alarm.setTime(34,63);
-        assertEquals(34, alarm.getHour());
-        assertEquals(63, alarm.getMinute());
+        if (alarm.getHour() < 0 || alarm.getHour() > 23) {
+            throw new IllegalArgumentException("Invalid hour:" + alarm.getHour());
+        }
+        if (alarm.getMinute() < 0 || alarm.getMinute() > 59) {
+            throw new IllegalArgumentException("Invalid minute:" + alarm.getMinute());
+        }
 
         // Checking to see if the Alarm gets set to active
         alarm.setActive(active);
