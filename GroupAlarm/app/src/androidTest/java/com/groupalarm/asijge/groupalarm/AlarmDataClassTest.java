@@ -48,6 +48,9 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
             Assert.fail("Should have thrown IllegalArgumentException");
         } catch(IllegalArgumentException e) {
               //success
+            // The checks below further checks that the illegal arguments are not used.
+            assertEquals(hour, alarm.getHour());
+            assertEquals(minute, alarm.getMinute());
           }
 
          // Checking to see if this Alarm gets set to the right day.
