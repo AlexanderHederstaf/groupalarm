@@ -5,4 +5,5 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="title_activity_remove">RemoveActivity</string>
+    <string name="title_activity_alarm_screen">AlarmScreenActivity</string>
 </resources>
