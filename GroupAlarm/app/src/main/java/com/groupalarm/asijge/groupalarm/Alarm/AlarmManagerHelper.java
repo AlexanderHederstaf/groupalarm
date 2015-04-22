@@ -1,5 +1,6 @@
 package com.groupalarm.asijge.groupalarm.Alarm;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -44,8 +45,6 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Log.d(TAG, "Setting Alarms");
         cancelAlarms(context);
 
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
         for(Alarm a : alarms) {
             // Set the alarm, if enabled.
             Calendar cal = Calendar.getInstance();
@@ -86,8 +85,23 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
             cal.set(Calendar.DAY_OF_WEEK, day);
 
-            manager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                    createIntent(context, a));
+            setAlarm(context, cal, createIntent(context, a));
+        }
+    }
+
+    /**
+     * setExact required for API level 19 an above.
+     * does not work on 18 an lower, use set instead.
+     */
+    @SuppressLint("NewApi")
+    private static void setAlarm(Context context, Calendar calendar, PendingIntent pIntent) {
+
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+        } else {
+            manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
         }
     }
 
@@ -103,6 +117,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     private static PendingIntent createIntent(Context context, Alarm alarm){
         Intent intent = new Intent(context, AlarmService.class);
+        
         // put extra
         // start the service and "show" something when Alarm goes off.
         return PendingIntent.getService(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
