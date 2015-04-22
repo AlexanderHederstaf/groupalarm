@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -43,6 +45,13 @@ public class MainActivity extends ActionBarActivity {
         CustomListViewAdapter adapter = new CustomListViewAdapter(this,
                 R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                   //TODO: Add code for what happens when you click on a alarm
+            }
+        });
 
     }
 
