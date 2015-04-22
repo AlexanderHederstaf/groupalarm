@@ -1,5 +1,6 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,10 +31,20 @@ public class RemoveActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_cancel) {
+            Intent  backToMainActivity = new Intent(this, MainActivity.class);
+            startActivity(backToMainActivity);
             return true;
         }
 
+        if (id == R.id.action_delete) {
+            // List med rader. Varje rad ska bestå av en checkbox, en tid, en kommentar, av/på
+            //Checkbox markerad - ta bort alarm och återvänd sedan till MainActivity
+
+            Intent  backToMainActivity = new Intent(this, MainActivity.class);
+            startActivity(backToMainActivity);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }
