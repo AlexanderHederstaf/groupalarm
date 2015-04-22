@@ -65,9 +65,15 @@ public class Alarm implements Serializable {
      * @param hour An int representing the hour
      * @param minute An int representing the minute
      */
-        public void setTime(int hour, int minute) {
-        this.hour = hour;
-        this.minute = minute;
+     public void setTime(int hour, int minute) throws IllegalArgumentException {
+         if (hour < 0 || hour > 23) {
+                 throw new IllegalArgumentException("Invalid hour:" + hour);
+         }
+         if (minute < 0 || minute > 59) {
+                 throw new IllegalArgumentException("Invalid minute:" + minute);
+         }
+         this.hour = hour;
+         this.minute = minute;
     }
 
     /**
@@ -91,7 +97,11 @@ public class Alarm implements Serializable {
      * @param day A list with pairs of integers representing the days of the week
      *            and a boolean representing the status, activated or deactivated.
      */
-    public void setDay (int day, boolean value) { this.days[day] = value; }
+    public void setDay (int day, boolean value) throws IllegalArgumentException {
+        if (day < 0 || day > 6) {
+            throw new IllegalArgumentException("Invalid day:" + day);
+        }
+        this.days[day] = value; }
 
     /**
      * A method for setting the snooze interval for this Alarm.
