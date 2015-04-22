@@ -14,8 +14,6 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private List<Alarm> alarms = new LinkedList<Alarm>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

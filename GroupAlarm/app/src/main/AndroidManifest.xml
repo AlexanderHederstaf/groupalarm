@@ -27,6 +27,14 @@
             android:name=".RemoveActivity"
             android:label="@string/title_activity_remove" >
         </activity>
+        <receiver android:name=".Alarm.AlarmManagerHelper" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.groupalarm.asijge.groupalarm.Alarm.AlarmService"
+            android:enabled="true"/>
     </application>
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest>
