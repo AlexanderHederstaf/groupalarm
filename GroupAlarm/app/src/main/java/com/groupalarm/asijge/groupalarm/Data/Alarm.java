@@ -22,6 +22,8 @@ public class Alarm implements Serializable {
 
     private Snooze snoozeInterval;
 
+    private static int placeholder = 0;
+    private final int uniqueId;
 
     /**
      * Enum representing the intervals to snooze.
@@ -55,6 +57,7 @@ public class Alarm implements Serializable {
         message = "";
         active = false;
         days = new boolean[7];
+        uniqueId = placeholder++; //placeholder ID
     }
 
     /**
@@ -62,9 +65,15 @@ public class Alarm implements Serializable {
      * @param hour An int representing the hour
      * @param minute An int representing the minute
      */
-        public void setTime(int hour, int minute) {
-        this.hour = hour;
-        this.minute = minute;
+     public void setTime(int hour, int minute) throws IllegalArgumentException {
+         if (hour < 0 || hour > 23) {
+                 throw new IllegalArgumentException("Invalid hour:" + hour);
+         }
+         if (minute < 0 || minute > 59) {
+                 throw new IllegalArgumentException("Invalid minute:" + minute);
+         }
+         this.hour = hour;
+         this.minute = minute;
     }
 
     /**
@@ -84,11 +93,15 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * A method for setting this Alarm to the days with the boolean true
+     * A method for setting this Alarm to the day with the chosen boolean, true (active) or false (not active)
      * @param day A list with pairs of integers representing the days of the week
      *            and a boolean representing the status, activated or deactivated.
      */
-    public void setDay (int day, boolean value) { this.days[day] = value; }
+    public void setDay (int day, boolean value) throws IllegalArgumentException {
+        if (day < 0 || day > 6) {
+            throw new IllegalArgumentException("Invalid day:" + day);
+        }
+        this.days[day] = value; }
 
     /**
      * A method for setting the snooze interval for this Alarm.
@@ -141,6 +154,14 @@ public class Alarm implements Serializable {
     }
 
     /**
+     * Get the unique ID representation of this Alarm.
+     * @return An int representing the unigue ID for this Alarm.
+     */
+    public int getId() {
+        return uniqueId;
+    }
+
+    /**
      * A method that returns a list of the Days this Alarm is set to active.
      * @return A list of the Days this Alarm is set to active.
      */
@@ -165,4 +186,17 @@ public class Alarm implements Serializable {
      */
     public Snooze getSnoozeInterval() { return snoozeInterval; }
 
+    /**
+     * Get the unique ID representation, i.e. hashCode, of this Alarm.
+     * @return An int representing the unigue ID and hashCode for this Alarm.
+     */
+    @Override
+    public int hashCode() {
+        return uniqueId;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (other instanceof Alarm) ? (this.uniqueId == ((Alarm)other).uniqueId) : false;
+    }
 }
