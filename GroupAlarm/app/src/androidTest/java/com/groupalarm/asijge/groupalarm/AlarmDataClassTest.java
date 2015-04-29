@@ -93,14 +93,15 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
         String messageIntended3 = "08 : 12";
         assertEquals(messageIntended3, alarm.toString());
 
-        alarm.setTime(12, 12);
-        String messageIntended4 = "12 : 12";
+        alarm.setTime(13, 13);
+        String messageIntended4 = "13 : 13";
         assertEquals(messageIntended4, alarm.toString());
 
         // Checking to see if the method equals(Object) works as intended
         Alarm alarm2 = new Alarm();
-        assertEquals(false, alarm.equals(alarm2));
-        assertEquals(true, alarm.equals(alarm));
+        assertFalse(alarm.equals(alarm2));
+        assertTrue(alarm.equals(alarm));
 
+        assertFalse(alarm.equals("An Alarm set to 13 : 13"));
     }
 }
