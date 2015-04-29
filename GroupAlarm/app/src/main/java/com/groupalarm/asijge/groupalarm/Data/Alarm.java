@@ -177,7 +177,19 @@ public class Alarm implements Serializable {
 
     @Override
     public String toString() {
-        return getHour() + " : " + getMinute();
+        int minInt = String.valueOf(minute).length();
+        int hourInt = String.valueOf(hour).length();
+
+        if (hourInt == 1 && minInt ==1) {
+            return "0" + hour + " : 0" + minute;
+        }
+        if (hourInt == 1) {
+            return "0" + hour + " : " + minute;
+        }
+        if (minInt == 1) {
+            return hour + " : 0" + minute;
+        }
+        return hour + " : " + minute;
     }
 
     /**
@@ -195,8 +207,21 @@ public class Alarm implements Serializable {
         return uniqueId;
     }
 
+    /**
+     * Compare the alarms to one another. One alarm is equal to another if they are exactly the same.
+     * @param other An Object to compare with.
+     * @return A boolean representing if the Alarms are the same (true) or not (false).
+     */
     @Override
     public boolean equals(Object other) {
-        return (other instanceof Alarm) ? (this.uniqueId == ((Alarm)other).uniqueId) : false;
+        if (this == other)
+            return true;
+        if (other == null)
+            return false;
+        if (other.getClass() != this.getClass())
+            return false;
+        Alarm otherAlarm = (Alarm) other;
+        return uniqueId == otherAlarm.uniqueId;
+        //(other instanceof Alarm) ? (this.uniqueId == ((Alarm)other).uniqueId) : false;
     }
 }
