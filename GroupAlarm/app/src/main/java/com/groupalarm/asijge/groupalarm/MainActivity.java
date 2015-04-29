@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,10 +28,12 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    ListView listView;
-    List<ListRowItem> rowItems;
-    CustomListViewAdapter adapter;
-    Runnable runListUpdate;
+    private ListView listView;
+    private List<ListRowItem> rowItems;
+    private CustomListViewAdapter adapter;
+    private Runnable runListUpdate;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +105,12 @@ public class MainActivity extends ActionBarActivity {
             // Start the remove activity.
             Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);//Oklart
             //removeAlarmActivity.putExtra("Alarms", (Serializable)alarms);//???
+
+            AlarmManagerHelper.cancelAlarms(this);
+            Log.d(TAG, "Alarms cancelled");
+
             startActivity(removeAlarmActivity);
+
             // Send list of alarms?
             return true;
         }
@@ -119,6 +127,9 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("newAlarm");
                 AlarmManagerHelper.addAlarm(updatedNewAlarm);
+                Log.d(TAG, "Alarm added");
+                AlarmManagerHelper.setAlarms(this);
+                Log.d(TAG, "Alarms set");
                 runOnUiThread(runListUpdate); // update list gui
             }
         }

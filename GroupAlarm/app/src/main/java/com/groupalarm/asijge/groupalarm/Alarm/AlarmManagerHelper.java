@@ -38,11 +38,13 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     public static void addAlarm(Alarm alarm) {
         Log.d(TAG, "Adding alarm with id: " + alarm.getId());
         alarms.add(alarm);
+        // TODO: Create copy of alarm instead of the alarm itself.
     }
 
     public static void removeAlarm(Alarm alarm) {
         Log.d(TAG, "Removing alarm with id: " + alarm.getId());
         alarms.remove(alarm);
+        // TODO: Create copy of alarm instead of the alarm itself.
     }
 
     @Override
@@ -94,6 +96,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
             cal.set(Calendar.DAY_OF_WEEK, day);
 
+            Log.d(TAG, "Alarm set at: " + cal.toString());
             setAlarm(context, cal, createIntent(context, a));
         }
     }
