@@ -55,13 +55,13 @@ public class AlarmDB extends SQLiteOpenHelper {
         values.put(COLUMN_MESSAGE, alarm.getMessage());
         values.put(COLUMN_TIME, alarm.toString());
         values.put(COLUMN_STATUS, alarm.getStatus());
-        values.put(COLUMN_MONDAY, tmp[1]);
-        values.put(COLUMN_TUESDAY, tmp[2]);
-        values.put(COLUMN_WEDNESDAY, tmp[3]);
-        values.put(COLUMN_THURSDAY, tmp[4]);
-        values.put(COLUMN_FRIDAY, tmp[5]);
-        values.put(COLUMN_SATURDAY, tmp[6]);
-        values.put(COLUMN_SUNDAY, tmp[7]);
+        values.put(COLUMN_MONDAY, tmp[0]);
+        values.put(COLUMN_TUESDAY, tmp[1]);
+        values.put(COLUMN_WEDNESDAY, tmp[2]);
+        values.put(COLUMN_THURSDAY, tmp[3]);
+        values.put(COLUMN_FRIDAY, tmp[4]);
+        values.put(COLUMN_SATURDAY, tmp[5]);
+        values.put(COLUMN_SUNDAY, tmp[6]);
 
         SQLiteDatabase db = this.getWritableDatabase();
 
