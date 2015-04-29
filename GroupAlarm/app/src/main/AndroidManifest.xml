@@ -45,7 +45,8 @@
 
         <activity
             android:name=".Alarm.AlarmScreenActivity"
-            android:label="@string/title_activity_alarm_screen" >
+            android:label="@string/title_activity_alarm_screen"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
     </application>
 
