@@ -1,22 +1,35 @@
 package com.groupalarm.asijge.groupalarm.Alarm;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.groupalarm.asijge.groupalarm.R;
 
-public class AlarmScreenActivity extends ActionBarActivity {
+
+//TODO override the back button
+//TODO full screen activity
+public class AlarmScreenActivity extends Activity {
+
+    public static final String TAG = "AlarmScreenActivity";
+    public static final int WAKELOCK_TIMEOUT = 60 * 1000; // 1 minute
+    private PowerManager.WakeLock lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_screen);
+        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        Log.d(TAG, "AlarmScreen started");
 
         //Ensure wakelock release
         Runnable releaseWakelock = new Runnable() {
@@ -37,12 +50,11 @@ public class AlarmScreenActivity extends ActionBarActivity {
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
     }
 
-    public static final int WAKELOCK_TIMEOUT = 60 * 1000; // 1 minute
-    private final String TAG = this.getClass().getSimpleName();
-    private PowerManager.WakeLock lock;
     @Override
     protected void onResume() {
         super.onResume();
+
+        Log.d(TAG, "onResume");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -51,18 +63,24 @@ public class AlarmScreenActivity extends ActionBarActivity {
 
         PowerManager manager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
         if (lock == null) {
-            lock = manager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+            lock = manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                    | PowerManager.ON_AFTER_RELEASE, TAG);
+            Log.d(TAG, "lock created");
         }
 
         if (!lock.isHeld()) {
             lock.acquire();
+            Log.d(TAG, "lock acquired");
         }
     }
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (lock != null && lock.isHeld()) {
+            Log.d(TAG, "Attempting release of lock");
             lock.release();
+            Log.d(TAG, "Lock released");
         }
     }
 
