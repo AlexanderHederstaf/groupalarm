@@ -152,6 +152,7 @@ public class MainActivity extends ActionBarActivity {
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
             ListRowItem listItem = (ListRowItem) lv.getItemAtPosition(acmi.position);
 
+            menu.setHeaderTitle(listItem.getAlarm().getMessage());
             menu.add("Edit");
             menu.add("Delete");
         }
