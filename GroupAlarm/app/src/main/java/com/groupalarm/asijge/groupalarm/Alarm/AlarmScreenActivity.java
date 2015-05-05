@@ -111,6 +111,7 @@ public class AlarmScreenActivity extends Activity {
         }
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
+            mediaPlayer.setLooping(true);
             mediaPlayer.start();
         }
     }
