@@ -1,15 +1,21 @@
 package com.groupalarm.asijge.groupalarm;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
@@ -27,10 +33,12 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    ListView listView;
-    List<ListRowItem> rowItems;
-    CustomListViewAdapter adapter;
-    Runnable runListUpdate;
+    public static final String TAG = "MainActivity";
+
+    private ListView listView;
+    private List<ListRowItem> rowItems;
+    private CustomListViewAdapter adapter;
+    private Runnable runListUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,33 +52,35 @@ public class MainActivity extends ActionBarActivity {
         }
 
         listView = (ListView) findViewById(R.id.alarmlist);
-        adapter = new CustomListViewAdapter(this,
-                R.layout.alarm_list_item, rowItems);
+        adapter = new CustomListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                   //TODO: Add code for what happens when you click on a alarm
+                //TODO: Add code for what happens when you click on a alarm
+                Log.d(TAG, "Something was clicked");
+                runOnUiThread(runListUpdate);
+                //((CheckBox) findViewById(R.id.on_off)).isChecked();
             }
         });
 
         runListUpdate = new Runnable(){
             public void run(){
+                Log.d(TAG, "runListUpdate");
                 //reload content
                 rowItems.clear();
                 for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
                     ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
                     rowItems.add(item);
                 }
-                adapter.notifyDataSetChanged();
+                ((CustomListViewAdapter) listView.getAdapter()).notifyDataSetChanged();
                 listView.invalidateViews();
                 listView.refreshDrawableState();
             }
         };
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

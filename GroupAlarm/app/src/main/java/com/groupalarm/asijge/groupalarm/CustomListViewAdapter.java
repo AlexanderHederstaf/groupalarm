@@ -2,10 +2,16 @@ package com.groupalarm.asijge.groupalarm;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +24,9 @@ import java.util.List;
  */
 public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
 
+    public static final String TAG = "CustomListViewAdapter";
     Context context;
+    private ViewHolder holder;
 
     public CustomListViewAdapter(Context context, int resourceId,
                                  List<ListRowItem> items) {
@@ -26,33 +34,54 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         this.context = context;
     }
 
-    /*private view holder class*/
     private class ViewHolder {
         ImageView imageView;
         TextView time;
         TextView eventDesc;
+        CheckBox checkBox;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        ListRowItem rowItem = getItem(position);
+        holder = new ViewHolder();
+        final ListRowItem rowItem = getItem(position);
+        View row = convertView;
+
+        Log.d(TAG, "GetView for pos: " + position);
+
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.alarm_list_item, null);
-            holder = new ViewHolder();
-            holder.time = (TextView) convertView.findViewById(R.id.time);
+        if (row == null) {
+            row = mInflater.inflate(R.layout.alarm_list_item, null);
+            holder.time = (TextView) row.findViewById(R.id.time);
             //holder.eventDesc = (TextView) convertView.findViewById(R.id.eventDescription);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
-            convertView.setTag(holder);
-        } else
+            holder.imageView = (ImageView) row.findViewById(R.id.icon);
+            holder.checkBox = (CheckBox) row.findViewById(R.id.on_off);
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        holder.imageView.setAlpha(1.0f);
+                        holder.time.setTextColor(Color.BLACK);
+                    } else {
+                        holder.imageView.setAlpha(0.4f);
+                        holder.time.setTextColor(Color.GRAY);
+                    }
+                    rowItem.getAlarm().setActive(isChecked);
+                }
+            });
+        } else {
             holder = (ViewHolder) convertView.getTag();
+            holder.checkBox.setOnCheckedChangeListener(null);
+        }
 
         holder.time.setText(rowItem.getAlarm().toString());
         //holder.eventDesc.setText(rowItem.getAlarm().getMessage());
         holder.imageView.setImageResource(R.drawable.ic_alarm_image);
 
-        return convertView;
+        holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
+
+
+        return row;
     }
 }
