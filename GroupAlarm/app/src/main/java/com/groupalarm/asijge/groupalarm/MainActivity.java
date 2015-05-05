@@ -33,12 +33,12 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static final String TAG = "MainActivity";
-
     private ListView listView;
     private List<ListRowItem> rowItems;
     private CustomListViewAdapter adapter;
     private Runnable runListUpdate;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +112,12 @@ public class MainActivity extends ActionBarActivity {
             // Start the remove activity.
             Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);//Oklart
             //removeAlarmActivity.putExtra("Alarms", (Serializable)alarms);//???
+
+            AlarmManagerHelper.cancelAlarms(this);
+            Log.d(TAG, "Alarms cancelled");
+
             startActivity(removeAlarmActivity);
+
             // Send list of alarms?
             return true;
         }
@@ -129,6 +134,9 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("newAlarm");
                 AlarmManagerHelper.addAlarm(updatedNewAlarm);
+                Log.d(TAG, "Alarm added");
+                AlarmManagerHelper.setAlarms(this);
+                Log.d(TAG, "Alarms set");
                 runOnUiThread(runListUpdate); // update list gui
             }
         }
