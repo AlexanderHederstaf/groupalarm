@@ -5,15 +5,64 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
+import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RemoveActivity extends ActionBarActivity {
+
+    private ListView listView;
+    private List<ListRowItem> rowItems;
+    private CustomListViewAdapter adapter;
+    private Runnable runListUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove);
+
+        rowItems = new ArrayList<ListRowItem>();
+        for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
+            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+            rowItems.add(item);
+        }
+
+        listView = (ListView) findViewById(R.id.removelist);
+        adapter = new CustomListViewAdapter(this,
+                R.layout.alarm_list_item, rowItems);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO: Add code for what happens when you click on a alarm
+            }
+        });
+
+        runListUpdate = new Runnable(){
+            public void run(){
+                //reload content
+                rowItems.clear();
+                for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
+                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+                    rowItems.add(item);
+                }
+                adapter.notifyDataSetChanged();
+                listView.invalidateViews();
+                listView.refreshDrawableState();
+            }
+        };
     }
+
+
+
 
 
     @Override
