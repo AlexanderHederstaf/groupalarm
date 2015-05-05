@@ -32,6 +32,7 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
 
         Alarm alarm = new Alarm();
 
+
         // Checking to see if the message gets set to this Alarm
         alarm.setMessage(message);
         assertEquals(message, alarm.getMessage());
@@ -78,5 +79,29 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
         // Checking to see if the method for getting a list of only active days works
         alarm.setDay(dayOfWeek2,active);
         assertEquals(days, alarm.getActiveDays());
+
+
+        // Checking to see if the method toString() works as intended
+        String messageIntended = "08 : 05";
+        assertEquals(messageIntended, alarm.toString());
+
+        alarm.setTime(12, minute);
+        String messageIntended2 = "12 : 05";
+        assertEquals(messageIntended2, alarm.toString());
+
+        alarm.setTime(hour, 12);
+        String messageIntended3 = "08 : 12";
+        assertEquals(messageIntended3, alarm.toString());
+
+        alarm.setTime(13, 13);
+        String messageIntended4 = "13 : 13";
+        assertEquals(messageIntended4, alarm.toString());
+
+        // Checking to see if the method equals(Object) works as intended
+        Alarm alarm2 = new Alarm();
+        assertFalse(alarm.equals(alarm2));
+        assertTrue(alarm.equals(alarm));
+
+        assertFalse(alarm.equals("An Alarm set to 13 : 13"));
     }
 }
