@@ -11,6 +11,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="6dip"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:src="@drawable/ic_alarm_image" />
 
         <TextView
@@ -20,6 +22,8 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/icon"
             android:gravity="center_vertical"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:textSize="16sp" />
 
         <CheckBox

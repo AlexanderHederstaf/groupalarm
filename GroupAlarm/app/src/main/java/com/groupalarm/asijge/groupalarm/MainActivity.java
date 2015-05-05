@@ -54,16 +54,16 @@ public class MainActivity extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.alarmlist);
         adapter = new CustomListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO: Add code for what happens when you click on a alarm
                 Log.d(TAG, "Something was clicked");
-                runOnUiThread(runListUpdate);
+                //runOnUiThread(runListUpdate);
                 //((CheckBox) findViewById(R.id.on_off)).isChecked();
             }
-        });
+        });*/
 
         runListUpdate = new Runnable(){
             public void run(){
@@ -74,9 +74,9 @@ public class MainActivity extends ActionBarActivity {
                     ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
                     rowItems.add(item);
                 }
-                ((CustomListViewAdapter) listView.getAdapter()).notifyDataSetChanged();
-                listView.invalidateViews();
-                listView.refreshDrawableState();
+                adapter.notifyDataSetChanged();
+                //listView.invalidateViews();
+                //listView.refreshDrawableState();
             }
         };
 
