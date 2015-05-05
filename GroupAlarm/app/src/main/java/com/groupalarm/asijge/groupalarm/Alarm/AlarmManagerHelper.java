@@ -25,6 +25,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     // A set that contain the alarms.
     private static Set<Alarm> alarms = new HashSet<Alarm>();
+    private static Alarm snoozeAlarm;
 
     public static List<Alarm> getAlarms() {
         List<Alarm> list = new LinkedList<Alarm>();
@@ -45,6 +46,24 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Log.d(TAG, "Removing alarm with id: " + alarm.getId());
         alarms.remove(alarm);
         // TODO: Create copy of alarm instead of the alarm itself.
+    }
+
+    /**
+     * Sets a separate snooze alarm in the near future
+     * this alarm works separately from the rest of the alarms.
+     * @param time The number of minutes to delay the snooze alarm.
+     */
+    public static void setSnooze(Context context, int time) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, time);
+
+        Intent snoozeIntent = new Intent(context, AlarmService.class);
+
+        // put extra
+        // start the service and "show" something when Alarm goes off.
+
+        int snoozeID = -1;
+        setAlarm(context, cal, PendingIntent.getService(context, snoozeID, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
     @Override

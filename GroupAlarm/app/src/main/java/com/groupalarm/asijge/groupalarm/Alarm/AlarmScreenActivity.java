@@ -69,6 +69,21 @@ public class AlarmScreenActivity extends Activity {
             }
         });
 
+        final Context c = this;
+        Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
+        snooze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlarmManagerHelper.setSnooze(c, 1);
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+                finish();
+            }
+        });
+
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
     }
 
