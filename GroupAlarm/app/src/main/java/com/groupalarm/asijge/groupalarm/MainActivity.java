@@ -1,5 +1,6 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +56,7 @@ public class MainActivity extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.alarmlist);
         adapter = new CustomListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
+        registerForContextMenu(listView);
         /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -142,4 +145,15 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.alarmlist) {
+            ListView lv = (ListView) v;
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            ListRowItem listItem = (ListRowItem) lv.getItemAtPosition(acmi.position);
+
+            menu.add("Edit");
+            menu.add("Delete");
+        }
+    }
 }
