@@ -2,8 +2,10 @@ package com.groupalarm.asijge.groupalarm.Alarm;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import com.groupalarm.asijge.groupalarm.R;
 
@@ -22,6 +25,7 @@ public class AlarmScreenActivity extends Activity {
     public static final String TAG = "AlarmScreenActivity";
     public static final int WAKELOCK_TIMEOUT = 60 * 1000; // 1 minute
     private PowerManager.WakeLock lock;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +48,26 @@ public class AlarmScreenActivity extends Activity {
                 if (lock != null && lock.isHeld()) {
                     lock.release();
                 }
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
             }
         };
+
+        Button wakeUp = (Button) findViewById(R.id.alarm_stop_button);
+        wakeUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+                finish();
+            }
+        });
 
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
     }
@@ -72,6 +94,10 @@ public class AlarmScreenActivity extends Activity {
             lock.acquire();
             Log.d(TAG, "lock acquired");
         }
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
+            mediaPlayer.start();
+        }
     }
 
     @Override
@@ -81,6 +107,11 @@ public class AlarmScreenActivity extends Activity {
             Log.d(TAG, "Attempting release of lock");
             lock.release();
             Log.d(TAG, "Lock released");
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 
