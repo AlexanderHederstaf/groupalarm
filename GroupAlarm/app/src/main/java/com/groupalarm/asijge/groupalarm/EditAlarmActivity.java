@@ -261,7 +261,7 @@ public class EditAlarmActivity extends ActionBarActivity {
         if (id == R.id.editAlarm_save) {
 
             // Set alarm object with new data
-            editMessage(alarmMessage.getText().toString());
+            newAlarm.setMessage(alarmMessage.getText().toString());
             //editTime(timePickerAlarm.getCurrentHour(), timePickerAlarm.getCurrentMinute());
 
             // Add new alarm to parent intent and finish this activity
@@ -280,47 +280,5 @@ public class EditAlarmActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     *
-     * @param hour
-     * @param min
-     */
-    public void editTime(int hour, int min) {
-        newAlarm.setTime(hour, min);
-    }
-
-    /**
-     *
-     * @param message
-     */
-    public void editMessage(String message) {
-        newAlarm.setMessage(message);
-    }
-
-    /**
-     *
-     * @param value
-     */
-    public void editSnooze(Alarm.Snooze value) {
-        newAlarm.setSnoozeInterval(value);
-    }
-
-    /**
-     *
-     * @param day
-     * @param value
-     */
-    public void editDay(int day, boolean value) {
-        newAlarm.setDay(day, value);
-    }
-
-    /**
-     * 
-     * @param active
-     */
-    public void editActive(boolean active) {
-        newAlarm.setActive(active);
     }
 }
