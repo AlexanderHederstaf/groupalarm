@@ -38,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int EDIT_ALARM_CODE = 998;
     private static final int NEW_ALARM_CODE = 999;
+    private static final int REMOVE_ALARM_CODE = 997;
 
     private ListView listView;
     private List<ListRowItem> rowItems;
@@ -129,7 +130,7 @@ public class MainActivity extends ActionBarActivity {
             Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);
             //AlarmManagerHelper.cancelAlarms(this);
            // Log.d(TAG, "Alarms cancelled");
-            startActivity(removeAlarmActivity);
+            startActivityForResult(removeAlarmActivity, REMOVE_ALARM_CODE);
             return true;
         }
 
@@ -158,6 +159,15 @@ public class MainActivity extends ActionBarActivity {
                 Log.d(TAG, "Alarm added");
                 AlarmManagerHelper.setAlarms(this);
                 Log.d(TAG, "Alarms set");
+                runOnUiThread(runListUpdate); // update list gui
+            }
+        }
+
+        if (requestCode == REMOVE_ALARM_CODE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                Log.d(TAG, "Remove alarm ok");
                 runOnUiThread(runListUpdate); // update list gui
             }
         }

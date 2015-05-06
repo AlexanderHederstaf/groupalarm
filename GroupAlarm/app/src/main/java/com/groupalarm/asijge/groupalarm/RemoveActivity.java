@@ -40,17 +40,6 @@ public class RemoveActivity extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.removelist);
         adapter = new RemoveListViewAdapter(this, R.layout.activity_remove_item, rowItems);
         listView.setAdapter(adapter);
-        registerForContextMenu(listView);
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Add code for what happens when you click on a alarm
-                Log.d(TAG, "Something was clicked");
-                //runOnUiThread(runListUpdate);
-                //((CheckBox) findViewById(R.id.on_off)).isChecked();
-            }
-        });*/
 
         runListUpdate = new Runnable() {
             public void run() {
@@ -85,23 +74,24 @@ public class RemoveActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_cancel) {
-            //Intent  backToMainActivity = new Intent(this, MainActivity.class);
-            // startActivity(backToMainActivity);
             finish();
             return true;
         }
 
         if (id == R.id.action_delete) {
-            // List med rader. Varje rad ska bestå av en checkbox, en tid, en kommentar, av/på
-            //Checkbox markerad - ta bort alarm och återvänd sedan till MainActivity
 
-            //Intent  backToMainActivity = new Intent(this, MainActivity.class);
-            //startActivity(backToMainActivity);
-            //for (int i = 0; i < RemoveListViewAdapter)
-            //AlarmManagerHelper.removeAlarm();
+            for (int i = 0; i < adapter.itemsToRemove.length; i++) {
+                if (adapter.itemsToRemove[i] == true) {
+                    AlarmManagerHelper.removeAlarm(i, this);
+                }
+            }
+            setResult(RESULT_OK);
             finish();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
+
     }
 }
+
