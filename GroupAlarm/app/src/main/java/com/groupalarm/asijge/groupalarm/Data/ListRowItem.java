@@ -1,5 +1,8 @@
 package com.groupalarm.asijge.groupalarm.Data;
 
+import android.content.Context;
+import android.widget.CheckBox;
+
 /**
  * Created by Sebastian on 2015-04-22.
  */

@@ -4,24 +4,37 @@
     android:padding="6dip" >
 
         <ImageView
-        android:id="@+id/icon"
-        android:layout_width="64dip"
-        android:layout_height="64dip"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="6dip"
-        android:src="@drawable/ic_alarm_image" />
+            android:id="@+id/icon"
+            android:layout_width="64dip"
+            android:layout_height="64dip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="6dip"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/ic_alarm_image" />
 
         <TextView
-        android:id="@+id/time"
-        android:layout_width="fill_parent"
-        android:layout_height="64dip"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/icon"
-        android:gravity="center_vertical"
-        android:textSize="16sp" />
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="64dip"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/icon"
+            android:gravity="center_vertical"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="16sp" />
+
+        <CheckBox
+            android:id="@+id/on_off"
+            android:layout_width="64dip"
+            android:layout_height="64dip"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="6dip"/>
 
 
 </RelativeLayout> 
