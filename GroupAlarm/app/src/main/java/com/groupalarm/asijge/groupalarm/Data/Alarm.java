@@ -24,6 +24,7 @@ public class Alarm implements Serializable {
 
     private static int placeholder = 0;
     private final int uniqueId;
+    public static final int NULL_ID = -1;
 
     /**
      * Enum representing the intervals to snooze.
