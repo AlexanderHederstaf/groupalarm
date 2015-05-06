@@ -152,7 +152,10 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     private static PendingIntent createIntent(Context context, Alarm alarm){
         Intent intent = new Intent(context, AlarmService.class);
 
-        // put extra
+        intent.putExtra("MESSAGE", alarm.getMessage());
+        intent.putExtra("SNOOZE", alarm.getSnoozeInterval());
+        intent.putExtra("ID", alarm.getId());
+
         // start the service and "show" something when Alarm goes off.
         return PendingIntent.getService(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
