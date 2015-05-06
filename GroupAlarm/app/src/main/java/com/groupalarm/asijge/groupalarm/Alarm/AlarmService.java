@@ -24,6 +24,9 @@ public class AlarmService extends Service {
         intent.setClass(this, AlarmScreenActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+
+        //AlarmManagerHelper.setAlarms(this);
+
         return super.onStartCommand(intent, flags, startId);
     }
 }

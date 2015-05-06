@@ -69,6 +69,7 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
+                AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
                 finish();
             }
         });
@@ -87,6 +88,7 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
+                //AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
                 finish();
             }
         });
@@ -103,8 +105,6 @@ public class AlarmScreenActivity extends Activity {
 
         // Set up repeating alarms to ring the next day they are set
         // disable alarms that are not repeating.
-        AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
-        AlarmManagerHelper.setAlarms(this);
 
         Log.d(TAG, "onResume");
 
