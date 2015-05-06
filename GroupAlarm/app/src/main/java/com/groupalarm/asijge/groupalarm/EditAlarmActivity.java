@@ -58,6 +58,7 @@ public class EditAlarmActivity extends ActionBarActivity {
 
         updateAlarmTimeTextView();
         updateSnoozeIntervalTextView();
+        alarmMessage.setText(newAlarm.getMessage());
 
         if (newAlarm.getDays().length == 7) {
             boolean anyTrue = false;
