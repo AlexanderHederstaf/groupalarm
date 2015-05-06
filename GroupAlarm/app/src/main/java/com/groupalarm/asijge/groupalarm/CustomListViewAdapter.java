@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
@@ -95,7 +96,7 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
                 } else {
                     alarm.setActive(false);
                 }
-                Log.d(TAG, "Alarm " + alarm.toString() + " was clicked");
+                AlarmManagerHelper.setAlarms(context);
                 reDrawUi();
             }
         };
