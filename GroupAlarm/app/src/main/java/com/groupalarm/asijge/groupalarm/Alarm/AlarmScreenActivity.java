@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.groupalarm.asijge.groupalarm.R;
 
@@ -31,7 +32,9 @@ public class AlarmScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_screen);
-        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        TextView message = ((TextView) findViewById(R.id.alarm_textView));
+        message.setText(getIntent().getStringExtra("MESSAGE"));
 
         Log.d(TAG, "AlarmScreen started");
 
@@ -69,12 +72,15 @@ public class AlarmScreenActivity extends Activity {
             }
         });
 
+        final int snoozeTime = getIntent().getIntExtra("SNOOZE", 0);
         final Context c = this;
         Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
         snooze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlarmManagerHelper.setSnooze(c, 1);
+                if (snoozeTime > 0) {
+                    AlarmManagerHelper.setSnooze(c, snoozeTime);
+                }
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();
                     mediaPlayer.release();
@@ -83,6 +89,9 @@ public class AlarmScreenActivity extends Activity {
                 finish();
             }
         });
+        if (snoozeTime == 0) {
+            snooze.setEnabled(false);
+        }
 
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
     }
