@@ -57,6 +57,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
             convertView = mInflater.inflate(R.layout.activity_remove_item, null);
             holder = new ViewHolder();
             holder.time = (TextView) convertView.findViewById(R.id.remove_time);
+            holder.eventDesc = (TextView) convertView.findViewById(R.id.remove_message);
             holder.checkBox = (CheckBox) convertView.findViewById(R.id.remove_checkbox);
             holder.checkBox.setOnCheckedChangeListener(removeAlarmCheckedListener(position));
             convertView.setTag(holder);
@@ -66,6 +67,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
         }
 
         holder.time.setText(rowItem.getAlarm().toString());
+        holder.eventDesc.setText(rowItem.getAlarm().getMessage());
         //holder.eventDesc.setText(rowItem.getAlarm().getMessage());
         //holder.imageView.setImageResource(R.drawable.ic_alarm_image);
         //holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
