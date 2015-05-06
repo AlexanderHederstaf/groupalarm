@@ -77,46 +77,49 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
         for(Alarm a : alarms) {
             // Set the alarm, if enabled.
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY, a.getHour());
-            cal.set(Calendar.MINUTE, a.getMinute());
-            cal.set(Calendar.SECOND, 0);
+            if (a.getStatus()) {
 
-            List<Integer> days = a.getActiveDays();
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.HOUR_OF_DAY, a.getHour());
+                cal.set(Calendar.MINUTE, a.getMinute());
+                cal.set(Calendar.SECOND, 0);
 
-            // find closest day to now.
-            Calendar now = Calendar.getInstance();
+                List<Integer> days = a.getActiveDays();
 
-            int distance = 7;
-            // default day is the current day. If the hour has passed the alarm is
-            // set for the next day.
-            int day = cal.before(now) ? now.get(Calendar.DAY_OF_WEEK) + 1
-                    : now.get(Calendar.DAY_OF_WEEK);
+                // find closest day to now.
+                Calendar now = Calendar.getInstance();
 
-            for (int i : days) {
-                int d = cal.get(Calendar.DAY_OF_WEEK) - now.get(Calendar.DAY_OF_WEEK);
-                if (d < 0) {
-                    d += 7; // next week.
+                int distance = 7;
+                // default day is the current day. If the hour has passed the alarm is
+                // set for the next day.
+                int day = cal.before(now) ? now.get(Calendar.DAY_OF_WEEK) + 1
+                        : now.get(Calendar.DAY_OF_WEEK);
+
+                for (int i : days) {
+                    int d = cal.get(Calendar.DAY_OF_WEEK) - now.get(Calendar.DAY_OF_WEEK);
+                    if (d < 0) {
+                        d += 7; // next week.
+                    }
+                    if (d == 0 && (cal.get(Calendar.HOUR_OF_DAY) < now.get(Calendar.HOUR_OF_DAY)
+                            || (cal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY))
+                            && cal.get(Calendar.MINUTE) < now.get(Calendar.MINUTE))) {
+                        // same day
+                        // earlier hour
+                        // same hour, earlier minute
+                        d += 7; // same day, earlier time. next week.
+                    }
+
+                    if (d < distance) { //least distance
+                        day = (now.get(Calendar.DAY_OF_WEEK) + d) % 7;
+                        distance = d;
+                    }
                 }
-                if (d == 0 && (cal.get(Calendar.HOUR_OF_DAY) < now.get(Calendar.HOUR_OF_DAY)
-                        || (cal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY))
-                        && cal.get(Calendar.MINUTE) < now.get(Calendar.MINUTE))) {
-                    // same day
-                    // earlier hour
-                    // same hour, earlier minute
-                    d += 7; // same day, earlier time. next week.
-                }
 
-                if (d < distance) { //least distance
-                    day = (now.get(Calendar.DAY_OF_WEEK) + d) % 7;
-                    distance = d;
-                }
+                cal.set(Calendar.DAY_OF_WEEK, day);
+
+                Log.d(TAG, "Alarm set at: " + cal.toString());
+                setAlarm(context, cal, createIntent(context, a));
             }
-
-            cal.set(Calendar.DAY_OF_WEEK, day);
-
-            Log.d(TAG, "Alarm set at: " + cal.toString());
-            setAlarm(context, cal, createIntent(context, a));
         }
     }
 
