@@ -22,7 +22,6 @@ public class Alarm implements Serializable {
 
     private Snooze snoozeInterval;
 
-    private static int placeholder = 0;
     private final int uniqueId;
     public static final int NULL_ID = -1;
 
@@ -39,7 +38,7 @@ public class Alarm implements Serializable {
         private Snooze(int val) {
             this.value = val;
         }
-        public int getValue() {
+        public final int getValue() {
             return value;
         }
     }
@@ -51,14 +50,14 @@ public class Alarm implements Serializable {
      * active = false
      * day = empty
      */
-    public Alarm() {
+    public Alarm(int Id) {
     //
         hour = 0;
         minute = 0;
         message = "";
         active = false;
         days = new boolean[7];
-        uniqueId = placeholder++; //placeholder ID
+        uniqueId = Id;
     }
 
     /**
@@ -109,6 +108,7 @@ public class Alarm implements Serializable {
      * @param snoozeInterval A value of the enum Snooze.
      */
     public void setSnoozeInterval (Snooze snoozeInterval) { this.snoozeInterval = snoozeInterval; }
+
 
     /**
      * A method for getting access to the hour to which the Alarm is set to ring.
