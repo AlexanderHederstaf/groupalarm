@@ -36,6 +36,9 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final int EDIT_ALARM_CODE = 998;
+    private static final int NEW_ALARM_CODE = 999;
+
     private ListView listView;
     private List<ListRowItem> rowItems;
     private CustomListViewAdapter adapter;
@@ -116,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
 
             Intent newAlarmActivity = new Intent(this, EditAlarmActivity.class);
             newAlarmActivity.putExtra("alarm", newAlarm);
-            startActivityForResult(newAlarmActivity, 999);
+            startActivityForResult(newAlarmActivity, NEW_ALARM_CODE);
 
             return true;
         }
@@ -142,10 +145,20 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // Check which request we're responding to
-        if (requestCode == 999) {
+        if (requestCode == EDIT_ALARM_CODE) {
+            if (resultCode == RESULT_OK) {
+                Alarm editedAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
+                AlarmManagerHelper.removeAlarm(editedAlarm.getId(), this);
+                AlarmManagerHelper.addAlarm(editedAlarm);
+                AlarmManagerHelper.setAlarms(this);
+                runOnUiThread(runListUpdate);
+            }
+        }
+
+        if (requestCode == NEW_ALARM_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("newAlarm");
+                Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
                 AlarmManagerHelper.addAlarm(updatedNewAlarm);
                 Log.d(TAG, "Alarm added");
                 AlarmManagerHelper.setAlarms(this);
@@ -166,5 +179,31 @@ public class MainActivity extends ActionBarActivity {
             menu.add("Edit");
             menu.add("Delete");
         }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ListRowItem listItem = (ListRowItem) listView.getItemAtPosition(info.position);
+        int alarmId = listItem.getAlarm().getId();
+        if (item.getTitle() == "Edit") {
+            editAlarm(alarmId);
+            return true;
+        }
+        else if (item.getTitle() == "Delete") {
+            AlarmManagerHelper.removeAlarm(alarmId, this);
+
+            runOnUiThread(runListUpdate);
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void editAlarm(int alarmId) {
+        Alarm alarm = AlarmManagerHelper.getAlarm(alarmId);
+
+        Intent intent = new Intent(this, EditAlarmActivity.class);
+        intent.putExtra("alarm", alarm);
+        startActivityForResult(intent, EDIT_ALARM_CODE);
     }
 }

@@ -274,7 +274,7 @@ public class EditAlarmActivity extends ActionBarActivity {
             //editTime(timePickerAlarm.getCurrentHour(), timePickerAlarm.getCurrentMinute());
 
             // Add new alarm to parent intent and finish this activity
-            parentIntent.putExtra("newAlarm", newAlarm);
+            parentIntent.putExtra("EditedAlarm", newAlarm);
             setResult(RESULT_OK, parentIntent);
             finish();
 
