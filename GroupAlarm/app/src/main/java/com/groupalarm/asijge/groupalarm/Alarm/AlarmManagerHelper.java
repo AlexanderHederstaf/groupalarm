@@ -153,7 +153,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Intent intent = new Intent(context, AlarmService.class);
 
         intent.putExtra("MESSAGE", alarm.getMessage());
-        intent.putExtra("SNOOZE", alarm.getSnoozeInterval());
+        intent.putExtra("SNOOZE", alarm.getSnoozeInterval().getValue());
         intent.putExtra("ID", alarm.getId());
 
         // start the service and "show" something when Alarm goes off.
