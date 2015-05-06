@@ -30,7 +30,8 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
         days.add(dayOfWeek);
         days.add(dayOfWeek2);
 
-        Alarm alarm = new Alarm();
+        // TODO: do not hardcode id?
+        Alarm alarm = new Alarm(0);
 
 
         // Checking to see if the message gets set to this Alarm
@@ -98,7 +99,7 @@ public class AlarmDataClassTest extends InstrumentationTestCase {
         assertEquals(messageIntended4, alarm.toString());
 
         // Checking to see if the method equals(Object) works as intended
-        Alarm alarm2 = new Alarm();
+        Alarm alarm2 = new Alarm(1);
         assertFalse(alarm.equals(alarm2));
         assertTrue(alarm.equals(alarm));
 
