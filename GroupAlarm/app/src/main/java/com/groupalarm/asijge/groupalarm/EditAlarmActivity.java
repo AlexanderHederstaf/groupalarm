@@ -57,18 +57,16 @@ public class EditAlarmActivity extends ActionBarActivity {
         snoozeInterval = (TextView) findViewById(R.id.textSnoozeInterval);
 
         updateAlarmTimeTextView();
+        updateSnoozeIntervalTextView();
 
         if (newAlarm.getDays().length == 7) {
+            boolean anyTrue = false;
             for (int i = 0; i < 7; i++) {
-                if (newAlarm.getDays()[i] == true) {
-                    updateAlarmDayTextView();
-                    break;
-                }
+                anyTrue = anyTrue || newAlarm.getDays()[i];
             }
-        }
-
-        if (newAlarm.getSnoozeInterval() != null) {
-            updateSnoozeIntervalTextView();
+            if (anyTrue) {
+                updateAlarmDayTextView();
+            }
         }
     }
 
