@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
 
 import java.util.Calendar;
 import java.util.HashSet;
@@ -110,6 +111,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Log.d(TAG, "Setting Alarms");
         cancelAlarms(context);
 
+        // TODO use database
         for(Alarm a : alarms) {
             // Set the alarm, if enabled.
             if (a.getStatus()) {
@@ -178,6 +180,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Log.d(TAG, "Cancelling alarm");
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
+        // TODO use database
         for(Alarm a : alarms) {
             // Cancel the alarm.
             manager.cancel(createIntent(context, a));
