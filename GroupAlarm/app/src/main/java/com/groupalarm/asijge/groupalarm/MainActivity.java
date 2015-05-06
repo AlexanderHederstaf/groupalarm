@@ -102,7 +102,14 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_new) {
             // Start the editor activity with a new Alarm.
             Alarm newAlarm = new Alarm();
-            newAlarm.setTime(13,37);
+            // Set Alarm default values
+            newAlarm.setTime(12,00);
+            newAlarm.setMessage("");
+            newAlarm.setSnoozeInterval(Alarm.Snooze.TEN);
+            newAlarm.setActive(false);
+            for (int i = 0; i < 7; i++) {
+                newAlarm.setDay(i, false);
+            }
 
             Intent newAlarmActivity = new Intent(this, EditAlarmActivity.class);
             newAlarmActivity.putExtra("alarm", newAlarm);

@@ -49,12 +49,13 @@ public class EditAlarmActivity extends ActionBarActivity {
         parentIntent = getIntent();
         newAlarm = (Alarm) parentIntent.getSerializableExtra("alarm");
 
-        // timePickerAlarm = (TimePicker) findViewById(R.id.timePickerAlarm);
         alarmMessage = (EditText) findViewById(R.id.editTextAlarmMessage);
 
         alarmTime = (TextView) findViewById(R.id.textTime);
         alarmDays = (TextView) findViewById(R.id.textAlarmDay);
         snoozeInterval = (TextView) findViewById(R.id.textSnoozeInterval);
+
+        updateAlarmTimeTextView();
 
         if (newAlarm.getDays().length == 7) {
             for (int i = 0; i < 7; i++) {
