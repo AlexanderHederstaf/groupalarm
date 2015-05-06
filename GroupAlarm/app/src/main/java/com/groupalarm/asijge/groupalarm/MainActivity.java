@@ -22,6 +22,7 @@ import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (id == R.id.action_new) {
             // Start the editor activity with a new Alarm.
-            Alarm newAlarm = new Alarm();
+            Alarm newAlarm = new Alarm(AlarmDB.getInstance().getNewId());
             // Set Alarm default values
             Calendar tmp = Calendar.getInstance();
 
