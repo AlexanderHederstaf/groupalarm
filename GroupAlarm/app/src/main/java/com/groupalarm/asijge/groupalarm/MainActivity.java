@@ -25,6 +25,7 @@ import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
@@ -103,7 +104,9 @@ public class MainActivity extends ActionBarActivity {
             // Start the editor activity with a new Alarm.
             Alarm newAlarm = new Alarm();
             // Set Alarm default values
-            newAlarm.setTime(12,00);
+            Calendar tmp = Calendar.getInstance();
+
+            newAlarm.setTime(tmp.get(Calendar.HOUR_OF_DAY), tmp.get(Calendar.MINUTE));
             newAlarm.setMessage("");
             newAlarm.setSnoozeInterval(Alarm.Snooze.TEN);
             newAlarm.setActive(false);
