@@ -26,7 +26,7 @@
             android:focusableInTouchMode="false"
             android:textSize="16sp" />
 
-        <CheckBox
+        <ToggleButton
             android:id="@+id/on_off"
             android:layout_width="64dip"
             android:layout_height="64dip"

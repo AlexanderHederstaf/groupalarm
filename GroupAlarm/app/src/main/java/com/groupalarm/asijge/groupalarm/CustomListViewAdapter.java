@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
@@ -39,7 +40,7 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         ImageView imageView;
         TextView time;
         TextView eventDesc;
-        CheckBox checkBox;
+        ToggleButton checkBox;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -57,7 +58,7 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
             holder.time = (TextView) convertView.findViewById(R.id.time);
             //holder.eventDesc = (TextView) convertView.findViewById(R.id.eventDescription);
             holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
-            holder.checkBox = (CheckBox) convertView.findViewById(R.id.on_off);
+            holder.checkBox = (ToggleButton) convertView.findViewById(R.id.on_off);
             holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(rowItem.getAlarm()));
             convertView.setTag(holder);
         } else {
