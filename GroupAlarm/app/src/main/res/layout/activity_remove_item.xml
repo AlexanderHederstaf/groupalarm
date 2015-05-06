@@ -1,24 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp" tools:context=".MainActivity">
 
-
-    <TextView
-        android:id="@+id/remove_time"
-        android:layout_width="fill_parent"
-        android:layout_height="64dip"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/remove_checkbox"
-        android:gravity="center_vertical"
-        android:textSize="16sp" />
-
-    <CheckBox android:id="@+id/remove_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onCheckboxClicked"/>
-
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/removelist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
