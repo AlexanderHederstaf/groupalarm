@@ -126,15 +126,10 @@ public class MainActivity extends ActionBarActivity {
 
         if (id == R.id.action_delete) {
             // Start the remove activity.
-            Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);//Oklart
-            //removeAlarmActivity.putExtra("Alarms", (Serializable)alarms);//???
-
-            AlarmManagerHelper.cancelAlarms(this);
-            Log.d(TAG, "Alarms cancelled");
-
+            Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);
+            //AlarmManagerHelper.cancelAlarms(this);
+           // Log.d(TAG, "Alarms cancelled");
             startActivity(removeAlarmActivity);
-
-            // Send list of alarms?
             return true;
         }
 

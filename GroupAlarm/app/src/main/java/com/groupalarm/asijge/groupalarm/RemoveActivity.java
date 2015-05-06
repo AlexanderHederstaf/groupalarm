@@ -3,6 +3,7 @@ package com.groupalarm.asijge.groupalarm;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +21,10 @@ public class RemoveActivity extends ActionBarActivity {
 
     private ListView listView;
     private List<ListRowItem> rowItems;
-    private CustomListViewAdapter adapter;
+    private RemoveListViewAdapter adapter;
     private Runnable runListUpdate;
+
+    private static final String TAG = "RemoveActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,24 +33,28 @@ public class RemoveActivity extends ActionBarActivity {
 
         rowItems = new ArrayList<ListRowItem>();
         for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+            ListRowItem item = new ListRowItem(0, AlarmManagerHelper.getAlarms().get(i));
             rowItems.add(item);
         }
 
         listView = (ListView) findViewById(R.id.removelist);
-        adapter = new CustomListViewAdapter(this,
-                R.layout.alarm_list_item, rowItems);
+        adapter = new RemoveListViewAdapter(this, R.layout.activity_remove_item, rowItems);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        registerForContextMenu(listView);
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO: Add code for what happens when you click on a alarm
+                Log.d(TAG, "Something was clicked");
+                //runOnUiThread(runListUpdate);
+                //((CheckBox) findViewById(R.id.on_off)).isChecked();
             }
-        });
+        });*/
 
-        runListUpdate = new Runnable(){
-            public void run(){
+        runListUpdate = new Runnable() {
+            public void run() {
+                Log.d(TAG, "runListUpdate");
                 //reload content
                 rowItems.clear();
                 for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
@@ -55,14 +62,11 @@ public class RemoveActivity extends ActionBarActivity {
                     rowItems.add(item);
                 }
                 adapter.notifyDataSetChanged();
-                listView.invalidateViews();
-                listView.refreshDrawableState();
+                //listView.invalidateViews();
+                //listView.refreshDrawableState();
             }
         };
     }
-
-
-
 
 
     @Override
@@ -81,8 +85,9 @@ public class RemoveActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_cancel) {
-            Intent  backToMainActivity = new Intent(this, MainActivity.class);
-            startActivity(backToMainActivity);
+            //Intent  backToMainActivity = new Intent(this, MainActivity.class);
+            // startActivity(backToMainActivity);
+            finish();
             return true;
         }
 
@@ -90,8 +95,11 @@ public class RemoveActivity extends ActionBarActivity {
             // List med rader. Varje rad ska bestå av en checkbox, en tid, en kommentar, av/på
             //Checkbox markerad - ta bort alarm och återvänd sedan till MainActivity
 
-            Intent  backToMainActivity = new Intent(this, MainActivity.class);
-            startActivity(backToMainActivity);
+            //Intent  backToMainActivity = new Intent(this, MainActivity.class);
+            //startActivity(backToMainActivity);
+            //for (int i = 0; i < RemoveListViewAdapter)
+            //AlarmManagerHelper.removeAlarm();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
