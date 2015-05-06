@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.R;
 
 
@@ -99,6 +100,11 @@ public class AlarmScreenActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Set up repeating alarms to ring the next day they are set
+        // disable alarms that are not repeating.
+        AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
+        AlarmManagerHelper.setAlarms(this);
 
         Log.d(TAG, "onResume");
 

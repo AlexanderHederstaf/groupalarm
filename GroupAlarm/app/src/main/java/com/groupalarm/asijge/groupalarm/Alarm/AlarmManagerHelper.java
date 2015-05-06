@@ -36,15 +36,43 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         return list;
     }
 
+    public static Alarm getAlarm(int Id) {
+        for (Alarm alarm : alarms) {
+            if (alarm.getId() == Id) {
+                return alarm;
+                //TODO: Create copy of alarm instead of the alarm itself.
+            }
+        }
+        return null; // Could not find the alarm
+    }
+
+    public static boolean disableAlarm(int Id) {
+        for (Alarm alarm : alarms) {
+            if (alarm.getId() == Id) {
+                alarm.setActive(false);
+                return true;
+            }
+        }
+        return false; // Could not find the alarm
+    }
+
     public static void addAlarm(Alarm alarm) {
         Log.d(TAG, "Adding alarm with id: " + alarm.getId());
         alarms.add(alarm);
         // TODO: Create copy of alarm instead of the alarm itself.
     }
 
-    public static void removeAlarm(Alarm alarm) {
-        Log.d(TAG, "Removing alarm with id: " + alarm.getId());
-        alarms.remove(alarm);
+    public static void removeAlarm(int Id, Context context) {
+        Alarm remove = null;
+        for (Alarm alarm : alarms) {
+            if (alarm.getId() == Id) {
+                remove = alarm;
+            }
+        }
+        Log.d(TAG, "Removing alarm with id: " + remove.getId());
+        cancelAlarms(context);
+        alarms.remove(remove);
+        setAlarms(context);
         // TODO: Create copy of alarm instead of the alarm itself.
     }
 
@@ -64,6 +92,13 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
         int snoozeID = -1;
         setAlarm(context, cal, PendingIntent.getService(context, snoozeID, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+    public static void disableIfNotRepeat(int Id) {
+        if (getAlarm(Id).getActiveDays().isEmpty()) {
+            // Not repeating alarm
+            disableAlarm(Id);
+        }
     }
 
     @Override
