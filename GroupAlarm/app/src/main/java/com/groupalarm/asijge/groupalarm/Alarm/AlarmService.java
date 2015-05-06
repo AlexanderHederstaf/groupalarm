@@ -21,10 +21,9 @@ public class AlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "AlarmService Started");
-        Intent i = new Intent();
-        i.setClass(this, AlarmScreenActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
+        intent.setClass(this, AlarmScreenActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 }
