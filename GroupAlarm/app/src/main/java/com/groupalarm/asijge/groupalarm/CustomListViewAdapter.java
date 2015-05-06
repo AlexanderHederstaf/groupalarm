@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.nfc.Tag;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -20,6 +22,7 @@ import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,43 +43,71 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         ImageView imageView;
         TextView time;
         TextView eventDesc;
-        ToggleButton checkBox;
+        TextView monday,tuesday,wednesday,thursday,friday,saturday,sunday;
+        Switch checkBox;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ListRowItem rowItem = getItem(position);
         ViewHolder holder = null;
+        ArrayList<TextView> days = new ArrayList<TextView>();
 
         Log.d(TAG, "GetView for pos: " + position);
 
 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            Log.d(TAG, "creating new row for" + position);
             convertView = mInflater.inflate(R.layout.alarm_list_item, null);
             holder = new ViewHolder();
             holder.time = (TextView) convertView.findViewById(R.id.time);
-            //holder.eventDesc = (TextView) convertView.findViewById(R.id.eventDescription);
+            holder.eventDesc = (TextView) convertView.findViewById(R.id.message);
             holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
-            holder.checkBox = (ToggleButton) convertView.findViewById(R.id.on_off);
+            holder.checkBox = (Switch) convertView.findViewById(R.id.on_off);
+            holder.checkBox.setThumbTextPadding(4);//holder.checkBox.getWidth() / 2);
             holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(rowItem.getAlarm()));
+            holder.monday = (TextView) convertView.findViewById(R.id.monday);
+            holder.tuesday = (TextView) convertView.findViewById(R.id.tuesday);
+            holder.wednesday = (TextView) convertView.findViewById(R.id.wednesday);
+            holder.thursday = (TextView) convertView.findViewById(R.id.thursday);
+            holder.friday = (TextView) convertView.findViewById(R.id.friday);
+            holder.saturday = (TextView) convertView.findViewById(R.id.saturday);
+            holder.sunday = (TextView) convertView.findViewById(R.id.sunday);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
             holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(rowItem.getAlarm()));
         }
 
+        days.add(holder.monday);
+        days.add(holder.tuesday);
+        days.add(holder.wednesday);
+        days.add(holder.thursday);
+        days.add(holder.friday);
+        days.add(holder.saturday);
+        days.add(holder.sunday);
+
         holder.time.setText(rowItem.getAlarm().toString());
-        //holder.eventDesc.setText(rowItem.getAlarm().getMessage());
+        holder.eventDesc.setText(rowItem.getAlarm().getMessage());
         holder.imageView.setImageResource(R.drawable.ic_alarm_image);
         holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
 
+
         if(rowItem.getAlarm().getStatus()) {
             holder.time.setTextColor(Color.BLACK);
+            holder.eventDesc.setTextColor(Color.BLACK);
             holder.imageView.setAlpha(1.0f);
         } else {
             holder.time.setTextColor(Color.GRAY);
+            holder.eventDesc.setTextColor(Color.GRAY);
             holder.imageView.setAlpha(0.5f);
+        }
+
+        for(int i = 0; i < rowItem.getAlarm().getDays().length; i++) {
+            if (rowItem.getAlarm().getDays()[i]) {
+                days.get(i).setTextColor(Color.BLACK);
+            } else {
+                days.get(i).setTextColor(Color.GRAY);
+            }
         }
 
         return convertView;

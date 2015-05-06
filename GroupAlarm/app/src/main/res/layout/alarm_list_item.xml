@@ -5,12 +5,11 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="64dip"
-            android:layout_height="64dip"
+            android:layout_width="32dip"
+            android:layout_height="32dip"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
             android:layout_marginRight="6dip"
+            android:layout_centerVertical="true"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:src="@drawable/ic_alarm_image" />
@@ -18,23 +17,116 @@
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
-            android:layout_height="64dip"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/icon"
-            android:gravity="center_vertical"
+            android:layout_marginRight="12dip"
+            android:layout_centerVertical="true"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
-        <ToggleButton
+        <TextView
+            android:id="@+id/monday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/time"
+            android:layout_margin="3dip"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="M"/>
+
+        <TextView
+            android:id="@+id/tuesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/monday"
+            android:layout_margin="3dip"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="T"/>
+
+    <TextView
+        android:id="@+id/wednesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tuesday"
+        android:layout_margin="3dip"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="W"/>
+
+    <TextView
+        android:id="@+id/thursday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/wednesday"
+        android:layout_margin="3dip"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="T"/>
+
+    <TextView
+        android:id="@+id/friday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/thursday"
+        android:layout_margin="3dip"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="F"/>
+
+    <TextView
+        android:id="@+id/saturday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/friday"
+        android:layout_margin="3dip"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="S"/>
+
+    <TextView
+        android:id="@+id/sunday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/saturday"
+        android:layout_margin="3dip"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="S"/>
+
+        <Switch
             android:id="@+id/on_off"
-            android:layout_width="64dip"
-            android:layout_height="64dip"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:switchMinWidth="0dip"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="6dip"/>
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/sunday"
+            android:layout_marginRight="12dip"
+            android:layout_marginLeft="12dip"
+            android:paddingBottom="24dip"
+            android:paddingTop="24dip"/>
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/icon"
+            android:layout_marginTop="20dip"
+            android:layout_alignLeft="@id/time"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
 
 
 </RelativeLayout> 
