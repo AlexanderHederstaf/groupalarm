@@ -23,6 +23,7 @@ public class EditAlarmActivity extends ActionBarActivity {
     private static final String TAG = "EditAlarmActivity";
     private static final CharSequence[] dayNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     private static final CharSequence[] snoozeTimes = new CharSequence[Alarm.Snooze.values().length];
+    public static final String DISABLE_SNOOZE = "No Snooze";
 
     // Assorted class fields
     private Intent parentIntent;
@@ -142,7 +143,11 @@ public class EditAlarmActivity extends ActionBarActivity {
 
         // Populate the snoozeTimes array from enum values
         for (int i = 0; i < Alarm.Snooze.values().length; i++) {
-            snoozeTimes[i] = Alarm.Snooze.values()[i].getValue() + " min";
+            if (Alarm.Snooze.values()[i].getValue() == 0) {
+                snoozeTimes[i] = DISABLE_SNOOZE;
+            } else {
+                snoozeTimes[i] = Alarm.Snooze.values()[i].getValue() + " min";
+            }
         }
 
         // Dialog layout configurations
@@ -178,7 +183,12 @@ public class EditAlarmActivity extends ActionBarActivity {
      * Updates the Snooze interval text view with data from the newAlarm field
      */
     private void updateSnoozeIntervalTextView() {
-        snoozeInterval.setText(newAlarm.getSnoozeInterval().getValue() + " min");
+
+        if (newAlarm.getSnoozeInterval().getValue() == 0) {
+            snoozeInterval.setText(DISABLE_SNOOZE);
+        } else {
+            snoozeInterval.setText(newAlarm.getSnoozeInterval().getValue() + " min");
+        }
     }
 
     /**
