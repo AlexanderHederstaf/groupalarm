@@ -65,16 +65,19 @@ public class AlarmDB extends SQLiteOpenHelper {
      * elements of the database.
      * @return Integer representing the new Id.
      */
+    static int hackID = 0;
     public int getNewId() {
         String GET_ID_ALARMS = "SELECT max(" + COLUMN_ID + ") FROM " + TABLE_ALARMS;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(GET_ID_ALARMS, null);
 
         // If database is empty, return 0 for the first Alarm.
-        int value = 0;
+        int value = hackID++;
+        //int value = 0;
         if (cursor.moveToFirst()) {
             value = cursor.getInt(0) + 1;
         }
+        value = hackID;
 
         cursor.close();
         db.close();
