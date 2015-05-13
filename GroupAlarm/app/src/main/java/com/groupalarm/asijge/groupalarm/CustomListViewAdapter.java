@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
@@ -23,6 +24,7 @@ import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -89,8 +91,10 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         holder.time.setText(rowItem.getAlarm().toString());
         holder.eventDesc.setText(rowItem.getAlarm().getMessage());
         holder.imageView.setImageResource(R.drawable.ic_alarm_image);
-        holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
 
+        if(holder.checkBox.isChecked() != rowItem.getAlarm().getStatus()) {
+            holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
+        }
 
         if(rowItem.getAlarm().getStatus()) {
             holder.time.setTextColor(Color.BLACK);
@@ -124,10 +128,17 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    alarm.setActive(true);
+                    // This results in toasts only being created for the alarm that was
+                    // actually clicked
+                    if(!alarm.getStatus()) {
+                        alarm.setActive(true);
+                        Toast toast = Toast.makeText(context, resolveToastMessage(AlarmManagerHelper.getNextAlarmTime(alarm)),Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 } else {
                     alarm.setActive(false);
                 }
+                Log.d(TAG, "listener triggered");
                 AlarmManagerHelper.setAlarms(context);
                 reDrawUi();
             }
@@ -135,6 +146,38 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
     }
 
     private void reDrawUi() {
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
+    }
+
+    private String resolveToastMessage(Calendar cal) {
+        Calendar now = Calendar.getInstance();
+        // Difference between the set time and now in seconds.
+        int seconds = (int) (cal.getTimeInMillis()/1000 - now.getTimeInMillis()/1000);
+        String message = "Alarm set ";
+        int minute = (seconds % 3600) / 60;
+        int hour = (seconds % (3600 * 24)) / 3600;
+        int day = seconds / (3600 * 24);
+
+
+        if (day > 0) {
+            message += day + " day";
+            if (day > 1) message += "s";
+            if (hour + minute > 0) message += ", ";
+        }
+        if (hour > 0) {
+            message += hour + " hour";
+            if (hour > 1) message += "s";
+            if (minute > 0) message += ", ";
+        }
+        if (minute > 0) {
+            message += minute + " minute";
+            if (minute > 1) message += "s";
+        }
+        if (day + hour + minute == 0) {
+            message += "less than 1 minute";
+        }
+        message += " from now.";
+
+        return message;
     }
 }
