@@ -53,6 +53,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AlarmDB.initiate(this);
+
         rowItems = new ArrayList<ListRowItem>();
         for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
             ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
