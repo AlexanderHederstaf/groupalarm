@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
@@ -115,47 +116,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         for(Alarm a : alarms) {
             // Set the alarm, if enabled.
             if (a.getStatus()) {
-
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.HOUR_OF_DAY, a.getHour());
-                cal.set(Calendar.MINUTE, a.getMinute());
-                cal.set(Calendar.SECOND, 0);
-
-                List<Integer> days = a.getActiveDays();
-
-                // find closest day to now.
-                Calendar now = Calendar.getInstance();
-
-                int distance = 7;
-                // default day is the current day. If the hour has passed the alarm is
-                // set for the next day.
-                int day = cal.before(now) ? now.get(Calendar.DAY_OF_WEEK) + 1
-                        : now.get(Calendar.DAY_OF_WEEK);
-
-                for (int i : days) {
-                    int d = cal.get(Calendar.DAY_OF_WEEK) - now.get(Calendar.DAY_OF_WEEK);
-                    if (d < 0) {
-                        d += 7; // next week.
-                    }
-                    if (d == 0 && (cal.get(Calendar.HOUR_OF_DAY) < now.get(Calendar.HOUR_OF_DAY)
-                            || (cal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY))
-                            && cal.get(Calendar.MINUTE) < now.get(Calendar.MINUTE))) {
-                        // same day
-                        // earlier hour
-                        // same hour, earlier minute
-                        d += 7; // same day, earlier time. next week.
-                    }
-
-                    if (d < distance) { //least distance
-                        day = (now.get(Calendar.DAY_OF_WEEK) + d) % 7;
-                        distance = d;
-                    }
-                }
-
-                cal.set(Calendar.DAY_OF_WEEK, day);
-
-                Log.d(TAG, "Alarm set at: " + cal.toString());
-                setAlarm(context, cal, createIntent(context, a));
+                setAlarm(context, getNextAlarmTime(a), createIntent(context, a));
             }
         }
     }
@@ -185,6 +146,61 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             // Cancel the alarm.
             manager.cancel(createIntent(context, a));
         }
+    }
+
+    // Returns a calendar object that represents the next
+    // time the alarm will activate.
+    public static Calendar getNextAlarmTime(Alarm alarm) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        cal.set(Calendar.MINUTE, alarm.getMinute());
+        cal.set(Calendar.SECOND, 0);
+
+        List<Integer> days = alarm.getActiveDays();
+
+        // find closest day to now.
+        Calendar now = Calendar.getInstance();
+
+        // Distance is used to find the day closest to now
+        // All days will be closer than 7 days,
+        int maxDistance = 7;
+
+        // default day is the current day. If the hour has passed the alarm is
+        // set for the next day.
+        // This day will be overwritten if "days" is not empty.
+        int day = cal.before(now) ? (now.get(Calendar.DAY_OF_WEEK) + 1 % 7)
+                : now.get(Calendar.DAY_OF_WEEK);
+
+        // Loop the "active" days for the alarm
+        // This list is empty if the alarm is not repeating
+        for (int i : days) {
+            int distance = i - ((now.get(Calendar.DAY_OF_WEEK) - 2) % 7);
+            Log.d(TAG, "i = " + i + " now.DAY_OF_WEEK = " + now.get(Calendar.DAY_OF_WEEK));
+            if (distance < 0) {
+                distance += 7; // next week.
+            }
+            if (distance == 0 && (cal.get(Calendar.HOUR_OF_DAY) < now.get(Calendar.HOUR_OF_DAY)
+                    || (cal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY))
+                    && cal.get(Calendar.MINUTE) < now.get(Calendar.MINUTE))) {
+                distance += 7;
+                // Alarm set for today's weekday, but earlier time
+                // Instead set alarm for next week.
+            }
+
+            // If a new day is found that is closer.
+            // Set the day of the alarm to today + distance to
+            // that day.
+            if (distance < maxDistance) {
+                Log.d(TAG, "Distance = " + distance + " MaxDistance = " + maxDistance);
+                day = (now.get(Calendar.DAY_OF_WEEK) + distance) % 7;
+                maxDistance = distance;
+            }
+        }
+
+        // Set day of alarm to the calculated day.
+        cal.set(Calendar.DAY_OF_WEEK, day);
+        Log.d(TAG, "Day = " + day);
+        return cal;
     }
 
     private static PendingIntent createIntent(Context context, Alarm alarm){
