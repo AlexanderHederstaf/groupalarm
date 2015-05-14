@@ -4,14 +4,20 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_new"
+        android:id="@+id/action_group"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_action_group"
+        android:title="Group view"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_new"
+        android:orderInCategory="200"
         android:icon="@drawable/ic_action_new"
         android:title="New Alarm"
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_delete"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         android:title="Delete Alarm"
         app:showAsAction="never"/>
  </menu>
