@@ -107,6 +107,15 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_group) {
+
+            Intent newGroupActivity = new Intent(this, GroupActivity.class);
+            startActivity(newGroupActivity);
+
+            return true;
+        }
+
+
         if (id == R.id.action_new) {
             // Start the editor activity with a new Alarm.
             Alarm newAlarm = new Alarm(AlarmDB.getInstance().getNewId());
