@@ -95,6 +95,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+
         Parse.initialize(this, "FId7HlOrHpQ3O8UCZkZtUP6vdxCR0T0DfFgbRitf", "6jgsndZW6hvsVHenBLpuQ7egH6HPjGPIBPqn89A1");
     }
 
