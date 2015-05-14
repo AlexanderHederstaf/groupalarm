@@ -6,4 +6,5 @@
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="title_activity_remove">RemoveActivity</string>
     <string name="title_activity_alarm_screen">AlarmScreenActivity</string>
+    <string name="title_activity_group">GroupActivity</string>
 </resources>
