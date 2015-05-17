@@ -25,57 +25,39 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     private static final String TAG = "AlarmManagerHelper";
 
-    // A set that contain the alarms.
-    private static Set<Alarm> alarms = new HashSet<Alarm>();
     private static Alarm snoozeAlarm;
 
     public static List<Alarm> getAlarms() {
-        List<Alarm> list = new LinkedList<Alarm>();
-        for (Alarm a : alarms) {
-            list.add(a);
-            // TODO: Create copy of alarm instead of the alarm itself.
-        }
+        List<Alarm> list = AlarmDB.getInstance().getAlarms();//new LinkedList<Alarm>();
+//        for (Alarm a : alarms) {
+//            list.add(a);
+//            // TODO: Create copy of alarm instead of the alarm itself.
+//        }
         return list;
     }
 
     public static Alarm getAlarm(int Id) {
-        for (Alarm alarm : alarms) {
-            if (alarm.getId() == Id) {
-                return alarm;
-                //TODO: Create copy of alarm instead of the alarm itself.
-            }
-        }
-        return null; // Could not find the alarm
-    }
-
-    public static boolean disableAlarm(int Id) {
-        for (Alarm alarm : alarms) {
-            if (alarm.getId() == Id) {
-                alarm.setActive(false);
-                return true;
-            }
-        }
-        return false; // Could not find the alarm
+//        for (Alarm alarm : alarms) {
+//            if (alarm.getId() == Id) {
+//                return alarm;
+//                //TODO: Create copy of alarm instead of the alarm itself.
+//            }
+//        }
+        return AlarmDB.getInstance().getAlarm(Id); // Could not find the alarm
     }
 
     public static void addAlarm(Alarm alarm) {
         Log.d(TAG, "Adding alarm with id: " + alarm.getId());
-        alarms.add(alarm);
-        // TODO: Create copy of alarm instead of the alarm itself.
+//        alarms.add(alarm);
+        AlarmDB.getInstance().addAlarm(alarm);
     }
 
     public static void removeAlarm(int Id, Context context) {
-        Alarm remove = null;
-        for (Alarm alarm : alarms) {
-            if (alarm.getId() == Id) {
-                remove = alarm;
-            }
-        }
-        Log.d(TAG, "Removing alarm with id: " + remove.getId());
+        Log.d(TAG, "Removing alarm with id: " + Id);
+
         cancelAlarms(context);
-        alarms.remove(remove);
+        AlarmDB.getInstance().deleteAlarm(Id);
         setAlarms(context);
-        // TODO: Create copy of alarm instead of the alarm itself.
     }
 
     /**
@@ -96,11 +78,8 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         setAlarm(context, cal, PendingIntent.getService(context, snoozeID, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
-    public static void disableIfNotRepeat(int Id) {
-        if (getAlarm(Id).getActiveDays().isEmpty()) {
-            // Not repeating alarm
-            disableAlarm(Id);
-        }
+    public static void setActive(int Id, boolean active) {
+        AlarmDB.getInstance().setActive(Id, active);
     }
 
     @Override
@@ -112,10 +91,12 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Log.d(TAG, "Setting Alarms");
         cancelAlarms(context);
 
-        // TODO use database
-        for(Alarm a : alarms) {
+        for(Alarm a : AlarmDB.getInstance().getAlarms()) {
             // Set the alarm, if enabled.
+
+            Log.d(TAG, "Setting alarm: " + a.toString() +  " msg=" +a.getMessage());
             if (a.getStatus()) {
+                Log.d(TAG, "Status active");
                 setAlarm(context, getNextAlarmTime(a), createIntent(context, a));
             }
         }
@@ -141,8 +122,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         Log.d(TAG, "Cancelling alarm");
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        // TODO use database
-        for(Alarm a : alarms) {
+        for(Alarm a : AlarmDB.getInstance().getAlarms()) {
             // Cancel the alarm.
             manager.cancel(createIntent(context, a));
         }

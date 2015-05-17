@@ -69,7 +69,6 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
                 finish();
             }
         });

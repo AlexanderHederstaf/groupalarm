@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 
 import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
@@ -131,11 +132,14 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
                     // This results in toasts only being created for the alarm that was
                     // actually clicked
                     if(!alarm.getStatus()) {
+                        AlarmManagerHelper.setActive(alarm.getId(), true);
                         alarm.setActive(true);
+
                         Toast toast = Toast.makeText(context, resolveToastMessage(AlarmManagerHelper.getNextAlarmTime(alarm)),Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 } else {
+                    AlarmManagerHelper.setActive(alarm.getId(), false);
                     alarm.setActive(false);
                 }
                 Log.d(TAG, "listener triggered");

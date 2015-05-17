@@ -56,8 +56,8 @@ public class MainActivity extends ActionBarActivity {
         AlarmDB.initiate(this);
 
         rowItems = new ArrayList<ListRowItem>();
-        for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+        for (Alarm alarm : AlarmDB.getInstance().getAlarms()) {
+            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
             rowItems.add(item);
         }
 
@@ -81,8 +81,8 @@ public class MainActivity extends ActionBarActivity {
                 Log.d(TAG, "runListUpdate");
                 //reload content
                 rowItems.clear();
-                for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+                for (Alarm alarm : AlarmManagerHelper.getAlarms()) {
+                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
                     rowItems.add(item);
                 }
                 adapter.notifyDataSetChanged();
