@@ -31,7 +31,7 @@ public class EditAlarmActivity extends ActionBarActivity {
     private static final String TAG = "EditAlarmActivity";
     private static final CharSequence[] dayNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     private static final CharSequence[] snoozeTimes = new CharSequence[Alarm.Snooze.values().length];
-    public static final String DISABLE_SNOOZE = "No Snooze";
+    private static final String DISABLE_SNOOZE = "No Snooze";
 
     // Assorted class fields
     private Intent parentIntent;
