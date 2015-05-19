@@ -48,31 +48,37 @@ public class AlarmScreenActivity extends Activity {
         Log.d(TAG, "AlarmScreen started");
 
         //Ensure wakelock release
-        Runnable releaseWakelock = () -> {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        Runnable releaseWakelock = new Runnable() {
+            @Override
+            public void run() {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
-            if (lock != null && lock.isHeld()) {
-                lock.release();
-            }
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
+                if (lock != null && lock.isHeld()) {
+                    lock.release();
+                }
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
             }
         };
 
         // Set up stop button to cancel sound and exit the Alarm Screen.
         Button wakeUp = (Button) findViewById(R.id.alarm_stop_button);
-        wakeUp.setOnClickListener((View v) -> {
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
+        wakeUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+                finish();
             }
-            finish();
         });
 
         /* Set up snooze button to cancel sound and exit the Alarm Screen, and sheduele a new
@@ -81,17 +87,20 @@ public class AlarmScreenActivity extends Activity {
         final int snoozeTime = getIntent().getIntExtra("SNOOZE", 0);
         final Context c = this;
         Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
-        snooze.setOnClickListener((View v) -> {
-            if (snoozeTime > 0) {
-                AlarmHelper.setSnooze(c, snoozeTime);
-            }
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
-            }
+        snooze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (snoozeTime > 0) {
+                    AlarmHelper.setSnooze(c, snoozeTime);
+                }
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
 
-            finish();
+                finish();
+            }
         });
 
         // Disable snooze button if the time is 0 == no snooze.
