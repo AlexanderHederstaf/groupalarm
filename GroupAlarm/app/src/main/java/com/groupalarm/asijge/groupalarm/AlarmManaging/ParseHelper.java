@@ -25,6 +25,7 @@ public class ParseHelper {
     private static final String COLUMN_USERS = "Users";
 
     public static void createGroup(String name) {
+
         final ParseObject newGroup = new ParseObject(TABLE_GROUPS);
         newGroup.put(COLUMN_NAME, name);
 
@@ -43,13 +44,20 @@ public class ParseHelper {
         });
     }
 
-    public static List<String> getGroupsForUser() throws ParseException {
+    public static List<String> getGroupsForUser() {
 
         ParseUser user = ParseUser.getCurrentUser();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_GROUPS);
         query.whereEqualTo(COLUMN_USERS, user);
-        List<ParseObject> groupObjectList = query.find();
+
+        List<ParseObject> groupObjectList = null;
+
+        try {
+            groupObjectList = query.find();
+        } catch (ParseException e) {
+            Log.d(TAG, "getGroupsForUser struggle to query the Parse cloud.");
+        }
 
         List<String> groupStringList = new LinkedList<String>();
         for (ParseObject parseObject : groupObjectList) {
@@ -59,7 +67,7 @@ public class ParseHelper {
         return groupStringList;
     }
 
-    public static void addUserToGroup() {
+    public static void addUserToGroup(String user, String group) {
         // not implemented
     }
 
