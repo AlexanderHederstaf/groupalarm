@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/** CustomListViewAdapter provides the functionality of the Arrayadapter class as well
+/**
+ *  CustomListViewAdapter provides the functionality of the Arrayadapter class as well
  *  as extended functionality which allows it to contain the desired elements and layout
  *  of the listView used used in the MainActivity class.
  *
@@ -33,7 +34,8 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
     public static final String TAG = "CustomListViewAdapter";
     Context context;
 
-    /** Constructs a new CustomListViewAdapter containing elements based on those in
+    /**
+     *  Constructs a new CustomListViewAdapter containing elements based on those in
      *  the list (the "items" param), with a layout based on the resourceId.
      *
      * @param context           The Context in which it is used.
@@ -59,7 +61,8 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         Switch checkBox;
     }
 
-    /** Creates a View containing graphical objects that are based on data
+    /**
+     *  Creates a View containing graphical objects that are based on data
      *  from the List<ListRowItem> provided in the constructor.
      *
      * @param position          The position of the element which a new View has been requested for.
@@ -187,7 +190,8 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         notifyDataSetChanged();
     }
 
-    /** Creates and returns a String that is used in the toast message created in the
+    /**
+     *  Creates and returns a String that is used in the toast message created in the
      *  alarmCheckedListener method.
      *
      * @param cal       The Calendar object which is to be compared to the current time.
