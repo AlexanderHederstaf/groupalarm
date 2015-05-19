@@ -9,7 +9,6 @@ import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
@@ -25,35 +24,40 @@ public class RemoveActivity extends ActionBarActivity {
 
     private static final String TAG = "RemoveActivity";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove);
 
+        // Create List with current alarms from database
         rowItems = new ArrayList<ListRowItem>();
-        for (Alarm alarm : AlarmDB.getInstance().getAlarms()) {
+        for (Alarm alarm : AlarmHelper.getAlarms()) {
             ListRowItem item = new ListRowItem(0, alarm);
             rowItems.add(item);
         }
 
+        // Connect with UI ListView and assign appropriate adapter
         listView = (ListView) findViewById(R.id.removelist);
         adapter = new RemoveListViewAdapter(this, R.layout.activity_remove_item, rowItems);
         listView.setAdapter(adapter);
 
+/*
         runListUpdate = new Runnable() {
             public void run() {
                 Log.d(TAG, "runListUpdate");
                 //reload content
                 rowItems.clear();
-                for (Alarm alarm : AlarmDB.getInstance().getAlarms()) {
+                for (Alarm alarm : AlarmHelper.getAlarms()) {
                     ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
                     rowItems.add(item);
                 }
                 adapter.notifyDataSetChanged();
-                //listView.invalidateViews();
-                //listView.refreshDrawableState();
             }
         };
+*/
     }
 
 
@@ -81,8 +85,9 @@ public class RemoveActivity extends ActionBarActivity {
 
             for (int i = 0; i < adapter.itemsToRemove.length; i++) {
                 if (adapter.itemsToRemove[i] == true) {
-                    AlarmHelper.removeAlarm(i, this);
+                    AlarmHelper.removeAlarm(rowItems.get(i).getAlarm().getId(), this);
                 }
+                Log.d(TAG, "To remove " + i + ":" + adapter.itemsToRemove[i]);
             }
             setResult(RESULT_OK);
             finish();
