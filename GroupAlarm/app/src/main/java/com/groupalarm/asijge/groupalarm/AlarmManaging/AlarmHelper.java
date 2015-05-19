@@ -1,4 +1,4 @@
-package com.groupalarm.asijge.groupalarm.Alarm;
+package com.groupalarm.asijge.groupalarm.AlarmManaging;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -6,24 +6,19 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
 
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
  */
-public class AlarmManagerHelper extends BroadcastReceiver {
+public class AlarmHelper extends BroadcastReceiver {
 
-    private static final String TAG = "AlarmManagerHelper";
+    private static final String TAG = "AlarmHelper";
 
     private static Alarm snoozeAlarm;
 
@@ -100,6 +95,10 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                 setAlarm(context, getNextAlarmTime(a), createIntent(context, a));
             }
         }
+    }
+
+    public static int getNewId() {
+        return AlarmDB.getInstance().getNewId();
     }
 
     /**

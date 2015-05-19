@@ -1,4 +1,4 @@
-package com.groupalarm.asijge.groupalarm.Data;
+package com.groupalarm.asijge.groupalarm.AlarmManaging;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -7,15 +7,20 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
-import java.util.*;
-import java.sql.*;
+import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
+import java.util.*;
 
 
 /**
- * Created by GabriellaHallams on 2015-04-29.
- * Updated by IsabelAzcarate on 2015-05-06
- * http://www.techotopia.com/index.php/An_Android_Studio_SQLite_Database_Tutorial
+ * The AlarmDB is a database helper class for the database containing all alarms
+ * the app saves on the phone.
+ *
+ * The AlarmDB is a Singleton, first call initiate(Context) then it can be reached through
+ * getInstance().
+ *
+ * The database saves the Alarm objects and not the system service that actually sets alarms.
+ * @see Alarm
  */
 public class AlarmDB extends SQLiteOpenHelper {
 
@@ -25,31 +30,77 @@ public class AlarmDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "alarmDB.db";
     private static final String TABLE_ALARMS = "Alarms";
 
+    /**
+     * The database key for the column Id.
+     */
     public static final String COLUMN_ID = "_id";
+    /**
+     * The database key for the column Message.
+     */
     public static final String COLUMN_MESSAGE = "Message";
+    /**
+     * The database key for the column Time.
+     */
     public static final String COLUMN_TIME = "Time";
+    /**
+     * The database key for the column Status.
+     */
     public static final String COLUMN_STATUS = "Status";
-
-    public static final String COLUMN_MONDAY = "Monday";
-    public static final String COLUMN_TUESDAY = "Tuesday";
-    public static final String COLUMN_WEDNESDAY = "Wednesday";
-    public static final String COLUMN_THURSDAY = "Thursday";
-    public static final String COLUMN_FRIDAY = "Friday";
-    public static final String COLUMN_SATURDAY = "Saturday";
-    public static final String COLUMN_SUNDAY = "Sunday";
-
+    /**
+     * The database key for the column Snooze.
+     */
     public static final String COLUMN_SNOOZE = "Snooze";
 
-    public boolean[] tmp;
+    /**
+     * The database key for the column Monday.
+     */
+    public static final String COLUMN_MONDAY = "Monday";
+    /**
+     * The database key for the column Tuesday.
+     */
+    public static final String COLUMN_TUESDAY = "Tuesday";
+    /**
+     * The database key for the column Wednesday.
+     */
+    public static final String COLUMN_WEDNESDAY = "Wednesday";
+    /**
+     * The database key for the column Thursday.
+     */
+    public static final String COLUMN_THURSDAY = "Thursday";
+    /**
+     * The database key for the column Friday.
+     */
+    public static final String COLUMN_FRIDAY = "Friday";
+    /**
+     * The database key for the column Saturday.
+     */
+    public static final String COLUMN_SATURDAY = "Saturday";
+    /**
+     * The database key for the column Sunday.
+     */
+    public static final String COLUMN_SUNDAY = "Sunday";
 
+    /**
+     * Singleton instance of the AlarmDB.
+     */
     private static AlarmDB instance;
+
+    /**
+     * Initiates the database to a context.
+     * @param context The Context of the application.
+     */
     public static void initiate(Context context) {
         if (instance == null) {
             instance = new AlarmDB(context);
         }
     }
 
-    public static AlarmDB getInstance() {
+    /**
+     * Provides an instance of the database helper AlarmDB.
+     *
+     * @return The instance object of the AlarmDB.
+     */
+    protected static AlarmDB getInstance() {
         if (instance == null) {
             throw new InstantiationError("Not instantiated, call initiate().");
         }
@@ -57,8 +108,10 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * A constructor.
-     * @param context
+     * A private constructor creating the database helper by callin
+     * SQLiteOpenHelper's constructor.
+     *
+     * @param context The Application Context.
      */
     private AlarmDB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -66,11 +119,13 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * Creates a new Id that does not collide with other
-     * elements of the database.
+     * Creates a new Id that does not collide with other elements of the database.
+     * The returned Id be a higher number than any other Id.
+     *
+     * @assume There are less than INT_MAX items in the database.
      * @return Integer representing the new Id.
      */
-    public int getNewId() {
+    protected int getNewId() {
         String GET_ID_ALARMS = "SELECT max(" + COLUMN_ID + ") FROM " + TABLE_ALARMS;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(GET_ID_ALARMS, null);
@@ -87,11 +142,11 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * A method for saving this Alarm in the database.
+     * Add a new Alarm to the database.
      * @param alarm An alarm to add to the database.
      */
-    public void addAlarm(Alarm alarm) {
-        tmp = alarm.getDays();
+    protected void addAlarm(Alarm alarm) {
+        boolean[] tmp = alarm.getDays();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, alarm.getId());
         values.put(COLUMN_MESSAGE, alarm.getMessage());
@@ -114,10 +169,12 @@ public class AlarmDB extends SQLiteOpenHelper {
 
     /**
      * Sets the Alarm with ID = Id to active in the database.
+     * Any UI or rescheduling of alarms must be done separately
+     *
      * @param ID The unique Id of the alarm.
      * @param active The status the alarm should be set to.
      */
-    public void setActive(int ID, boolean active) {
+    protected void setActive(int ID, boolean active) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_STATUS, active);
 
@@ -129,8 +186,9 @@ public class AlarmDB extends SQLiteOpenHelper {
     /**
      * Returns all the Alarms in the database as a list.
      *
+     * Modifying the alarms in this list does not change the data of the database.
      */
-    public List<Alarm> getAlarms() {
+    protected List<Alarm> getAlarms() {
         List<Alarm> alarmList = new LinkedList<Alarm>();
         String query = "SELECT "+  "*" + " FROM " + TABLE_ALARMS;
 
@@ -149,10 +207,14 @@ public class AlarmDB extends SQLiteOpenHelper {
         db.close();
         return alarmList;
     }
+
     /**
-     * Get the Alarm object for a given ID
+     * Finds the Alarm with the given ID, if it exists, and return the Alarm.
+     *
+     * @param ID The ID of the alarm to find.
+     * @return The Alarm with id ID, if found. Else, null.
      */
-    public Alarm getAlarm(int ID) {
+    protected Alarm getAlarm(int ID) {
         String query = "SELECT * FROM " + TABLE_ALARMS + " WHERE " + COLUMN_ID + "=" + ID;
 
         SQLiteDatabase db = getReadableDatabase();
@@ -169,6 +231,7 @@ public class AlarmDB extends SQLiteOpenHelper {
         return alarm;
     }
 
+    // Provides the alarms from a cursor from the database.
     private Alarm getAlarmFromCursor(Cursor cursor) {
         Alarm alarm = new Alarm(cursor.getInt(0));
         alarm.setMessage(cursor.getString(1));
@@ -207,11 +270,12 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes an Alarm from the Alarm database.
-     * @param id The Alarms unique ID.
-     * @return boolean true if the deletion succeeded and false if the deletion failed.
+     * Deletes the Alarm with id ID from the Alarm database. If the ID does not exists
+     * this method does nothing.
+     *
+     * @param id The unique ID of the Alarm.
      */
-    public void deleteAlarm(int id) {
+    protected void deleteAlarm(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_ALARMS, COLUMN_ID + " = ?", new String[]{"" + id});
@@ -219,12 +283,14 @@ public class AlarmDB extends SQLiteOpenHelper {
         db.close();
     }
 
-    /**@Override
-     * Creates the Table in the Alarm database.
+    /**
+     * {@inheritDoc}
+     *
+     * Creates the Alarms Table in the database.
      * @param db A database to which the Table is added.
      */
+    @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, "onCreate for dbase");
         String CREATE_ALARM_TABLE = "CREATE TABLE " +
                 TABLE_ALARMS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_MESSAGE
@@ -236,15 +302,15 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * Upgrades the Table in the Alarm database.
-     * @param db A database to which the Table is added.
-     * @param oldVersion The old Tables.
-     * @param newVersion The new Tables replacing the old ones.
+     * Drops the Alarms table in the Alarm database, and calls onCreate().
+     * 
+     * @param db The database that has been upgraded.
+     * @param oldVersion The old Version number.
+     * @param newVersion The new Version number.
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion,
                           int newVersion) {
-        Log.d(TAG, "onUpgrade for dbase");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALARMS);
         onCreate(db);
     }

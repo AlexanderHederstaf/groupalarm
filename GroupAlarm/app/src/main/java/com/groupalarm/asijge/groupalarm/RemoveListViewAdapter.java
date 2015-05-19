@@ -2,7 +2,6 @@ package com.groupalarm.asijge.groupalarm;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +12,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -105,7 +102,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
                     Log.d(TAG, i + ":" + itemsToRemove[i]);
                 }
 
-                AlarmManagerHelper.setAlarms(context);
+                AlarmHelper.setAlarms(context);
                 reDrawUi();
             }
         };

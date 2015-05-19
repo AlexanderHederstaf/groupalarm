@@ -1,9 +1,11 @@
-package com.groupalarm.asijge.groupalarm.Alarm;
+package com.groupalarm.asijge.groupalarm.AlarmManaging;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.groupalarm.asijge.groupalarm.AlarmScreenActivity;
 
 /**
  * This class is a service that starts when an alarm goes off.
@@ -25,7 +27,6 @@ public class AlarmService extends Service {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
-        //AlarmManagerHelper.setAlarms(this);
 
         return super.onStartCommand(intent, flags, startId);
     }

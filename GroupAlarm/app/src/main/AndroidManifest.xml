@@ -32,18 +32,18 @@
             android:label="@string/title_activity_remove" >
         </activity>
 
-        <receiver android:name=".Alarm.AlarmManagerHelper" >
+        <receiver android:name=".AlarmManaging.AlarmHelper" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".Alarm.AlarmService"
+            android:name=".AlarmManaging.AlarmService"
             android:enabled="true" />
 
         <activity
-            android:name=".Alarm.AlarmScreenActivity"
+            android:name=".AlarmScreenActivity"
             android:label="@string/title_activity_alarm_screen"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>

@@ -1,12 +1,10 @@
-package com.groupalarm.asijge.groupalarm.Alarm;
+package com.groupalarm.asijge.groupalarm;
 
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,8 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.R;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 
 
 //TODO override the back button
@@ -80,14 +77,14 @@ public class AlarmScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (snoozeTime > 0) {
-                    AlarmManagerHelper.setSnooze(c, snoozeTime);
+                    AlarmHelper.setSnooze(c, snoozeTime);
                 }
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                //AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
+
                 finish();
             }
         });
