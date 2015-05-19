@@ -20,9 +20,11 @@ public class ParseHelper {
     private static final String TAG = "ParseHelper";
 
     private static final String TABLE_GROUPS = "Groups";
+    private static final String TABLE_USER = "User";
 
     private static final String COLUMN_NAME = "Name";
     private static final String COLUMN_USERS = "Users";
+    private static final String COLUMN_USERNAME = "username";
 
     public static void createGroup(String name) {
 
@@ -57,6 +59,7 @@ public class ParseHelper {
             groupObjectList = query.find();
         } catch (ParseException e) {
             Log.d(TAG, "getGroupsForUser struggle to query the Parse cloud.");
+            e.printStackTrace();
         }
 
         List<String> groupStringList = new LinkedList<String>();
@@ -68,7 +71,42 @@ public class ParseHelper {
     }
 
     public static void addUserToGroup(String user, String group) {
-        // not implemented
+        ParseUser userObject = null;
+        ParseObject groupObject = null;
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo(COLUMN_USERNAME, user);
+        try {
+            userObject = query.getFirst();
+        } catch (ParseException e) {
+            Log.d(TAG, "addUserToGroup struggle to query the Parse cloud for user.");
+            e.printStackTrace();
+        }
+
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery(TABLE_GROUPS);
+        query1.whereEqualTo(COLUMN_NAME, group);
+        try {
+            groupObject = query1.getFirst();
+        } catch (ParseException e) {
+            Log.d(TAG, "addUserToGroup struggle to query the Parse cloud for group.");
+            e.printStackTrace();
+        }
+
+        if (groupObject != null && userObject != null) {
+            ParseRelation<ParseUser> relation = groupObject.getRelation(COLUMN_USERS);
+            relation.add(userObject);
+
+            groupObject.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d(TAG, "User saveInBackground to group");
+                    } else {
+                        Log.d(TAG, "Could not saveInBackground User to group");
+                    }
+                }
+            });
+        }
+
     }
 
     public static void addNewAlarmToGroup() {
