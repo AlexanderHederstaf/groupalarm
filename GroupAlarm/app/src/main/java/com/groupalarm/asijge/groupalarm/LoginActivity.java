@@ -1,3 +1,13 @@
+/**
+ * LoginActivity.java
+ *
+ * A login screen that offers login for login.
+ *
+ * @author asijge
+ * @copyright (c) 2015, asijge
+ *
+ */
+
 package com.groupalarm.asijge.groupalarm;
 
 import android.animation.Animator;
@@ -5,7 +15,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -31,9 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     /**
@@ -43,9 +49,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+
+    // Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -54,6 +59,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mProgressView;
     private View mLoginFormView;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,18 +153,30 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * Check if email address is valid.
+     *
+     * @param email, the email string to check
+     * @return true if string contains a @ char, false otherwise
+     */
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
+    /**
+     * Check if password is valid.
+     *
+     * @param password, the password string to check
+     * @return true if length of password is at least 4 characters, false otherwise
+     */
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
     /**
      * Shows the progress UI and hides the login form.
+     *
+     * @param show, show the progress bar if true, otherwise animate gone sequence.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
@@ -191,6 +211,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -208,8 +231,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        // Set up autocomplete list for email addresses
         List<String> emails = new ArrayList<String>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -222,10 +249,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
+        // Required for the implementation of the LoaderCallbacks<Cursor> interface
+        // Does nothing at moment
     }
 
+    /**
+     * Contacts user profile query interface.
+     */
     private interface ProfileQuery {
+        // Extract set of columns from the profile query results
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
                 ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
@@ -235,7 +267,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         int IS_PRIMARY = 1;
     }
 
-
+    /**
+     * Add an email address collection to the email UI element.
+     * For auto-complete functionality.
+     *
+     * @param emailAddressCollection
+     */
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -259,9 +296,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mPassword = password;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
             try {
                 // Simulate network access.
@@ -278,15 +317,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 }
             }
 
-            // TODO: register the new account here.
             return false;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
 
+            // After asynchronus task has been executed, launch MainActivity if successful
             if (success) {
                 finish();
                 Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
@@ -297,6 +339,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onCancelled() {
             mAuthTask = null;

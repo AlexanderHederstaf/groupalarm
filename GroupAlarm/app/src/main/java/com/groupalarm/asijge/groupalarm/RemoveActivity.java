@@ -1,18 +1,15 @@
 package com.groupalarm.asijge.groupalarm;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
@@ -84,7 +81,7 @@ public class RemoveActivity extends ActionBarActivity {
 
             for (int i = 0; i < adapter.itemsToRemove.length; i++) {
                 if (adapter.itemsToRemove[i] == true) {
-                    AlarmManagerHelper.removeAlarm(i, this);
+                    AlarmHelper.removeAlarm(i, this);
                 }
             }
             setResult(RESULT_OK);

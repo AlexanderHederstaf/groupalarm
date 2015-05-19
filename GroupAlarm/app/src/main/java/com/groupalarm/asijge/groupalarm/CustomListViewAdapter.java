@@ -3,25 +3,19 @@ package com.groupalarm.asijge.groupalarm;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.nfc.Tag;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
@@ -169,18 +163,18 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
                     // The purpose of the if(!alarm.getStatus()) check is to make sure that toasts are
                     // only created for the alarm that was actually clicked
                     if(!alarm.getStatus()) {
-                        AlarmManagerHelper.setActive(alarm.getId(), true);
+                        AlarmHelper.setActive(alarm.getId(), true);
                         alarm.setActive(true);
 
                         // Creates and displays a toast message every time an alarm is activated
-                        Toast toast = Toast.makeText(context, resolveToastMessage(AlarmManagerHelper.getNextAlarmTime(alarm)),Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, resolveToastMessage(AlarmHelper.getNextAlarmTime(alarm)),Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 } else {
-                    AlarmManagerHelper.setActive(alarm.getId(), false);
+                    AlarmHelper.setActive(alarm.getId(), false);
                     alarm.setActive(false);
                 }
-                AlarmManagerHelper.setAlarms(context);
+                AlarmHelper.setAlarms(context);
                 reDrawUi();
             }
         };

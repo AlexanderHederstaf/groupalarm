@@ -1,3 +1,11 @@
+/**
+ * EditAlarmActivity.java
+ *
+ * @author asijge
+ * @copyright (c) 2015, asijge
+ *
+ */
+
 package com.groupalarm.asijge.groupalarm;
 
 import android.app.AlertDialog;
@@ -23,7 +31,7 @@ public class EditAlarmActivity extends ActionBarActivity {
     private static final String TAG = "EditAlarmActivity";
     private static final CharSequence[] dayNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     private static final CharSequence[] snoozeTimes = new CharSequence[Alarm.Snooze.values().length];
-    public static final String DISABLE_SNOOZE = "No Snooze";
+    private static final String DISABLE_SNOOZE = "No Snooze";
 
     // Assorted class fields
     private Intent parentIntent;
@@ -47,15 +55,17 @@ public class EditAlarmActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
+        // Get intent from parent activity and deSerialize Alarm object
         parentIntent = getIntent();
         newAlarm = (Alarm) parentIntent.getSerializableExtra("alarm");
 
+        // Connect UI elements with class
         alarmMessage = (EditText) findViewById(R.id.editTextAlarmMessage);
-
         alarmTime = (TextView) findViewById(R.id.textTime);
         alarmDays = (TextView) findViewById(R.id.textAlarmDay);
         snoozeInterval = (TextView) findViewById(R.id.textSnoozeInterval);
 
+        // Run UI update
         updateAlarmTimeTextView();
         updateSnoozeIntervalTextView();
         alarmMessage.setText(newAlarm.getMessage());
@@ -66,6 +76,7 @@ public class EditAlarmActivity extends ActionBarActivity {
                 anyTrue = anyTrue || newAlarm.getDays()[i];
             }
             if (anyTrue) {
+                // Update UI with any true alarm days
                 updateAlarmDayTextView();
             }
         }
@@ -96,6 +107,7 @@ public class EditAlarmActivity extends ActionBarActivity {
      */
     private void showTimePickerDialog() {
 
+        // Set time picker default values
         int minute = newAlarm != null ? newAlarm.getMinute() : 0;
         int hour = newAlarm != null ? newAlarm.getHour() : 9;
 
@@ -179,7 +191,7 @@ public class EditAlarmActivity extends ActionBarActivity {
     }
 
     /**
-     * Updates the Snooze interval text view with data from the newAlarm field
+     * Updates the Snooze interval text view with data from newAlarm
      */
     private void updateSnoozeIntervalTextView() {
 
@@ -252,6 +264,9 @@ public class EditAlarmActivity extends ActionBarActivity {
         alarmDays.setText(output);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -259,6 +274,9 @@ public class EditAlarmActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

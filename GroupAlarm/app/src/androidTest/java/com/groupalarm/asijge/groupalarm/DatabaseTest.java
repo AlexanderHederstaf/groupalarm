@@ -1,19 +1,14 @@
 package com.groupalarm.asijge.groupalarm;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.test.ActivityTestCase;
 import android.test.AndroidTestCase;
-import android.test.ApplicationTestCase;
-import android.test.InstrumentationTestCase;
 import android.test.IsolatedContext;
 import android.test.RenamingDelegatingContext;
 import android.test.mock.MockContentResolver;
 import android.test.mock.MockContext;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 
 import java.sql.SQLException;
 
