@@ -2,10 +2,6 @@ package com.groupalarm.asijge.groupalarm.AlarmManaging;
 
 import android.util.Log;
 
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
-import com.groupalarm.asijge.groupalarm.R;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
