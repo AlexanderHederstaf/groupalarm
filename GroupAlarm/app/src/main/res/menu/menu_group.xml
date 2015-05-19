@@ -3,14 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.groupalarm.asijge.groupalarm.GroupActivity">
 
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-
     <item
         android:id="@+id/action_new"
-        android:orderInCategory="200"
-        android:icon="@drawable/ic_action_new"
+        android:icon="@drawable/ic_action_add_group"
         android:title="New Alarm"
         app:showAsAction="always"/>
 
 </menu>
+

@@ -57,7 +57,7 @@ public class GroupActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        getSupportActionBar().setTitle("Cloud Alarms");
+        getSupportActionBar().setTitle("Groups");
 
         rowItems = new ArrayList<ListRowItem>();
         listView = (ListView) findViewById(R.id.group_alarmlist);
