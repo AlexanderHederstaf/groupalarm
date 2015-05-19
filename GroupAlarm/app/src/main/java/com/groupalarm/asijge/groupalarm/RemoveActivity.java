@@ -1,16 +1,24 @@
+/**
+ * RemoveActivity.java
+ *
+ * Activity for removing alarms from the database in a listview configuration.
+ * 
+ * @author asijge
+ * @copyright (c) 2015, asijge
+ *
+ */
+
 package com.groupalarm.asijge.groupalarm;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
+import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
@@ -22,39 +30,28 @@ public class RemoveActivity extends ActionBarActivity {
     private ListView listView;
     private List<ListRowItem> rowItems;
     private RemoveListViewAdapter adapter;
-    private Runnable runListUpdate;
 
     private static final String TAG = "RemoveActivity";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove);
 
+        // Create List with current alarms from database
         rowItems = new ArrayList<ListRowItem>();
-        for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-            ListRowItem item = new ListRowItem(0, AlarmManagerHelper.getAlarms().get(i));
+        for (Alarm alarm : AlarmHelper.getAlarms()) {
+            ListRowItem item = new ListRowItem(0, alarm);
             rowItems.add(item);
         }
 
+        // Connect with UI ListView and assign appropriate adapter
         listView = (ListView) findViewById(R.id.removelist);
         adapter = new RemoveListViewAdapter(this, R.layout.activity_remove_item, rowItems);
         listView.setAdapter(adapter);
-
-        runListUpdate = new Runnable() {
-            public void run() {
-                Log.d(TAG, "runListUpdate");
-                //reload content
-                rowItems.clear();
-                for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
-                    rowItems.add(item);
-                }
-                adapter.notifyDataSetChanged();
-                //listView.invalidateViews();
-                //listView.refreshDrawableState();
-            }
-        };
     }
 
 
@@ -82,16 +79,15 @@ public class RemoveActivity extends ActionBarActivity {
 
             for (int i = 0; i < adapter.itemsToRemove.length; i++) {
                 if (adapter.itemsToRemove[i] == true) {
-                    AlarmManagerHelper.removeAlarm(i, this);
+                    AlarmHelper.removeAlarm(rowItems.get(i).getAlarm().getId(), this);
                 }
+                Log.d(TAG, "To remove " + i + ":" + adapter.itemsToRemove[i]);
             }
             setResult(RESULT_OK);
             finish();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-
     }
 }
 

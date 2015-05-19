@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Sebastian on 2015-04-21.
- * Edited by Gabriella on 2015-04-21.
- *
- * This class contains the data relevant for setting Alarms.
+ * Alarm object contains the data relevant for setting alarms and displaying relevant information
+ * when they go off.
  */
 public class Alarm implements Serializable {
     private int hour;
@@ -23,7 +21,6 @@ public class Alarm implements Serializable {
     private Snooze snoozeInterval;
 
     private final int uniqueId;
-    public static final int NULL_ID = -1;
 
     /**
      * Enum representing the intervals to snooze.
@@ -35,7 +32,7 @@ public class Alarm implements Serializable {
         FIFTEEN(15);
 
         private final int value;
-        private Snooze(int val) {
+        Snooze(int val) {
             this.value = val;
         }
         public final int getValue() {
@@ -45,13 +42,13 @@ public class Alarm implements Serializable {
 
     /**
      * An empty constructor. This constructor sets the Alarm to default values.
-     * time = 0,0
+     * time = 00 : 00
      * message = ""
      * active = false
      * day = empty
+     * @param Id The unique Id provided to represent this Alarm.
      */
     public Alarm(int Id) {
-    //
         hour = 0;
         minute = 0;
         message = "";
@@ -61,9 +58,10 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * A method for setting this Alarm to this chosen time.
-     * @param hour An int representing the hour
-     * @param minute An int representing the minute
+     * Sets the time of day the Alarm will go off in Hour:Minute accuracy.
+     *
+     * @param hour An int representing the hour in a 24 hour format.
+     * @param minute An int representing the minute of the hour.
      */
      public void setTime(int hour, int minute) throws IllegalArgumentException {
          if (hour < 0 || hour > 23) {
@@ -77,7 +75,8 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * A method for setting the message shown when this Alarm goes off.
+     * Sets the message of the Alarm.
+     * This message is shown in the list of Alarms or when the Alarm goes off.
      * @param message A string message.
      */
     public void setMessage(String message) {
@@ -127,8 +126,8 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * A method for getting access to the message which is to be shown when the Alarm is set to ring.
-     * @return The message to be shown when this Alarm rings.
+     * A method for getting access to the message of the Alarm.
+     * @return The message of the Alarm.
      */
     public String getMessage() {
         return message;
@@ -176,12 +175,17 @@ public class Alarm implements Serializable {
         return activeDays;  // safe copy with only active days, i.e. days where the alarm is set.
     }
 
+    /**
+     * Gives the representation of an Alarm as the hour and minute it is set to go off.
+     *
+     * @return The time of the Alarm on the HH:MM format.
+     */
     @Override
     public String toString() {
         int minInt = String.valueOf(minute).length();
         int hourInt = String.valueOf(hour).length();
 
-        if (hourInt == 1 && minInt ==1) {
+        if (hourInt == 1 && minInt == 1) {
             return "0" + hour + " : 0" + minute;
         }
         if (hourInt == 1) {
@@ -201,7 +205,7 @@ public class Alarm implements Serializable {
 
     /**
      * Get the unique ID representation, i.e. hashCode, of this Alarm.
-     * @return An int representing the unigue ID and hashCode for this Alarm.
+     * @return An int representing the unique ID and hashCode for this Alarm.
      */
     @Override
     public int hashCode() {
@@ -209,7 +213,9 @@ public class Alarm implements Serializable {
     }
 
     /**
-     * Compare the alarms to one another. One alarm is equal to another if they are exactly the same.
+     * Compare the alarms to one another. One alarm is equal to another if they are the same Alarm.
+     * As there can be duplicate Alarm objects of the same Alarm they are identified by their unique ID.
+     *
      * @param other An Object to compare with.
      * @return A boolean representing if the Alarms are the same (true) or not (false).
      */
@@ -223,6 +229,5 @@ public class Alarm implements Serializable {
             return false;
         Alarm otherAlarm = (Alarm) other;
         return uniqueId == otherAlarm.uniqueId;
-        //(other instanceof Alarm) ? (this.uniqueId == ((Alarm)other).uniqueId) : false;
     }
 }

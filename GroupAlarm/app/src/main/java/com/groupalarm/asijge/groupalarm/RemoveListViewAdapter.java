@@ -1,8 +1,19 @@
+/**
+ * RemoveListViewAdapter.java
+ *
+ * Provides the functionality of the Arrayadapter class as well
+ * as extended functionality which allows it to contain the desired elements and layout
+ * of the listView used used in the RemoveActivity class.
+ *
+ * @author asijge
+ * @copyright (c) 2015, asijge
+ *
+ */
+
 package com.groupalarm.asijge.groupalarm;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,25 +21,27 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Emma on 2015-05-06.
- */
+
 public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
 
-    public static final String TAG = "RemoveListViewAdapter";
-    Context context;
+    private static final String TAG = "RemoveListViewAdapter";
+    private Context context;
     public boolean[] itemsToRemove;
 
+    /** Constructs a new CustomListViewAdapter containing elements based on those in
+     *  the list (the "items" param), with a layout based on the resourceId.
+     *
+     * @param context           The Context in which it is used.
+     * @param resourceId        The ID of the XML resource that is to be used.
+     * @param items             A List containing ListRowItems, which in turn contain the
+     *                          data relevant for each item that is to be presented.
+     */
     public RemoveListViewAdapter(Context context, int resourceId,
                                  List<ListRowItem> items) {
         super(context, resourceId, items);
@@ -37,20 +50,35 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
         itemsToRemove = new boolean[arraySize];
     }
 
+    /**
+     * Private class containing the elements required to construct the View in
+     * the getView method.
+     */
     private class ViewHolder {
-        ImageView imageView;
         TextView time;
         TextView eventDesc;
         CheckBox checkBox;
     }
 
+    /** Creates a View containing graphical objects that are based on data
+     *  from the List<ListRowItem> provided in the constructor.
+     *
+     * @param position          The position of the element which a new View has been requested for.
+     * @param convertView       The instructions for how to construct the new View, used to recycle
+     *                          views as to not have too many running at once.
+     * @param parent            The object which contains this view, in our case a ListView.
+     *
+     * @return                  Returns the updated View for the desired element.
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
+        // The rowItem located on the "position" provided as a parameter.
         ListRowItem rowItem = getItem(position);
         ViewHolder holder = null;
 
         Log.d(TAG, "GetView for pos: " + position);
 
-
+        // If convertView is null we need to construct the layout of our holder that is to be used
+        // in the View.
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             Log.d(TAG, "creating new row for" + position);
@@ -61,32 +89,28 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
             holder.checkBox = (CheckBox) convertView.findViewById(R.id.remove_checkbox);
             holder.checkBox.setOnCheckedChangeListener(removeAlarmCheckedListener(position));
             convertView.setTag(holder);
+
+        // If convertView is not null we can reuse information provided in it for us to construct
+        // the new/updated View.
         } else {
             holder = (ViewHolder) convertView.getTag();
             holder.checkBox.setOnCheckedChangeListener(removeAlarmCheckedListener(position));
         }
 
+        // Provide information and set states based on the relevant alarm.
         holder.time.setText(rowItem.getAlarm().toString());
         holder.eventDesc.setText(rowItem.getAlarm().getMessage());
-        //holder.eventDesc.setText(rowItem.getAlarm().getMessage());
-        //holder.imageView.setImageResource(R.drawable.ic_alarm_image);
-        //holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
 
-       /* if(rowItem.getAlarm().getStatus()) {
-            holder.time.setTextColor(Color.BLACK);
-            holder.imageView.setAlpha(1.0f);
-        } else {
-            holder.time.setTextColor(Color.GRAY);
-            holder.imageView.setAlpha(0.5f);
-        }
-*/
         return convertView;
     }
 
     /**
-     * handle check box event
-     * @param postition
-     * @return
+     * Creates and returns a OnCheckedChangeListener with the desired functionality for
+     * a button that is to be used in the View created in the getView method.
+     *
+     * @param postition The position of the object tick box change.
+     *
+     * @return          Returns a CompoundButton.OnCheckedChangeListener
      */
     private CompoundButton.OnCheckedChangeListener removeAlarmCheckedListener(final int postition) {
         return new CompoundButton.OnCheckedChangeListener() {
@@ -104,13 +128,15 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
                 for (int i = 0; i < itemsToRemove.length; i++) {
                     Log.d(TAG, i + ":" + itemsToRemove[i]);
                 }
-
-                AlarmManagerHelper.setAlarms(context);
+                
                 reDrawUi();
             }
         };
     }
 
+    /**
+     * Notifies that some data has been changed and that the View needs to be redrawn.
+     */
     private void reDrawUi() {
         this.notifyDataSetChanged();
     }

@@ -1,3 +1,13 @@
+/**
+ * LoginActivity.java
+ *
+ * A login screen that offers login for login.
+ *
+ * @author asijge
+ * @copyright (c) 2015, asijge
+ *
+ */
+
 package com.groupalarm.asijge.groupalarm;
 
 import android.animation.Animator;
@@ -40,9 +50,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private static final String TAG = "LoginActivity";
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+    // Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
     private UserRegistrationTask mRegTask = null;
 
@@ -54,6 +62,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private TextView mMessageBox;
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,18 +174,30 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * Check if email address is valid.
+     *
+     * @param email, the email string to check
+     * @return true if string contains a @ char, false otherwise
+     */
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.length() > 2;
+        return email.contains("@");
     }
 
+    /**
+     * Check if password is valid.
+     *
+     * @param password, the password string to check
+     * @return true if length of password is at least 4 characters, false otherwise
+     */
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
     /**
      * Shows the progress UI and hides the login form.
+     *
+     * @param show, show the progress bar if true, otherwise animate gone sequence.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
@@ -209,6 +232,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -226,8 +252,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        // Set up autocomplete list for email addresses
         List<String> emails = new ArrayList<String>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -240,20 +270,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
+        // Required for the implementation of the LoaderCallbacks<Cursor> interface
+        // Does nothing at moment
     }
 
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
-
+    /**
+     * Contacts user profile query interface.
+     */
     private interface ProfileQuery {
+        // Extract set of columns from the profile query results
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
                 ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
@@ -261,6 +286,21 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    /**
+     * Add an email address collection to the email UI element.
+     * For auto-complete functionality.
+     *
+     * @param emailAddressCollection
+     */
+    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(LoginActivity.this,
+                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+
+        mEmailView.setAdapter(adapter);
     }
 
     /**
@@ -278,8 +318,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             Log.d(TAG, mEmail + mPassword);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected Boolean doInBackground(Void... params) {
+
             try {
                 ParseUser.logIn(mEmail, mPassword);
                 return true;
@@ -289,11 +333,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
 
+            // After asynchronus task has been executed, launch MainActivity if successful
             if (success) {
                 finish();
                 Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
@@ -304,6 +352,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onCancelled() {
             mAuthTask = null;

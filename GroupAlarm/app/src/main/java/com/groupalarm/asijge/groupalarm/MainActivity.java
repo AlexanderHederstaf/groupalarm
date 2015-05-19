@@ -1,37 +1,24 @@
 package com.groupalarm.asijge.groupalarm;
 
-import android.app.LauncherActivity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
-import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -48,6 +35,9 @@ public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +46,8 @@ public class MainActivity extends ActionBarActivity {
         AlarmDB.initiate(this);
 
         rowItems = new ArrayList<ListRowItem>();
-        for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+        for (Alarm alarm : AlarmHelper.getAlarms()) {
+            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
             rowItems.add(item);
         }
 
@@ -81,8 +71,8 @@ public class MainActivity extends ActionBarActivity {
                 Log.d(TAG, "runListUpdate");
                 //reload content
                 rowItems.clear();
-                for (int i = 0; i < AlarmManagerHelper.getAlarms().size(); i++) {
-                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, AlarmManagerHelper.getAlarms().get(i));
+                for (Alarm alarm : AlarmHelper.getAlarms()) {
+                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
                     rowItems.add(item);
                 }
                 adapter.notifyDataSetChanged();
@@ -93,6 +83,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -100,6 +93,9 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -118,7 +114,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (id == R.id.action_new) {
             // Start the editor activity with a new Alarm.
-            Alarm newAlarm = new Alarm(AlarmDB.getInstance().getNewId());
+            Alarm newAlarm = new Alarm(AlarmHelper.getNewId());
             // Set Alarm default values
             Calendar tmp = Calendar.getInstance();
 
@@ -140,8 +136,6 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_delete) {
             // Start the remove activity.
             Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);
-            //AlarmManagerHelper.cancelAlarms(this);
-           // Log.d(TAG, "Alarms cancelled");
             startActivityForResult(removeAlarmActivity, REMOVE_ALARM_CODE);
             return true;
         }
@@ -149,6 +143,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -156,9 +153,9 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == EDIT_ALARM_CODE) {
             if (resultCode == RESULT_OK) {
                 Alarm editedAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
-                AlarmManagerHelper.removeAlarm(editedAlarm.getId(), this);
-                AlarmManagerHelper.addAlarm(editedAlarm);
-                AlarmManagerHelper.setAlarms(this);
+                AlarmHelper.removeAlarm(editedAlarm.getId(), this);
+                AlarmHelper.addAlarm(editedAlarm);
+                AlarmHelper.setAlarms(this);
                 runOnUiThread(runListUpdate);
             }
         }
@@ -167,9 +164,9 @@ public class MainActivity extends ActionBarActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
-                AlarmManagerHelper.addAlarm(updatedNewAlarm);
+                AlarmHelper.addAlarm(updatedNewAlarm);
                 Log.d(TAG, "Alarm added");
-                AlarmManagerHelper.setAlarms(this);
+                AlarmHelper.setAlarms(this);
                 Log.d(TAG, "Alarms set");
                 runOnUiThread(runListUpdate); // update list gui
             }
@@ -185,6 +182,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (v.getId() == R.id.alarmlist) {
@@ -198,6 +198,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -208,7 +211,7 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         else if (item.getTitle() == "Delete") {
-            AlarmManagerHelper.removeAlarm(alarmId, this);
+            AlarmHelper.removeAlarm(alarmId, this);
 
             runOnUiThread(runListUpdate);
             return true;
@@ -216,8 +219,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onContextItemSelected(item);
     }
 
+    // Helper function to edit alarms. Start the activity for the Alarm data from ID alarmId.
     private void editAlarm(int alarmId) {
-        Alarm alarm = AlarmManagerHelper.getAlarm(alarmId);
+        Alarm alarm = AlarmHelper.getAlarm(alarmId);
 
         Intent intent = new Intent(this, EditAlarmActivity.class);
         intent.putExtra("alarm", alarm);

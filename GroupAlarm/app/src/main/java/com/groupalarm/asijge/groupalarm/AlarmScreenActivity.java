@@ -1,12 +1,10 @@
-package com.groupalarm.asijge.groupalarm.Alarm;
+package com.groupalarm.asijge.groupalarm;
 
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,19 +14,29 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.R;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 
 
 //TODO override the back button
 //TODO full screen activity
 public class AlarmScreenActivity extends Activity {
 
+    /**
+     * Debug TAG for the AlarmScreenActivity.
+     */
     public static final String TAG = "AlarmScreenActivity";
+
+    /**
+     * Default timeout for the Alarm ringing, if no response within one minute
+     * the wakelock is released.
+     */
     public static final int WAKELOCK_TIMEOUT = 60 * 1000; // 1 minute
     private PowerManager.WakeLock lock;
     private MediaPlayer mediaPlayer;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +49,6 @@ public class AlarmScreenActivity extends Activity {
 
         //Ensure wakelock release
         Runnable releaseWakelock = new Runnable() {
-
             @Override
             public void run() {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
@@ -60,6 +67,7 @@ public class AlarmScreenActivity extends Activity {
             }
         };
 
+        // Set up stop button to cancel sound and exit the Alarm Screen.
         Button wakeUp = (Button) findViewById(R.id.alarm_stop_button);
         wakeUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,11 +77,13 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
                 finish();
             }
         });
 
+        /* Set up snooze button to cancel sound and exit the Alarm Screen, and sheduele a new
+         * snooze alarm.
+         */
         final int snoozeTime = getIntent().getIntExtra("SNOOZE", 0);
         final Context c = this;
         Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
@@ -81,17 +91,19 @@ public class AlarmScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (snoozeTime > 0) {
-                    AlarmManagerHelper.setSnooze(c, snoozeTime);
+                    AlarmHelper.setSnooze(c, snoozeTime);
                 }
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
                 }
-                //AlarmManagerHelper.disableIfNotRepeat(getIntent().getIntExtra("ID", Alarm.NULL_ID));
+
                 finish();
             }
         });
+
+        // Disable snooze button if the time is 0 == no snooze.
         if (snoozeTime == 0) {
             snooze.setEnabled(false);
         }
@@ -99,6 +111,9 @@ public class AlarmScreenActivity extends Activity {
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -131,6 +146,9 @@ public class AlarmScreenActivity extends Activity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -146,6 +164,9 @@ public class AlarmScreenActivity extends Activity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -153,6 +174,9 @@ public class AlarmScreenActivity extends Activity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
