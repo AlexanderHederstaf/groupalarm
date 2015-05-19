@@ -28,7 +28,11 @@ import com.groupalarm.asijge.groupalarm.R;
 
 import java.util.List;
 
-
+/**
+ *  
+ *
+ *  @author asijge
+ */
 public class RemoveListViewAdapter extends ArrayAdapter<Alarm> {
 
     private static final String TAG = "RemoveListViewAdapter";
