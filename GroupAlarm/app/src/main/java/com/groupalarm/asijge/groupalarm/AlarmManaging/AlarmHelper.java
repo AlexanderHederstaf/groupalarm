@@ -56,32 +56,83 @@ public class AlarmHelper extends BroadcastReceiver {
     }
 
     /**
-     * Sets a separate snooze alarm in the near future
-     * this alarm works separately from the rest of the alarms.
+     * Sets a separate snooze alarm in the near future this alarm works separately from the rest of the alarms.
+     *
+     * @param context The Application Context.
      * @param time The number of minutes to delay the snooze alarm.
      */
     public static void setSnooze(Context context, int time) {
+        if (time <= 0) {
+            return;
+        }
+        int snoozeID = -1;
+        snoozeAlarm = new Alarm(snoozeID);
+        snoozeAlarm.setActive(true);
+
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, time);
 
-        Intent snoozeIntent = new Intent(context, AlarmService.class);
+        snoozeAlarm.setTime(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+        snoozeAlarm.setMessage("Snooze");
 
-        // put extra
-        // start the service and "show" something when Alarm goes off.
+        switch (time) {
+            case 5:
+                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.FIVE);
+                break;
+            case 10:
+                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.TEN);
+                break;
+            case 15:
+                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.FIFTEEN);
+                break;
+            default:
+                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
+                break;
+        }
 
-        int snoozeID = -1;
-        setAlarm(context, cal, PendingIntent.getService(context, snoozeID, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        PendingIntent snoozeIntent = createIntent(context, snoozeAlarm);
+
+        setAlarm(context, cal, snoozeIntent);
     }
 
+    /**
+     * Cancels the separate snooze Alarm.
+     *
+     * @param context The Application Context
+     */
+    public static void cancelSnooze(Context context) {
+        if (snoozeAlarm != null) {
+            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            manager.cancel(createIntent(context, snoozeAlarm));
+            snoozeAlarm = null;
+        }
+    }
+
+    /**
+     * Sets the Alarm with id ID to the given status. A call must be done separately to setAlarms
+     * to register the change in the system.
+     *
+     * @param Id The ID of the Alarm to change status of.
+     * @param active The new status.
+     * @see AlarmHelper#setAlarms(Context)
+     */
     public static void setActive(int Id, boolean active) {
         AlarmDB.getInstance().setActive(Id, active);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         setAlarms(context);
     }
 
+    /**
+     * Sets up the system to "ring" the Alarms that have Active status.
+     *
+     * @param context The Application Context.
+     */
     public static void setAlarms(Context context) {
         Log.d(TAG, "Setting Alarms");
         cancelAlarms(context);
@@ -97,11 +148,18 @@ public class AlarmHelper extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Provides a new Id for an alarm, the ID is unique with respect to the stored alarms.
+     * @return A new unique Id.
+     */
     public static int getNewId() {
         return AlarmDB.getInstance().getNewId();
     }
 
-    /**
+    /*
+     * Work around for setting Alarms on different Android versions
+     * The new versions have more battery saving features.
+     *
      * setExact required for API level 19 an above.
      * does not work on 18 an lower, use set instead.
      */
@@ -117,6 +175,13 @@ public class AlarmHelper extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Cancels all alarms in the system using the data of the currently stored Alarms
+     * If an alarm is active in the system and it's original Alarm data has been altered it
+     * can not be cancelled.
+     *
+     * @param context The Application Context.
+     */
     public static void cancelAlarms(Context context) {
         Log.d(TAG, "Cancelling alarm");
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -127,8 +192,13 @@ public class AlarmHelper extends BroadcastReceiver {
         }
     }
 
-    // Returns a calendar object that represents the next
-    // time the alarm will activate.
+    /**
+     * Gives a Calendar object representing the next time the Alarm is set to go off.
+     * For repeating alarms this gives the closest day and time.
+     *
+     * @param alarm The alarm to get the time for.
+     * @return A Calendar object set for the time the alarm will ring.
+     */
     public static Calendar getNextAlarmTime(Alarm alarm) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, alarm.getHour());
@@ -137,16 +207,16 @@ public class AlarmHelper extends BroadcastReceiver {
 
         List<Integer> days = alarm.getActiveDays();
 
-        // find closest day to now.
+        // Obtain Calendar object for the current time.
         Calendar now = Calendar.getInstance();
 
         // Distance is used to find the day closest to now
         // All days will be closer than 7 days,
         int maxDistance = 7;
 
-        // default day is the current day. If the hour has passed the alarm is
+        // The default day is the current day. If the hour has passed the alarm is
         // set for the next day.
-        // This day will be overwritten if "days" is not empty.
+        // This day will be overwritten only for repeating alarms.
         int day = cal.before(now) ? (now.get(Calendar.DAY_OF_WEEK) + 1 % 7)
                 : now.get(Calendar.DAY_OF_WEEK);
 
