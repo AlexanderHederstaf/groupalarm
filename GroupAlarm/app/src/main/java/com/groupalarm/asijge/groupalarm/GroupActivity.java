@@ -8,13 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.groupalarm.asijge.groupalarm.Alarm.AlarmManagerHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.AlarmDB;
-import com.groupalarm.asijge.groupalarm.Data.AlarmParse;
 import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -178,9 +175,9 @@ public class GroupActivity extends ActionBarActivity {
         if (requestCode == EDIT_ALARM_CODE) {
             if (resultCode == RESULT_OK) {
                 Alarm editedAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
-                AlarmManagerHelper.removeAlarm(editedAlarm.getId(), this);
-                AlarmManagerHelper.addAlarm(editedAlarm);
-                AlarmManagerHelper.setAlarms(this);
+                AlarmHelper.removeAlarm(editedAlarm.getId(), this);
+                AlarmHelper.addAlarm(editedAlarm);
+                AlarmHelper.setAlarms(this);
                 runOnUiThread(runParseListUpdate);
             }
         }

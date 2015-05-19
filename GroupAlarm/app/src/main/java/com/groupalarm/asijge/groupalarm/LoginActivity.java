@@ -178,10 +178,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * Check if email address is valid.
      *
      * @param email, the email string to check
-     * @return true if string contains a @ char, false otherwise
+     * @return true if string is at least 2 characters, false otherwise
      */
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        return email.length() > 2;
     }
 
     /**
