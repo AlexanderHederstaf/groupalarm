@@ -14,7 +14,7 @@ import com.groupalarm.asijge.groupalarm.AlarmScreenActivity;
 public class AlarmService extends Service {
 
     /**
-     * Debug TAG for the class.
+     * Debug TAG for the AlarmService.
      */
     public static final String TAG = "AlarmService";
 
