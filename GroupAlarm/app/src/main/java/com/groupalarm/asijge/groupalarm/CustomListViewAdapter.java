@@ -124,7 +124,12 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
 
         holder.time.setText(rowItem.getAlarm().toString());
         holder.eventDesc.setText(rowItem.getAlarm().getMessage());
-        holder.imageView.setImageResource(R.drawable.ic_alarm_image);
+
+        if(rowItem.getAlarm().isGroupAlarm()) {
+            holder.imageView.setImageResource(R.drawable.ic_group);
+        } else {
+            holder.imageView.setImageResource(R.drawable.ic_single_user);
+        }
 
         if(holder.checkBox.isChecked() != rowItem.getAlarm().getStatus()) {
             holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
