@@ -1,6 +1,8 @@
 /**
  * EditAlarmActivity.java
  *
+ * Activity for creating and editing Alarms.
+ *
  * @author asijge
  * @copyright (c) 2015, asijge
  *

@@ -1,3 +1,13 @@
+/**
+ * RemoveActivity.java
+ *
+ * Activity for removing alarms from the database in a listview configuration.
+ * 
+ * @author asijge
+ * @copyright (c) 2015, asijge
+ *
+ */
+
 package com.groupalarm.asijge.groupalarm;
 
 import android.support.v7.app.ActionBarActivity;
@@ -20,7 +30,6 @@ public class RemoveActivity extends ActionBarActivity {
     private ListView listView;
     private List<ListRowItem> rowItems;
     private RemoveListViewAdapter adapter;
-    private Runnable runListUpdate;
 
     private static final String TAG = "RemoveActivity";
 
@@ -43,21 +52,6 @@ public class RemoveActivity extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.removelist);
         adapter = new RemoveListViewAdapter(this, R.layout.activity_remove_item, rowItems);
         listView.setAdapter(adapter);
-
-/*
-        runListUpdate = new Runnable() {
-            public void run() {
-                Log.d(TAG, "runListUpdate");
-                //reload content
-                rowItems.clear();
-                for (Alarm alarm : AlarmHelper.getAlarms()) {
-                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
-                    rowItems.add(item);
-                }
-                adapter.notifyDataSetChanged();
-            }
-        };
-*/
     }
 
 
@@ -93,9 +87,7 @@ public class RemoveActivity extends ActionBarActivity {
             finish();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-
     }
 }
 
