@@ -40,7 +40,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<Alarm> {
      *
      * @param context           The Context in which it is used.
      * @param resourceId        The ID of the XML resource that is to be used.
-     * @param items             A List containing ListRowItems, which in turn contain the
+     * @param items             A List containing Alarms, which in turn contain the
      *                          data relevant for each item that is to be presented.
      */
     public RemoveListViewAdapter(Context context, int resourceId,
@@ -62,7 +62,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<Alarm> {
     }
 
     /** Creates a View containing graphical objects that are based on data
-     *  from the List<ListRowItem> provided in the constructor.
+     *  from the List<Alarm> provided in the constructor.
      *
      * @param position          The position of the element which a new View has been requested for.
      * @param convertView       The instructions for how to construct the new View, used to recycle
