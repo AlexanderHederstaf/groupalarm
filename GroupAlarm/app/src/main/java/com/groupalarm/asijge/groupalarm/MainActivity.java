@@ -30,7 +30,7 @@ public class MainActivity extends ActionBarActivity {
 
     private ListView listView;
     private List<ListRowItem> rowItems;
-    private CustomListViewAdapter adapter;
+    private AlarmListViewAdapter adapter;
     private Runnable runListUpdate;
 
     private static final String TAG = "MainActivity";
@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         listView = (ListView) findViewById(R.id.alarmlist);
-        adapter = new CustomListViewAdapter(this, R.layout.alarm_list_item, rowItems);
+        adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
         /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

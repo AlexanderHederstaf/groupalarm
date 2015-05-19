@@ -47,7 +47,7 @@ public class GroupActivity extends ActionBarActivity {
 
     private ListView listView;
     private List<ListRowItem> rowItems;
-    private CustomListViewAdapter adapter;
+    private AlarmListViewAdapter adapter;
     private Runnable runParseListUpdate;
 
     private static final String TAG = "GroupActivity";
@@ -61,7 +61,7 @@ public class GroupActivity extends ActionBarActivity {
 
         rowItems = new ArrayList<ListRowItem>();
         listView = (ListView) findViewById(R.id.group_alarmlist);
-        adapter = new CustomListViewAdapter(this, R.layout.alarm_list_item, rowItems);
+        adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
 
         //registerForContextMenu(listView);
