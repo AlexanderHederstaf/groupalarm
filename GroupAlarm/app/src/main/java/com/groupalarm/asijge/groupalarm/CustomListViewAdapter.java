@@ -23,9 +23,9 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- *  CustomListViewAdapter provides the functionality of the Arrayadapter class as well
+ *  CustomListViewAdapter provides the functionality of the ArrayAdapter class as well
  *  as extended functionality which allows it to contain the desired elements and layout
- *  of the listView used used in the MainActivity class.
+ *  of the ListView used in the MainActivity class.
  *
  *  @author asijge
  */

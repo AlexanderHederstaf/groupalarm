@@ -5,6 +5,7 @@ import android.widget.CheckBox;
 
 /**
  * Class intended to represent the data of an item in a ListView.
+ * @author asijge
  */
 public class ListRowItem {
 
