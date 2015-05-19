@@ -65,18 +65,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
 
         holder.time.setText(rowItem.getAlarm().toString());
         holder.eventDesc.setText(rowItem.getAlarm().getMessage());
-        //holder.eventDesc.setText(rowItem.getAlarm().getMessage());
-        //holder.imageView.setImageResource(R.drawable.ic_alarm_image);
-        //holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
 
-       /* if(rowItem.getAlarm().getStatus()) {
-            holder.time.setTextColor(Color.BLACK);
-            holder.imageView.setAlpha(1.0f);
-        } else {
-            holder.time.setTextColor(Color.GRAY);
-            holder.imageView.setAlpha(0.5f);
-        }
-*/
         return convertView;
     }
 
@@ -101,8 +90,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
                 for (int i = 0; i < itemsToRemove.length; i++) {
                     Log.d(TAG, i + ":" + itemsToRemove[i]);
                 }
-
-                AlarmHelper.setAlarms(context);
+                
                 reDrawUi();
             }
         };
