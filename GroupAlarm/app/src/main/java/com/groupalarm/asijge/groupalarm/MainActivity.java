@@ -35,6 +35,9 @@ public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +83,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -87,6 +93,9 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -125,6 +134,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -161,6 +173,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (v.getId() == R.id.alarmlist) {
@@ -174,6 +189,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -192,6 +210,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onContextItemSelected(item);
     }
 
+    // Helper function to edit alarms. Start the activity for the Alarm data from ID alarmId.
     private void editAlarm(int alarmId) {
         Alarm alarm = AlarmHelper.getAlarm(alarmId);
 
