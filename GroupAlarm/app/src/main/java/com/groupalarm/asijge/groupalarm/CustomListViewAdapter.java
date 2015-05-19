@@ -76,9 +76,11 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
         // The rowItem located on the "position" provided as a parameter.
         ListRowItem rowItem = getItem(position);
         ViewHolder holder = null;
-        ArrayList<TextView> days = new ArrayList<TextView>();
 
-        Log.d(TAG, "GetView for pos: " + position);
+        // A list used for convenience, as to be able to loop through the TextViews
+        // representative for each day. Then based on whether the alarm should go off that
+        // day change the color of the TextView to either black for activated or gray for deactivated.
+        ArrayList<TextView> days = new ArrayList<TextView>();
 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
@@ -109,6 +111,7 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
             holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(rowItem.getAlarm()));
         }
 
+        // Add the TextViews to the "days" list as to be able to loop through them.
         days.add(holder.monday);
         days.add(holder.tuesday);
         days.add(holder.wednesday);
