@@ -9,17 +9,26 @@ import com.groupalarm.asijge.groupalarm.AlarmScreenActivity;
 
 /**
  * This class is a service that starts when an alarm goes off.
- * It starts the Alarm Activity and the alarm sound.
+ * It starts the Alarm Activity which displays a screen and plays a sound.
  */
 public class AlarmService extends Service {
 
+    /**
+     * Debug TAG for the class.
+     */
     public static final String TAG = "AlarmService";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "AlarmService Started");
