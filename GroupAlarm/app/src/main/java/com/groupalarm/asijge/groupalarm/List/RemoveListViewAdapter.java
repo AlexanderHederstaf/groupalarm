@@ -10,7 +10,7 @@
  *
  */
 
-package com.groupalarm.asijge.groupalarm;
+package com.groupalarm.asijge.groupalarm.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,12 +23,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
+import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.R;
 
 import java.util.List;
 
 
-public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
+public class RemoveListViewAdapter extends ArrayAdapter<Alarm> {
 
     private static final String TAG = "RemoveListViewAdapter";
     private Context context;
@@ -43,7 +44,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
      *                          data relevant for each item that is to be presented.
      */
     public RemoveListViewAdapter(Context context, int resourceId,
-                                 List<ListRowItem> items) {
+                                 List<Alarm> items) {
         super(context, resourceId, items);
         this.context = context;
         int arraySize = items.size();
@@ -72,7 +73,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
      */
     public View getView(int position, View convertView, ViewGroup parent) {
         // The rowItem located on the "position" provided as a parameter.
-        ListRowItem rowItem = getItem(position);
+        Alarm rowItem = getItem(position);
         ViewHolder holder = null;
 
         Log.d(TAG, "GetView for pos: " + position);
@@ -98,8 +99,8 @@ public class RemoveListViewAdapter extends ArrayAdapter<ListRowItem> {
         }
 
         // Provide information and set states based on the relevant alarm.
-        holder.time.setText(rowItem.getAlarm().toString());
-        holder.eventDesc.setText(rowItem.getAlarm().getMessage());
+        holder.time.setText(rowItem.toString());
+        holder.eventDesc.setText(rowItem.getMessage());
 
         return convertView;
     }

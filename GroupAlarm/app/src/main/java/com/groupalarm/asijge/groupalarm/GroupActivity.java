@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
+import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -46,7 +46,7 @@ public class GroupActivity extends ActionBarActivity {
     private static final int REMOVE_ALARM_CODE = 997;
 
     private ListView listView;
-    private List<ListRowItem> rowItems;
+    private List<Alarm> rowItems;
     private AlarmListViewAdapter adapter;
     private Runnable runParseListUpdate;
 
@@ -59,7 +59,7 @@ public class GroupActivity extends ActionBarActivity {
 
         getSupportActionBar().setTitle("Groups");
 
-        rowItems = new ArrayList<ListRowItem>();
+        rowItems = new ArrayList<Alarm>();
         listView = (ListView) findViewById(R.id.group_alarmlist);
         adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
@@ -79,8 +79,7 @@ public class GroupActivity extends ActionBarActivity {
                             for (int i = 0; i < alarmList.size(); i++) {
                                 Log.d(TAG, "ParseObject index: " + i + " has id: " + alarmList.get(i).getInt("ID"));
                                 Alarm alarmToAdd = getAlarmFromParseObject(alarmList.get(i));
-                                ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarmToAdd);
-                                rowItems.add(item);
+                                rowItems.add(alarmToAdd);
                             }
                             adapter.notifyDataSetChanged();
                         } else {

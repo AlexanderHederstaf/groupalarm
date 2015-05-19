@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
+import com.groupalarm.asijge.groupalarm.List.RemoveListViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
 public class RemoveActivity extends ActionBarActivity {
 
     private ListView listView;
-    private List<ListRowItem> rowItems;
+    private List<Alarm> rowItems;
     private RemoveListViewAdapter adapter;
 
     private static final String TAG = "RemoveActivity";
@@ -42,10 +42,9 @@ public class RemoveActivity extends ActionBarActivity {
         setContentView(R.layout.activity_remove);
 
         // Create List with current alarms from database
-        rowItems = new ArrayList<ListRowItem>();
+        rowItems = new ArrayList<Alarm>();
         for (Alarm alarm : AlarmHelper.getAlarms()) {
-            ListRowItem item = new ListRowItem(0, alarm);
-            rowItems.add(item);
+            rowItems.add(alarm);
         }
 
         // Connect with UI ListView and assign appropriate adapter
@@ -79,7 +78,7 @@ public class RemoveActivity extends ActionBarActivity {
 
             for (int i = 0; i < adapter.itemsToRemove.length; i++) {
                 if (adapter.itemsToRemove[i] == true) {
-                    AlarmHelper.removeAlarm(rowItems.get(i).getAlarm().getId(), this);
+                    AlarmHelper.removeAlarm(rowItems.get(i).getId(), this);
                 }
                 Log.d(TAG, "To remove " + i + ":" + adapter.itemsToRemove[i]);
             }

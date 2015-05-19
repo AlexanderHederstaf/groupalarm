@@ -14,7 +14,7 @@ import android.widget.ListView;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
-import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
+import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
     private static final int REMOVE_ALARM_CODE = 997;
 
     private ListView listView;
-    private List<ListRowItem> rowItems;
+    private List<Alarm> rowItems;
     private AlarmListViewAdapter adapter;
     private Runnable runListUpdate;
 
@@ -45,10 +45,9 @@ public class MainActivity extends ActionBarActivity {
 
         AlarmDB.initiate(this);
 
-        rowItems = new ArrayList<ListRowItem>();
+        rowItems = new ArrayList<Alarm>();
         for (Alarm alarm : AlarmHelper.getAlarms()) {
-            ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
-            rowItems.add(item);
+            rowItems.add(alarm);
         }
 
         listView = (ListView) findViewById(R.id.alarmlist);
@@ -72,8 +71,7 @@ public class MainActivity extends ActionBarActivity {
                 //reload content
                 rowItems.clear();
                 for (Alarm alarm : AlarmHelper.getAlarms()) {
-                    ListRowItem item = new ListRowItem(R.drawable.ic_alarm_image, alarm);
-                    rowItems.add(item);
+                    rowItems.add(alarm);
                 }
                 adapter.notifyDataSetChanged();
                 //listView.invalidateViews();
@@ -190,9 +188,9 @@ public class MainActivity extends ActionBarActivity {
         if (v.getId() == R.id.alarmlist) {
             ListView lv = (ListView) v;
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            ListRowItem listItem = (ListRowItem) lv.getItemAtPosition(acmi.position);
+            Alarm listItem = (Alarm) lv.getItemAtPosition(acmi.position);
 
-            menu.setHeaderTitle(listItem.getAlarm().getMessage());
+            menu.setHeaderTitle(listItem.getMessage());
             menu.add("Edit");
             menu.add("Delete");
         }
@@ -204,8 +202,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        ListRowItem listItem = (ListRowItem) listView.getItemAtPosition(info.position);
-        int alarmId = listItem.getAlarm().getId();
+        Alarm listItem = (Alarm) listView.getItemAtPosition(info.position);
+        int alarmId = listItem.getId();
         if (item.getTitle() == "Edit") {
             editAlarm(alarmId);
             return true;

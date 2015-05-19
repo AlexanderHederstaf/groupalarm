@@ -1,9 +1,8 @@
-package com.groupalarm.asijge.groupalarm;
+package com.groupalarm.asijge.groupalarm.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import android.widget.Toast;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
-import com.groupalarm.asijge.groupalarm.Data.ListRowItem;
+import com.groupalarm.asijge.groupalarm.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +28,7 @@ import java.util.List;
  *
  *  @author asijge
  */
-public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
+public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
 
     public static final String TAG = "CustomListViewAdapter";
     Context context;
@@ -40,11 +39,11 @@ public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
      *
      * @param context           The Context in which it is used.
      * @param resourceId        The ID of the XML resource that is to be used.
-     * @param items             A List containing ListRowItems, which in turn contain the
+     * @param items             A List containing Alarms, which in turn contain the
      *                          data relevant for each item that is to be presented.
      */
     public AlarmListViewAdapter(Context context, int resourceId,
-                                List<ListRowItem> items) {
+                                List<Alarm> items) {
         super(context, resourceId, items);
         this.context = context;
     }
@@ -74,7 +73,7 @@ public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
      */
     public View getView(int position, View convertView, ViewGroup parent) {
         // The rowItem located on the "position" provided as a parameter.
-        ListRowItem rowItem = getItem(position);
+        Alarm alarm = getItem(position);
         ViewHolder holder = null;
 
         // A list used for convenience, as to be able to loop through the TextViews
@@ -94,7 +93,7 @@ public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
             holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
             holder.checkBox = (Switch) convertView.findViewById(R.id.on_off);
             holder.checkBox.setThumbTextPadding(4);//holder.checkBox.getWidth() / 2);
-            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(rowItem.getAlarm()));
+            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(alarm));
             holder.monday = (TextView) convertView.findViewById(R.id.monday);
             holder.tuesday = (TextView) convertView.findViewById(R.id.tuesday);
             holder.wednesday = (TextView) convertView.findViewById(R.id.wednesday);
@@ -108,7 +107,7 @@ public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
         // the new/updated View.
         } else {
             holder = (ViewHolder) convertView.getTag();
-            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(rowItem.getAlarm()));
+            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(alarm));
         }
 
         // Add the TextViews to the "days" list as to be able to loop through them.
@@ -122,20 +121,20 @@ public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
 
         // Provide information and set button/object states based on the relevant alarm.
 
-        holder.time.setText(rowItem.getAlarm().toString());
-        holder.eventDesc.setText(rowItem.getAlarm().getMessage());
+        holder.time.setText(alarm.toString());
+        holder.eventDesc.setText(alarm.getMessage());
 
-        if(rowItem.getAlarm().isGroupAlarm()) {
+        if(alarm.isGroupAlarm()) {
             holder.imageView.setImageResource(R.drawable.ic_group);
         } else {
             holder.imageView.setImageResource(R.drawable.ic_single_user);
         }
 
-        if(holder.checkBox.isChecked() != rowItem.getAlarm().getStatus()) {
-            holder.checkBox.setChecked(rowItem.getAlarm().getStatus());
+        if(holder.checkBox.isChecked() != alarm.getStatus()) {
+            holder.checkBox.setChecked(alarm.getStatus());
         }
 
-        if(rowItem.getAlarm().getStatus()) {
+        if(alarm.getStatus()) {
             holder.time.setTextColor(Color.BLACK);
             holder.eventDesc.setTextColor(Color.BLACK);
             holder.imageView.setAlpha(1.0f);
@@ -146,8 +145,8 @@ public class AlarmListViewAdapter extends ArrayAdapter<ListRowItem> {
         }
 
         // Set the color of the days which the alarm is activated for to black, set the others to gray.
-        for(int i = 0; i < rowItem.getAlarm().getDays().length; i++) {
-            if (rowItem.getAlarm().getDays()[i]) {
+        for(int i = 0; i < alarm.getDays().length; i++) {
+            if (alarm.getDays()[i]) {
                 days.get(i).setTextColor(Color.BLACK);
             } else {
                 days.get(i).setTextColor(Color.GRAY);
