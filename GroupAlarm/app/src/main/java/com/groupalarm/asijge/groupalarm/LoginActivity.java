@@ -21,11 +21,11 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,28 +36,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A login screen that offers login via email/password.
+ */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    private static final String TAG = "LoginActivity";
 
     // Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
+    private UserRegistrationTask mRegTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView mMessageBox;
+
 
     /**
      * {@inheritDoc}
@@ -68,6 +71,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         setContentView(R.layout.activity_login);
 
         // Set up the login form.
+        mMessageBox = (TextView) findViewById(R.id.sign_in_messagebox);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -76,7 +80,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptLogin(true);
                     return true;
                 }
                 return false;
@@ -87,25 +91,37 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptLogin(true);
+            }
+        });
+
+        Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        mEmailRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptLogin(false);
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+
+        Parse.initialize(this, "FId7HlOrHpQ3O8UCZkZtUP6vdxCR0T0DfFgbRitf", "6jgsndZW6hvsVHenBLpuQ7egH6HPjGPIBPqn89A1");
     }
 
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin() {
+    public void attemptLogin(Boolean isLogin) {
         if (mAuthTask != null) {
             return;
         }
@@ -148,8 +164,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            if (isLogin) {
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
+            } else {
+                mRegTask = new UserRegistrationTask(email, password);
+                mRegTask.execute((Void) null);
+            }
         }
     }
 
@@ -157,10 +178,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * Check if email address is valid.
      *
      * @param email, the email string to check
-     * @return true if string contains a @ char, false otherwise
+     * @return true if string is at least 2 characters, false otherwise
      */
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        return email.length() > 2;
     }
 
     /**
@@ -294,6 +315,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            Log.d(TAG, mEmail + mPassword);
         }
 
         /**
@@ -303,21 +325,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                ParseUser.logIn(mEmail, mPassword);
+                return true;
+            } catch (ParseException e) {
+                e.printStackTrace();
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            return false;
         }
 
         /**
@@ -331,7 +344,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // After asynchronus task has been executed, launch MainActivity if successful
             if (success) {
                 finish();
-                Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
+                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
                 LoginActivity.this.startActivity(myIntent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -348,7 +361,59 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(false);
         }
     }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserRegistrationTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mEmail;
+        private final String mPassword;
+        private ParseUser newUser;
+
+        UserRegistrationTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            newUser = new ParseUser();
+            newUser.setUsername(mEmail);
+            newUser.setPassword(mPassword);
+
+            try {
+                newUser.signUp();
+                Log.d(TAG, "Sign up completed.");
+                return true;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Sign up error.");
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mRegTask = null;
+            showProgress(false);
+
+            if (success) {
+                mEmailView.setText(mEmail);
+                mPasswordView.setText(mPassword);
+                mMessageBox.setText("Your registration was succesful! You can now log on.");
+                mMessageBox.setError(null);
+            } else {
+                mMessageBox.setText("Oops! Something went wrong with your registration.");
+                mMessageBox.setError("");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
 }
-
-
-
