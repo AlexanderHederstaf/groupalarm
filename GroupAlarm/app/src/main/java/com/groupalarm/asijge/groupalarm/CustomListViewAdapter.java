@@ -36,7 +36,7 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
 
     /**
      *  Constructs a new CustomListViewAdapter containing elements based on those in
-     *  the list (the "items" param), with a layout based on the resourceId.
+     *  the list (the "items" param), with a basic layout based on the resourceId.
      *
      * @param context           The Context in which it is used.
      * @param resourceId        The ID of the XML resource that is to be used.
@@ -70,7 +70,7 @@ public class CustomListViewAdapter extends ArrayAdapter<ListRowItem> {
      *                          views as to not have too many running at once.
      * @param parent            The object which contains this view, in our case a ListView.
      *
-     * @return                  Returns the updated View for the desired element.
+     * @return                  Returns the new/updated View for the desired element.
      */
     public View getView(int position, View convertView, ViewGroup parent) {
         // The rowItem located on the "position" provided as a parameter.
