@@ -22,6 +22,8 @@ public class Alarm implements Serializable {
 
     private final int uniqueId;
 
+    private boolean isGroupAlarm;
+
     /**
      * Enum representing the intervals to snooze.
      */
@@ -55,6 +57,7 @@ public class Alarm implements Serializable {
         active = false;
         days = new boolean[7];
         uniqueId = Id;
+        isGroupAlarm = false;
     }
 
     /**
@@ -159,6 +162,22 @@ public class Alarm implements Serializable {
      */
     public int getId() {
         return uniqueId;
+    }
+
+    /**
+     * Ask the alarm whether it is a group alarm or if it is individual.
+     * @return Returns true if it is a group alarm, otherwise it returns false.
+     */
+    public boolean isGroupAlarm() {
+        return isGroupAlarm;
+    }
+
+    /**
+     * Sets the alarm to be either a group alarm or an individual alarm.
+     * @param bool Set to true if it should be a group alarm, set to false if it should be individual.
+     */
+    public void setGroupAlarm(boolean bool) {
+        isGroupAlarm = bool;
     }
 
     /**
