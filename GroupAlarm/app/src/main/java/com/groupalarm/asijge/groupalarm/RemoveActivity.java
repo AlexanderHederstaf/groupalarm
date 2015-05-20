@@ -44,7 +44,9 @@ public class RemoveActivity extends ActionBarActivity {
         // Create List with current alarms from database
         rowItems = new ArrayList<Alarm>();
         for (Alarm alarm : AlarmHelper.getAlarms()) {
-            rowItems.add(alarm);
+            if (!alarm.isGroupAlarm()) {
+                rowItems.add(alarm);
+            }
         }
 
         // Connect with UI ListView and assign appropriate adapter
