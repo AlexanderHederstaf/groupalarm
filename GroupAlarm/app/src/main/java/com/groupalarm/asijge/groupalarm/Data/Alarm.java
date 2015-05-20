@@ -170,7 +170,7 @@ public class Alarm implements Serializable {
      * @return Returns true if it is a group alarm, otherwise it returns false.
      */
     public boolean isGroupAlarm() {
-        return parseID != NO_PARSE_ID;
+        return !NO_PARSE_ID.equals(parseID);
     }
 
     /**

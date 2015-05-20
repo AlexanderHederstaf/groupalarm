@@ -75,13 +75,13 @@ public class RemoveActivity extends ActionBarActivity {
         }
 
         if (id == R.id.action_delete) {
-
+            AlarmHelper.cancelAlarms(this);
             for (int i = 0; i < adapter.itemsToRemove.length; i++) {
                 if (adapter.itemsToRemove[i] == true) {
-                    AlarmHelper.removeAlarm(rowItems.get(i).getId(), this);
+                    AlarmHelper.removeAlarm(rowItems.get(i).getId());
                 }
-                Log.d(TAG, "To remove " + i + ":" + adapter.itemsToRemove[i]);
             }
+            AlarmHelper.setAlarms(this);
             setResult(RESULT_OK);
             finish();
             return true;

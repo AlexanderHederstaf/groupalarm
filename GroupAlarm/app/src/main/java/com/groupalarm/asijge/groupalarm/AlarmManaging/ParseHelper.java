@@ -45,22 +45,33 @@ public class ParseHelper {
 
     public static void createGroup(String name) {
 
-        final ParseObject newGroup = new ParseObject(TABLE_GROUPS);
+        ParseQuery query = ParseQuery.getQuery(TABLE_GROUPS);
+        query.whereEqualTo(COLUMN_NAME, name);
+        ParseObject nameNotUnique = null;
+        try {
+            nameNotUnique = query.getFirst();
+            Log.d(TAG, "query ok");
+        } catch (ParseException e) {
+            Log.d(TAG, "query not ok");
+        }
+        if (nameNotUnique != null) {
+            Log.d(TAG, "Groupname not unique. No group created.");
+            return;
+        }
+
+        ParseObject newGroup = new ParseObject(TABLE_GROUPS);
         newGroup.put(COLUMN_NAME, name);
 
         ParseUser user = ParseUser.getCurrentUser();
+
         ParseRelation<ParseUser> relation = newGroup.getRelation(COLUMN_USERS);
         relation.add(user);
 
-        newGroup.saveInBackground(new SaveCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d(TAG, "Group " + newGroup.toString() + " stored in Parse cloud.");
-                } else {
-                    Log.d(TAG, "Group " + newGroup.toString() + " was not stored.");
-                }
-            }
-        });
+        try {
+            newGroup.save();
+        } catch (ParseException e) {
+            Log.d(TAG, "createGroup was not able to store group in cloud");
+        }
     }
 
     public static List<String> getGroupsForUser() {
@@ -155,16 +166,22 @@ public class ParseHelper {
             e.printStackTrace();
         }
 
-        List<ParseObject> alarmObjectList = groupObject.getList(COLUMN_ALARMS);
+        List<ParseObject> alarmObjectList = null;
 
         List<Alarm> groupAlarmList = new LinkedList<Alarm>();
-        for (ParseObject alarmObject : alarmObjectList) {
-            try {
-                alarmObject.fetchIfNeeded();
-            } catch (ParseException e) {
-                e.printStackTrace();
+
+        try {
+            alarmObjectList = groupObject.getList(COLUMN_ALARMS);
+            for (ParseObject alarmObject : alarmObjectList) {
+                try {
+                    alarmObject.fetchIfNeeded();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                groupAlarmList.add(getAlarmFromParseObject(alarmObject));
             }
-            groupAlarmList.add(getAlarmFromParseObject(alarmObject));
+        } catch (NullPointerException e) {
+            Log.d(TAG, "getAlarmsFromGroup alarmObjectList empty");
         }
 
         return groupAlarmList;
@@ -206,6 +223,42 @@ public class ParseHelper {
             }
         }
         return usersAllAlarms;
+    }
+
+    public static List<String> getUsersInGroup(String group) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_GROUPS);
+        query.whereEqualTo(COLUMN_NAME, group);
+
+        ParseObject groupObject = null;
+
+        try {
+            groupObject = query.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ParseRelation relation = groupObject.getRelation(COLUMN_USERS);
+
+        ParseQuery queryRelation = relation.getQuery();
+
+        List<ParseUser> parseUserList = null;
+        try {
+            parseUserList = queryRelation.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        List<String> groupUserList = new LinkedList<String>();
+
+        for (ParseUser parseUser : parseUserList) {
+            groupUserList.add(parseUser.getUsername());
+        }
+
+        return groupUserList;
+    }
+
+    public static void getGroupFromAlarm() {
+
     }
 
     public static void userSnoozedAlarm() {
