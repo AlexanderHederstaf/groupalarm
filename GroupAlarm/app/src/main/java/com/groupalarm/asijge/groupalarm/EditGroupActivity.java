@@ -17,6 +17,7 @@ import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.GroupListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.UserListViewAdapter;
+import com.parse.Parse;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,14 +62,12 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmListView.setAdapter(alarmAdapter);
         registerForContextMenu(alarmListView);
 
-        final String[] getUsersForGroupPlaceholder = new String[]{"Conan", "Arnold", "Sarah", "Governator", "Z3B0"};
-
         runListUpdate = new Runnable() {
             public void run() {
                 userItems.clear();
                 alarmItems.clear();
 
-                for(String user : getUsersForGroupPlaceholder) {
+                for(String user : ParseHelper.getUsersInGroup(groupName)) {
                     userItems.add(user);
                 }
 
