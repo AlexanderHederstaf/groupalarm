@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.DialogFragment.AddGroupDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.GroupListViewAdapter;
 import com.parse.FindCallback;
@@ -86,6 +87,9 @@ public class GroupActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_new) {
+
+            AddGroupDialogFragment dialog = new AddGroupDialogFragment();
+            dialog.show(getFragmentManager(), "MyGroupDF");
 
             // start dialog
 
