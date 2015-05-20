@@ -149,14 +149,13 @@ public class EditGroupActivity extends ActionBarActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Alarm listItem = (Alarm) alarmListView.getItemAtPosition(info.position);
         int alarmId = listItem.getId();
+
         if (item.getTitle() == "Edit") {
-            //editAlarm(alarmId);
+
             return true;
         }
         else if (item.getTitle() == "Delete") {
-            //AlarmHelper.removeAlarm(alarmId, this);
 
-            //runOnUiThread(runListUpdate);
             return true;
         }
         return super.onContextItemSelected(item);
@@ -168,7 +167,6 @@ public class EditGroupActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm alarm = (Alarm) data.getSerializableExtra("EditedAlarm");
 
-                //TODO: Post alarm to network
                 ParseHelper.addNewAlarmToGroup(alarm, groupName);
 
                 runOnUiThread(runListUpdate); // update list gui
