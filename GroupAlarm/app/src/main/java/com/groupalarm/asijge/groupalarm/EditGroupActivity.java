@@ -1,5 +1,9 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +17,7 @@ import android.widget.ListView;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.DialogFragment.AddMemberDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.GroupListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.UserListViewAdapter;
@@ -113,6 +118,8 @@ public class EditGroupActivity extends ActionBarActivity {
         }
 
         if (id == R.id.action_add_member) {
+            AddMemberDialogFragment dialog = new AddMemberDialogFragment();
+            dialog.show(getFragmentManager(), "MyAddMemberDF");
             return true;
         }
 
