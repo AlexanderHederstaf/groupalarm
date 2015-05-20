@@ -7,4 +7,8 @@
     <string name="title_activity_remove">RemoveActivity</string>
     <string name="title_activity_alarm_screen">AlarmScreenActivity</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="title_activity_edit_group">EditGroupActivity</string>
+    <string name="action_add_alarm">Add Group Alarm</string>
+    <string name="action_add_user">Invite User</string>
+    <string name="action_leave_group">Leave Group</string>
 </resources>

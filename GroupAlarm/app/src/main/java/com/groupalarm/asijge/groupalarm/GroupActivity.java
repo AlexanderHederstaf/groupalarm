@@ -1,11 +1,14 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
@@ -45,6 +48,16 @@ public class GroupActivity extends ActionBarActivity {
         adapter = new GroupListViewAdapter(this, R.layout.group_list_item, rowItems);
         listView.setAdapter(adapter);
 
+        final Context context = this;
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Start new activity for the clicked group
+                Intent intent = new Intent(context, EditGroupActivity.class);
+                intent.putExtra("group", "Placeholder Group"); //TODO fix real group name
+                startActivity(intent);
+            }
+        });
 
         runParseListUpdate = new Runnable() {
             public void run() {
