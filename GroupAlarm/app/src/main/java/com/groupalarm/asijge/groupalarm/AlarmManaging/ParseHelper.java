@@ -261,6 +261,8 @@ public class ParseHelper {
 
         alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
 
+        alarm.setGroupAlarm(parseObject.getObjectId());
+
         return alarm;
     }
 
