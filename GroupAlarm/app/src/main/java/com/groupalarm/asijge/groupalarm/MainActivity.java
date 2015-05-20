@@ -1,5 +1,6 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
@@ -148,6 +150,27 @@ public class MainActivity extends ActionBarActivity {
              *
              *       do in runnable
              */
+            final Context context = this;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
+
+                    AlarmHelper.cancelAlarms(context);
+
+                    for (Alarm alarm : AlarmHelper.getAlarms()) {
+                        if (alarm.isGroupAlarm()) {
+                            AlarmHelper.removeAlarm(alarm.getId());
+                        }
+                    }
+                    for (Alarm alarm : sharedAlarms) {
+                        AlarmHelper.addAlarm(alarm);
+                    }
+
+                    AlarmHelper.setAlarms(context);
+                    runOnUiThread(runListUpdate);
+                }
+            }).start();
 
             return true;
         }
@@ -165,7 +188,9 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == EDIT_ALARM_CODE) {
             if (resultCode == RESULT_OK) {
                 Alarm editedAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
-                AlarmHelper.removeAlarm(editedAlarm.getId(), this);
+
+                AlarmHelper.cancelAlarms(this);
+                AlarmHelper.removeAlarm(editedAlarm.getId());
                 AlarmHelper.addAlarm(editedAlarm);
                 AlarmHelper.setAlarms(this);
                 runOnUiThread(runListUpdate);
@@ -202,11 +227,15 @@ public class MainActivity extends ActionBarActivity {
         if (v.getId() == R.id.alarmlist) {
             ListView lv = (ListView) v;
             AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            Alarm listItem = (Alarm) lv.getItemAtPosition(acmi.position);
+            Alarm alarm = (Alarm) lv.getItemAtPosition(acmi.position);
 
-            menu.setHeaderTitle(listItem.getMessage());
-            menu.add("Edit");
-            menu.add("Delete");
+            menu.setHeaderTitle(alarm.getMessage());
+            if (alarm.isGroupAlarm()) {
+                menu.add("Go to group");
+            } else {
+                menu.add("Edit");
+                menu.add("Delete");
+            }
         }
     }
 
@@ -223,9 +252,19 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         else if (item.getTitle() == "Delete") {
-            AlarmHelper.removeAlarm(alarmId, this);
-
+            AlarmHelper.cancelAlarms(this);
+            AlarmHelper.removeAlarm(alarmId);
+            AlarmHelper.setAlarms(this);
             runOnUiThread(runListUpdate);
+            return true;
+        }
+        if (item.getTitle() == "Go to group") {
+            String groupname = ParseHelper.getGroupsForUser().get(0);
+            //TODO: find real group
+
+            Intent intent = new Intent(this, EditGroupActivity.class);
+            intent.putExtra("group", groupname);
+            startActivity(intent);
             return true;
         }
         return super.onContextItemSelected(item);
