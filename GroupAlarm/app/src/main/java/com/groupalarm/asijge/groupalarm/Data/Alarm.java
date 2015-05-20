@@ -183,6 +183,14 @@ public class Alarm implements Serializable {
     }
 
     /**
+     * Return the parse ID of this alarm if it is a Group Alarm.
+     * @return The parse ID or NO_PARSE_ID.
+     */
+    public String getParseID() {
+        return this.parseID;
+    }
+
+    /**
      * A method that returns a list of the Days this Alarm is set to active.
      * @return A list of the Days this Alarm is set to active.
      */

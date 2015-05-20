@@ -26,14 +26,19 @@ public class AlarmDB extends SQLiteOpenHelper {
 
     private static final String TAG = "AlarmDB";
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "alarmDB.db";
     private static final String TABLE_ALARMS = "Alarms";
+    private static final String TABLE_PARSE_ALARMS = "ParseAlarms";
 
     /**
      * The database key for the column Id.
      */
     public static final String COLUMN_ID = "_id";
+    /**
+     * The database key for the column ParseID.
+     */
+    public static final String COLUMN_PARSE_ID = "ParseID";
     /**
      * The database key for the column Message.
      */
@@ -108,7 +113,7 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * A private constructor creating the database helper by callin
+     * A private constructor creating the database helper by calling
      * SQLiteOpenHelper's constructor.
      *
      * @param context The Application Context.
@@ -149,9 +154,11 @@ public class AlarmDB extends SQLiteOpenHelper {
         boolean[] tmp = alarm.getDays();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, alarm.getId());
+        values.put(COLUMN_PARSE_ID, alarm.getParseID());
         values.put(COLUMN_MESSAGE, alarm.getMessage());
         values.put(COLUMN_TIME, alarm.toString());
         values.put(COLUMN_STATUS, alarm.getStatus());
+        values.put(COLUMN_SNOOZE, alarm.getSnoozeInterval().getValue());
         values.put(COLUMN_MONDAY, tmp[0]);
         values.put(COLUMN_TUESDAY, tmp[1]);
         values.put(COLUMN_WEDNESDAY, tmp[2]);
@@ -159,7 +166,6 @@ public class AlarmDB extends SQLiteOpenHelper {
         values.put(COLUMN_FRIDAY, tmp[4]);
         values.put(COLUMN_SATURDAY, tmp[5]);
         values.put(COLUMN_SUNDAY, tmp[6]);
-        values.put(COLUMN_SNOOZE, alarm.getSnoozeInterval().getValue());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -234,22 +240,21 @@ public class AlarmDB extends SQLiteOpenHelper {
     // Provides the alarms from a cursor from the database.
     private Alarm getAlarmFromCursor(Cursor cursor) {
         Alarm alarm = new Alarm(cursor.getInt(0));
-        alarm.setMessage(cursor.getString(1));
 
-        String alarmTime = cursor.getString(2);
+        alarm.setGroupAlarm(cursor.getString(1));
+
+        alarm.setMessage(cursor.getString(2));
+
+        String alarmTime = cursor.getString(3);
         int hour = Integer.valueOf(alarmTime.substring(0, 2));
         int minute = Integer.valueOf(alarmTime.substring(5));
         alarm.setTime(hour, minute);
 
         // Using Integer value instead as DB saves 1 or 0.
         // Boolean.valueOf returns false for both these values.
-        alarm.setActive(Integer.valueOf(cursor.getString(3)) == 1);
+        alarm.setActive(Integer.valueOf(cursor.getString(4)) == 1);
 
-        for (int i = 4; i < 11; i++) {
-            alarm.setDay(i-4, Integer.valueOf(cursor.getString(i)) == 1);
-        }
-
-        switch (cursor.getInt(11)) {
+        switch (cursor.getInt(5)) {
             case 0:
                 alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
                 break;
@@ -266,6 +271,11 @@ public class AlarmDB extends SQLiteOpenHelper {
                 alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
                 break;
         }
+
+        for (int i = 6; i <= 12; i++) {
+            alarm.setDay(i-6, Integer.valueOf(cursor.getString(i)) == 1);
+        }
+
         return alarm;
     }
 
@@ -293,12 +303,23 @@ public class AlarmDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ALARM_TABLE = "CREATE TABLE " +
                 TABLE_ALARMS + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_MESSAGE
-                + " TEXT," + COLUMN_TIME + " TEXT," + COLUMN_STATUS + " TEXT,"
-                + COLUMN_MONDAY + " BOOLEAN," + COLUMN_TUESDAY + " BOOLEAN," + COLUMN_WEDNESDAY + " BOOLEAN,"
-                + COLUMN_THURSDAY + " BOOLEAN," + COLUMN_FRIDAY + " BOOLEAN," + COLUMN_SATURDAY + " BOOLEAN,"
-                + COLUMN_SUNDAY + " BOOLEAN," + COLUMN_SNOOZE + " INTEGER" + ")";
+                + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_PARSE_ID + " TEXT,"
+                + COLUMN_MESSAGE + " TEXT,"
+                + COLUMN_TIME + " TEXT,"
+                + COLUMN_STATUS + " TEXT,"
+                + COLUMN_SNOOZE + " INTEGER,"
+                + COLUMN_MONDAY + " BOOLEAN," + COLUMN_TUESDAY + " BOOLEAN,"
+                + COLUMN_WEDNESDAY + " BOOLEAN," + COLUMN_THURSDAY + " BOOLEAN,"
+                + COLUMN_FRIDAY + " BOOLEAN," + COLUMN_SATURDAY + " BOOLEAN,"
+                + COLUMN_SUNDAY + " BOOLEAN" + ")";
         db.execSQL(CREATE_ALARM_TABLE);
+
+        String CREATE_PARSE_TABLE = "CREATE TABLE " +
+                TABLE_PARSE_ALARMS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_PARSE_ID
+                + " TEXT" + ")";
+        db.execSQL(CREATE_PARSE_TABLE);
     }
 
     /**
