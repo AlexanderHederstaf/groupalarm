@@ -125,8 +125,12 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
         holder.eventDesc.setText(alarm.getMessage());
 
         if(alarm.isGroupAlarm()) {
+            holder.checkBox.setEnabled(false);
+            holder.checkBox.setVisibility(View.GONE);
             holder.imageView.setImageResource(R.drawable.ic_group);
         } else {
+            holder.checkBox.setEnabled(true);
+            holder.checkBox.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(R.drawable.ic_single_user);
         }
 
