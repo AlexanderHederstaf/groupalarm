@@ -22,7 +22,8 @@ public class Alarm implements Serializable {
 
     private final int uniqueId;
 
-    private boolean isGroupAlarm;
+    public final static String NO_PARSE_ID = "";
+    private String parseID;
 
     /**
      * Enum representing the intervals to snooze.
@@ -57,7 +58,7 @@ public class Alarm implements Serializable {
         active = false;
         days = new boolean[7];
         uniqueId = Id;
-        isGroupAlarm = false;
+        parseID = NO_PARSE_ID;
     }
 
     /**
@@ -169,15 +170,16 @@ public class Alarm implements Serializable {
      * @return Returns true if it is a group alarm, otherwise it returns false.
      */
     public boolean isGroupAlarm() {
-        return isGroupAlarm;
+        return parseID == NO_PARSE_ID;
     }
 
     /**
      * Sets the alarm to be either a group alarm or an individual alarm.
-     * @param bool Set to true if it should be a group alarm, set to false if it should be individual.
+     * @param parseID Set the parse ID to identify this Alarm as a group alarm.
+     * @see Alarm#NO_PARSE_ID
      */
-    public void setGroupAlarm(boolean bool) {
-        isGroupAlarm = bool;
+    public void setGroupAlarm(String parseID) {
+        this.parseID = parseID;
     }
 
     /**

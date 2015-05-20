@@ -61,19 +61,19 @@ public class EditGroupActivity extends ActionBarActivity {
         Alarm alarm = new Alarm(0);
         alarm.setTime(13,37);
         alarm.setMessage("Alarm1");
-        alarm.setGroupAlarm(true);
+        alarm.setGroupAlarm("test_alarm_id_1");
         getAlarmsFromGroupPlaceholder[0] = alarm;
 
         alarm = new Alarm(1);
         alarm.setTime(14,37);
         alarm.setMessage("Alarm2");
-        alarm.setGroupAlarm(true);
+        alarm.setGroupAlarm("test_alarm_id_2");
         getAlarmsFromGroupPlaceholder[1] = alarm;
 
         alarm = new Alarm(1);
         alarm.setTime(15,47);
         alarm.setMessage("Alarm3");
-        alarm.setGroupAlarm(true);
+        alarm.setGroupAlarm("test_alarm_id_3");
         getAlarmsFromGroupPlaceholder[2] = alarm;
 
         runListUpdate = new Runnable() {
