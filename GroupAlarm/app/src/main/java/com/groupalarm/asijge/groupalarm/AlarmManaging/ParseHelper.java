@@ -225,8 +225,36 @@ public class ParseHelper {
         return usersAllAlarms;
     }
 
-    public static void getUsersInGroup(String group) {
+    public static List<String> getUsersInGroup(String group) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_GROUPS);
+        query.whereEqualTo(COLUMN_NAME, group);
 
+        ParseObject groupObject = null;
+
+        try {
+            groupObject = query.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ParseRelation relation = groupObject.getRelation(COLUMN_USERS);
+
+        ParseQuery queryRelation = relation.getQuery();
+
+        List<ParseUser> parseUserList = null;
+        try {
+            parseUserList = queryRelation.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        List<String> groupUserList = new LinkedList<String>();
+
+        for (ParseUser parseUser : parseUserList) {
+            groupUserList.add(parseUser.getUsername());
+        }
+
+        return groupUserList;
     }
 
     public static void getGroupFromAlarm() {
