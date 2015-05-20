@@ -138,6 +138,20 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+        if (id == R.id.action_refresh) {
+
+            /* TODO: List sharedAlarm = obtain shared alarm
+             *       cancelAlarms
+             *       delete old shared alarms
+             *       add new shared alarms
+             *       setAlarms
+             *
+             *       do in runnable
+             */
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -20,4 +20,10 @@
         android:orderInCategory="300"
         android:title="Delete Alarm"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="400"
+        android:title="Refresh Remote Alarms"
+        app:showAsAction="never"/>
+
  </menu>
