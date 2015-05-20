@@ -23,36 +23,21 @@ public class AlarmHelper extends BroadcastReceiver {
     private static Alarm snoozeAlarm;
 
     public static List<Alarm> getAlarms() {
-        List<Alarm> list = AlarmDB.getInstance().getAlarms();//new LinkedList<Alarm>();
-//        for (Alarm a : alarms) {
-//            list.add(a);
-//            // TODO: Create copy of alarm instead of the alarm itself.
-//        }
-        return list;
+        return AlarmDB.getInstance().getAlarms();
     }
 
     public static Alarm getAlarm(int Id) {
-//        for (Alarm alarm : alarms) {
-//            if (alarm.getId() == Id) {
-//                return alarm;
-//                //TODO: Create copy of alarm instead of the alarm itself.
-//            }
-//        }
-        return AlarmDB.getInstance().getAlarm(Id); // Could not find the alarm
+        return AlarmDB.getInstance().getAlarm(Id);
     }
 
     public static void addAlarm(Alarm alarm) {
         Log.d(TAG, "Adding alarm with id: " + alarm.getId());
-//        alarms.add(alarm);
         AlarmDB.getInstance().addAlarm(alarm);
     }
 
-    public static void removeAlarm(int Id, Context context) {
+    public static void removeAlarm(int Id) {
         Log.d(TAG, "Removing alarm with id: " + Id);
-
-        cancelAlarms(context);
         AlarmDB.getInstance().deleteAlarm(Id);
-        setAlarms(context);
     }
 
     /**
