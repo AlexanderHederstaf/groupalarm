@@ -51,10 +51,10 @@ public class GroupActivity extends ActionBarActivity {
         final Context context = this;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // Start new activity for the clicked group
                 Intent intent = new Intent(context, EditGroupActivity.class);
-                intent.putExtra("group", "Placeholder Group"); //TODO fix real group name
+                intent.putExtra("group", rowItems.get(position)); //TODO fix real group name
                 startActivity(intent);
             }
         });
