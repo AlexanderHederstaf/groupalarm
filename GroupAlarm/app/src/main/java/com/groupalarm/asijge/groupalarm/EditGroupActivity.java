@@ -3,10 +3,14 @@ package com.groupalarm.asijge.groupalarm;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
@@ -49,6 +53,7 @@ public class EditGroupActivity extends ActionBarActivity {
 
         alarmAdapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, alarmItems);
         alarmListView.setAdapter(alarmAdapter);
+        registerForContextMenu(alarmListView);
 
         final String[] getUsersForGroupPlaceholder = new String[]{"Conan", "Arnold", "Sarah", "Governator", "Z3B0"};
         final Alarm[] getAlarmsFromGroupPlaceholder = new Alarm[3];
@@ -116,5 +121,42 @@ public class EditGroupActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.group_alarm_listView) {
+            ListView lv = (ListView) v;
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            Alarm listItem = (Alarm) lv.getItemAtPosition(acmi.position);
+
+            menu.setHeaderTitle(listItem.getMessage());
+            menu.add("Edit");
+            menu.add("Delete");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Alarm listItem = (Alarm) alarmListView.getItemAtPosition(info.position);
+        int alarmId = listItem.getId();
+        if (item.getTitle() == "Edit") {
+            //editAlarm(alarmId);
+            return true;
+        }
+        else if (item.getTitle() == "Delete") {
+            //AlarmHelper.removeAlarm(alarmId, this);
+
+            //runOnUiThread(runListUpdate);
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 }
