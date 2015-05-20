@@ -113,17 +113,15 @@ public class ParseHelper {
         ParseObject alarmObject = getParseObjectFromAlarm(alarm);
         try {
             alarmObject.save();
-            Log.d(TAG, "addNewAlarmToGroup Alarm saved to cloud OK");
         } catch (ParseException e) {
             e.printStackTrace();
-            Log.d(TAG, "addNewAlarmToGroup Alarm could not be saved to cloud!");
         }
 
         ParseObject groupObject = getGroupFromString(group);
 
         if (groupObject != null && alarmObject != null) {
 
-            ArrayList<ParseObject> alarmsInCloud = (ArrayList<ParseObject>) groupObject.get("Groupalarms");
+            ArrayList<ParseObject> alarmsInCloud = (ArrayList<ParseObject>) groupObject.get(COLUMN_ALARMS);
             if (alarmsInCloud == null) {
                 alarmsInCloud = new ArrayList<ParseObject>();
             }
@@ -133,7 +131,7 @@ public class ParseHelper {
 
             try {
                 groupObject.save();
-                Log.d(TAG, "addNewAlarmToGroup saved alarm to group");
+                Log.d(TAG, "addNewAlarmToGroup saved alarm" + alarm.toString() + " to group " + group);
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.d(TAG, "addNewAlarmToGroup failed to save alarm to group");
@@ -160,20 +158,54 @@ public class ParseHelper {
         List<ParseObject> alarmObjectList = groupObject.getList(COLUMN_ALARMS);
 
         List<Alarm> groupAlarmList = new LinkedList<Alarm>();
-        for (ParseObject parseObject : alarmObjectList) {
+        for (ParseObject alarmObject : alarmObjectList) {
             try {
-                parseObject.fetchIfNeeded();
+                alarmObject.fetchIfNeeded();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            groupAlarmList.add(getAlarmFromParseObject(parseObject));
+            groupAlarmList.add(getAlarmFromParseObject(alarmObject));
         }
 
         return groupAlarmList;
     }
 
-    public static void getAllRemoteAlarmsForUser() {
-        // not implemented
+    public static List<Alarm> getAllRemoteAlarmsForUser() {
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_GROUPS);
+        query.whereEqualTo(COLUMN_USERS, currentUser);
+
+        List<ParseObject> groupObjectList = null;
+        try {
+            groupObjectList = query.find();
+        } catch (ParseException e) {
+            Log.d(TAG, "getAllRemoteAlarmsForUser struggle to query the Parse cloud for groupObjectList.");
+            e.printStackTrace();
+        }
+
+        List<Alarm> usersAllAlarms = new LinkedList<Alarm>();
+        List<ParseObject> alarmObjectList = null;
+
+        for (ParseObject groupObject : groupObjectList) {
+
+            alarmObjectList = groupObject.getList(COLUMN_ALARMS);
+            if (alarmObjectList == null) {
+                continue;
+            }
+
+            for (ParseObject alarmObject : alarmObjectList) {
+                try {
+                    alarmObject.fetchIfNeeded();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "getAllRemoteAlarmsForUser struggle to query the Parse cloud for alarmObject.");
+                }
+                usersAllAlarms.add(getAlarmFromParseObject(alarmObject));
+            }
+        }
+        return usersAllAlarms;
     }
 
     public static void userSnoozedAlarm() {
