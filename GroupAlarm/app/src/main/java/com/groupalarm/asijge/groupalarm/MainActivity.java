@@ -24,8 +24,8 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final int EDIT_ALARM_CODE = 998;
     private static final int NEW_ALARM_CODE = 999;
+    private static final int EDIT_ALARM_CODE = 998;
     private static final int REMOVE_ALARM_CODE = 997;
 
     private ListView listView;
