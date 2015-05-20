@@ -132,10 +132,9 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
             holder.checkBox.setEnabled(true);
             holder.checkBox.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(R.drawable.ic_single_user);
-        }
-
-        if(holder.checkBox.isChecked() != alarm.getStatus()) {
-            holder.checkBox.setChecked(alarm.getStatus());
+            if(holder.checkBox.isChecked() != alarm.getStatus()) {
+                holder.checkBox.setChecked(alarm.getStatus());
+            }
         }
 
         if(alarm.getStatus()) {
