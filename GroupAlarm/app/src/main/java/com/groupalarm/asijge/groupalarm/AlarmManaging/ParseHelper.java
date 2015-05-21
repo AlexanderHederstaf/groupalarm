@@ -8,9 +8,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class ParseHelper {
 
     private static final String COLUMN_NAME = "Name";
     private static final String COLUMN_USERS = "Users";
-    private static final String COLUMN_ALARMS = "Groupalarms";
+    private static final String COLUMN_ALARMS = "Alarms";
     private static final String COLUMN_USERNAME = "username";
 
     public static final String COLUMN_ID = "ID";
@@ -106,46 +104,36 @@ public class ParseHelper {
         if (groupObject != null && userObject != null) {
             ParseRelation<ParseUser> relation = groupObject.getRelation(COLUMN_USERS);
             relation.add(userObject);
-
-            groupObject.saveInBackground(new SaveCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Log.d(TAG, "User saveInBackground to group");
-                    } else {
-                        Log.d(TAG, "Could not saveInBackground User to group");
-                    }
-                }
-            });
+            try {
+                groupObject.save();
+                Log.d(TAG, "addUserToGroup successful");
+            } catch (ParseException e) {
+                Log.d(TAG, "addUserToGroup not successful");
+            }
         }
     }
 
     public static void addNewAlarmToGroup(Alarm alarm, String group) {
 
         ParseObject alarmObject = getParseObjectFromAlarm(alarm);
-        try {
-            alarmObject.save();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         ParseObject groupObject = getGroupFromString(group);
 
+        try {
+            alarmObject.save();
+            Log.d(TAG, "addNewAlarmToGroup saved alarmObject " + alarmObject.getObjectId() + " to table " + TABLE_ALARMS);
+        } catch (ParseException e) {
+            Log.d(TAG, "addNewAlarmToGroup couldn't save alarmObject");
+        }
+
         if (groupObject != null && alarmObject != null) {
-
-            ArrayList<ParseObject> alarmsInCloud = (ArrayList<ParseObject>) groupObject.get(COLUMN_ALARMS);
-            if (alarmsInCloud == null) {
-                alarmsInCloud = new ArrayList<ParseObject>();
-            }
-
-            alarmsInCloud.add(alarmObject);
-            groupObject.put(COLUMN_ALARMS, alarmsInCloud);
+            ParseRelation<ParseObject> relation = groupObject.getRelation(COLUMN_ALARMS);
+            relation.add(alarmObject);
 
             try {
                 groupObject.save();
-                Log.d(TAG, "addNewAlarmToGroup saved alarm" + alarm.toString() + " to group " + group);
+                Log.d(TAG, "addNewAlarmToGroup related alarmObject " + alarmObject.getObjectId() + "  to groupObject " + groupObject.getObjectId());
             } catch (ParseException e) {
-                e.printStackTrace();
-                Log.d(TAG, "addNewAlarmToGroup failed to save alarm to group");
+                Log.d(TAG, "addNewAlarmToGroup couldn't relate alarmObject to alarmGroup");
             }
 
         } else {
@@ -162,25 +150,23 @@ public class ParseHelper {
 
         try {
             groupObject = query.getFirst();
+            Log.d(TAG, "getAlarmsFromGroup groupObject " + groupObject.getObjectId() + " retrieved from cloud");
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.d(TAG, "getAlarmsFromGroup groupObject not retrieved from cloud");
         }
 
         List<ParseObject> alarmObjectList = null;
 
         List<Alarm> groupAlarmList = new LinkedList<Alarm>();
 
+        ParseRelation relation = groupObject.getRelation(COLUMN_ALARMS);
+        ParseQuery queryRelation = relation.getQuery();
         try {
-            alarmObjectList = groupObject.getList(COLUMN_ALARMS);
+            alarmObjectList = queryRelation.find();
             for (ParseObject alarmObject : alarmObjectList) {
-                try {
-                    alarmObject.fetchIfNeeded();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 groupAlarmList.add(getAlarmFromParseObject(alarmObject));
             }
-        } catch (NullPointerException e) {
+        } catch (ParseException e) {
             Log.d(TAG, "getAlarmsFromGroup alarmObjectList empty");
         }
 
@@ -257,8 +243,96 @@ public class ParseHelper {
         return groupUserList;
     }
 
-    public static void getGroupFromAlarm() {
+    public static String getGroupFromAlarm(Alarm alarm) {
 
+        ParseObject alarmObject = null;
+        ParseObject groupObject = null;
+
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery(TABLE_ALARMS);
+        try {
+            alarmObject = query1.get(alarm.getParseID());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ParseQuery<ParseObject> query2 = ParseQuery.getQuery(TABLE_GROUPS);
+        query2.whereEqualTo(COLUMN_ALARMS, alarmObject);
+        try {
+            groupObject = query2.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return groupObject != null ? groupObject.getString(COLUMN_NAME) : "";
+    }
+
+    public static void leaveGroup(String group) {
+        ParseUser userObject = ParseUser.getCurrentUser();
+        ParseObject groupObject = getGroupFromString(group);
+
+        if (groupObject != null && userObject != null) {
+            ParseRelation<ParseUser> relation = groupObject.getRelation(COLUMN_USERS);
+            relation.remove(userObject);
+            try {
+                groupObject.save();
+                Log.d(TAG, "leaveGroup " + group + " successful");
+            } catch (ParseException e) {
+                Log.d(TAG, "Could not leaveGroup " + group);
+            }
+        }
+    }
+
+    public static void editAlarm(Alarm alarm) {
+        ParseObject alarmObject = null;
+
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery(TABLE_ALARMS);
+        try {
+            alarmObject = query1.get(alarm.getParseID());
+            Log.d(TAG, "editAlarm retrieved alarm with ParseID: " + alarm.getParseID() + " from cloud");
+        } catch (ParseException e) {
+            Log.d(TAG, "editAlarm, no alarm in cloud with ParseID: " + alarm.getParseID());
+        }
+
+        boolean[] tmp = alarm.getDays();
+
+        alarmObject.put(COLUMN_MESSAGE, alarm.getMessage());
+        alarmObject.put(COLUMN_TIME, alarm.toString());
+        alarmObject.put(COLUMN_STATUS, alarm.getStatus());
+        alarmObject.put(COLUMN_MONDAY, tmp[0]);
+        alarmObject.put(COLUMN_TUESDAY, tmp[1]);
+        alarmObject.put(COLUMN_WEDNESDAY, tmp[2]);
+        alarmObject.put(COLUMN_THURSDAY, tmp[3]);
+        alarmObject.put(COLUMN_FRIDAY, tmp[4]);
+        alarmObject.put(COLUMN_SATURDAY, tmp[5]);
+        alarmObject.put(COLUMN_SUNDAY, tmp[6]);
+
+        int snoozeValue;
+        if (alarm.getSnoozeInterval() != null) {
+            snoozeValue = alarm.getSnoozeInterval().getValue();
+        } else {
+            snoozeValue = 0;
+        }
+        alarmObject.put(COLUMN_SNOOZE, snoozeValue);
+
+        try {
+            alarmObject.save();
+            Log.d(TAG, "editAlarm updated alarm ok");
+        } catch (ParseException e) {
+            Log.d(TAG, "editAlarm could not update alarm");
+        }
+    }
+
+    public static void deleteAlarm(Alarm alarm) {
+        ParseObject alarmObject = null;
+
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery(TABLE_ALARMS);
+        try {
+            alarmObject = query1.get(alarm.getParseID());
+            alarmObject.delete();
+            Log.d(TAG, "deleteAlarm successful");
+        } catch (ParseException e) {
+            Log.d(TAG, "deleteAlarm NOT successful");
+        }
     }
 
     public static void userSnoozedAlarm() {
@@ -294,7 +368,8 @@ public class ParseHelper {
 
     private static Alarm getAlarmFromParseObject(ParseObject parseObject) {
 
-        Alarm alarm = new Alarm(parseObject.getInt(COLUMN_ID));
+        //Alarm alarm = new Alarm(parseObject.getInt(COLUMN_ID));
+        Alarm alarm = new Alarm(AlarmDB.getInstance().getNewId());
 
         alarm.setMessage(parseObject.getString(COLUMN_MESSAGE));
 
@@ -312,7 +387,20 @@ public class ParseHelper {
         alarm.setDay(5, parseObject.getBoolean(COLUMN_SATURDAY));
         alarm.setDay(6, parseObject.getBoolean(COLUMN_SUNDAY));
 
-        alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
+        switch (parseObject.getInt(COLUMN_SNOOZE)) {
+            case 5:
+                alarm.setSnoozeInterval(Alarm.Snooze.FIVE);
+                break;
+            case 10:
+                alarm.setSnoozeInterval(Alarm.Snooze.TEN);
+                break;
+            case 15:
+                alarm.setSnoozeInterval(Alarm.Snooze.FIFTEEN);
+                break;
+            default:
+                alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
+                break;
+        }
 
         alarm.setGroupAlarm(parseObject.getObjectId());
 
@@ -324,7 +412,7 @@ public class ParseHelper {
         boolean[] tmp = alarm.getDays();
 
         ParseObject parseAlarm = new ParseObject(TABLE_ALARMS);
-        parseAlarm.put(COLUMN_ID, alarm.getId());
+
         parseAlarm.put(COLUMN_MESSAGE, alarm.getMessage());
         parseAlarm.put(COLUMN_TIME, alarm.toString());
         parseAlarm.put(COLUMN_STATUS, alarm.getStatus());
