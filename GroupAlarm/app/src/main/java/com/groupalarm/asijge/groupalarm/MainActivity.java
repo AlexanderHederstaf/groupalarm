@@ -17,6 +17,7 @@ import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -167,6 +168,14 @@ public class MainActivity extends ActionBarActivity {
             }).start();
 
             return true;
+        }
+
+        if (id == R.id.action_logout) {
+            ParseUser.logOut();
+            Intent i = new Intent(this, LoginActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            this.finish();
         }
 
         return super.onOptionsItemSelected(item);

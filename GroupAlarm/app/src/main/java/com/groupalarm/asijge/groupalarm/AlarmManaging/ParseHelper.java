@@ -209,12 +209,12 @@ public class ParseHelper {
                     }
 
                 }
-
             } catch (ParseException e) {
                 Log.d(TAG, "getAllRemoteAlarmsForUser alarmObjectList empty");
             }
 
         }
+        Log.d(TAG, "getAllRemoteAlarmsForUser found " + usersAllAlarms.size() + " alarms.");
         return usersAllAlarms;
     }
 

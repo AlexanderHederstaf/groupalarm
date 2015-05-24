@@ -25,5 +25,9 @@
         android:orderInCategory="400"
         android:title="Refresh Remote Alarms"
         app:showAsAction="never"/>
-
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="500"
+        android:title="Logout user"
+        app:showAsAction="never"/>
  </menu>

@@ -106,10 +106,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
-
-        Parse.initialize(this, "FId7HlOrHpQ3O8UCZkZtUP6vdxCR0T0DfFgbRitf", "6jgsndZW6hvsVHenBLpuQ7egH6HPjGPIBPqn89A1");
+        // Check if there is an active current user
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            // If there is, step straight to MainActivity
+            this.finish();
+            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+            LoginActivity.this.startActivity(myIntent);
+        }
     }
 
     private void populateAutoComplete() {
