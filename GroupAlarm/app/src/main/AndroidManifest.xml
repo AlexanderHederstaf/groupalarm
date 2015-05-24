@@ -63,11 +63,19 @@
         </activity>
         <activity
             android:name=".GroupActivity"
+            android:parentActivityName="com.groupalarm.asijge.groupalarm.MainActivity"
             android:label="@string/title_activity_group" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.groupalarm.asijge.groupalarm.MainActivity" />
         </activity>
         <activity
             android:name=".EditGroupActivity"
-            android:label="@string/title_activity_edit_group" >
+            android:label="@string/title_activity_edit_group"
+            android:parentActivityName="com.groupalarm.asijge.groupalarm.GroupActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.groupalarm.asijge.groupalarm.GroupActivity" />
         </activity>
     </application>
 
