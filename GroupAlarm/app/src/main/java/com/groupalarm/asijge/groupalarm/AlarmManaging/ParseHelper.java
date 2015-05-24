@@ -192,22 +192,28 @@ public class ParseHelper {
         List<ParseObject> alarmObjectList = null;
 
         for (ParseObject groupObject : groupObjectList) {
-            Log.d(TAG, "Group loop");
-            alarmObjectList = groupObject.getList(COLUMN_ALARMS);
-            if (alarmObjectList == null) {
-                continue;
+
+            ParseRelation relation = groupObject.getRelation(COLUMN_ALARMS);
+            ParseQuery queryRelation = relation.getQuery();
+
+            try {
+                alarmObjectList = queryRelation.find();
+
+                for (ParseObject alarmObject : alarmObjectList) {
+                    try {
+                        alarmObject.fetchIfNeeded();
+                        usersAllAlarms.add(getAlarmFromParseObject(alarmObject));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "getAllRemoteAlarmsForUser struggle to query the Parse cloud for alarmObject.");
+                    }
+
+                }
+
+            } catch (ParseException e) {
+                Log.d(TAG, "getAllRemoteAlarmsForUser alarmObjectList empty");
             }
 
-            for (ParseObject alarmObject : alarmObjectList) {
-                Log.d(TAG, "Alarm loop");
-                try {
-                    alarmObject.fetchIfNeeded();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "getAllRemoteAlarmsForUser struggle to query the Parse cloud for alarmObject.");
-                }
-                usersAllAlarms.add(getAlarmFromParseObject(alarmObject));
-            }
         }
         return usersAllAlarms;
     }
