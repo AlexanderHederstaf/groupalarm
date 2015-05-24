@@ -192,13 +192,14 @@ public class ParseHelper {
         List<ParseObject> alarmObjectList = null;
 
         for (ParseObject groupObject : groupObjectList) {
-
+            Log.d(TAG, "Group loop");
             alarmObjectList = groupObject.getList(COLUMN_ALARMS);
             if (alarmObjectList == null) {
                 continue;
             }
 
             for (ParseObject alarmObject : alarmObjectList) {
+                Log.d(TAG, "Alarm loop");
                 try {
                     alarmObject.fetchIfNeeded();
                 } catch (ParseException e) {

@@ -16,6 +16,7 @@ import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.DialogFragment.AddMemberDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.UserListViewAdapter;
+import com.parse.Parse;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ import java.util.List;
 public class EditGroupActivity extends ActionBarActivity {
 
     private static final int NEW_ALARM_CODE = 999;
+    private static final int EDIT_ALARM_CODE = 998;
 
     private ListView userListView;
     private ListView alarmListView;
@@ -114,11 +116,19 @@ public class EditGroupActivity extends ActionBarActivity {
 
         if (id == R.id.action_add_member) {
             AddMemberDialogFragment dialog = new AddMemberDialogFragment();
+            Bundle args = new Bundle();
+            args.putString("groupname", groupName);
+            dialog.setArguments(args);
             dialog.show(getFragmentManager(), "MyAddMemberDF");
+
+            runOnUiThread(runListUpdate); // update list gui
             return true;
         }
 
         if (id == R.id.action_leave) {
+            ParseHelper.leaveGroup(groupName);
+            finish();
+            //TODO might need to refresh group view too
             return true;
         }
 
@@ -147,15 +157,18 @@ public class EditGroupActivity extends ActionBarActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Alarm listItem = (Alarm) alarmListView.getItemAtPosition(info.position);
-        int alarmId = listItem.getId();
+        Alarm alarm = (Alarm) alarmListView.getItemAtPosition(info.position);
 
         if (item.getTitle() == "Edit") {
-
+            Intent newAlarmActivity = new Intent(this, EditAlarmActivity.class);
+            newAlarmActivity.putExtra("alarm", alarm);
+            startActivityForResult(newAlarmActivity, EDIT_ALARM_CODE);
             return true;
         }
         else if (item.getTitle() == "Delete") {
+            ParseHelper.deleteAlarm(alarm);
 
+            runOnUiThread(runListUpdate); // update list gui
             return true;
         }
         return super.onContextItemSelected(item);
@@ -172,6 +185,14 @@ public class EditGroupActivity extends ActionBarActivity {
                 runOnUiThread(runListUpdate); // update list gui
             }
         }
+        if (requestCode == EDIT_ALARM_CODE) {
+            if (resultCode == RESULT_OK) {
+                Alarm alarm = (Alarm) data.getSerializableExtra("EditedAlarm");
 
+                ParseHelper.editAlarm(alarm);
+
+                runOnUiThread(runListUpdate); // update list gui
+            }
+        }
     }
 }

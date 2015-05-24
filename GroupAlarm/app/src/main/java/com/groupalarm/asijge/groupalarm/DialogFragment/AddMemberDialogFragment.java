@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.R;
+import com.parse.Parse;
 
 /**
  * Created by Sebastian on 2015-05-20.
@@ -20,7 +22,8 @@ public class AddMemberDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View addMemberLayout = View.inflate(getActivity(), R.layout.add_dialog, null);
-        EditText textField = (EditText) addMemberLayout.findViewById(R.id.member_field);
+        final EditText textField = (EditText) addMemberLayout.findViewById(R.id.member_field);
+        final String groupName = getArguments().getString("groupname");
         textField.setHint("The new member's username");
         textField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -35,7 +38,7 @@ public class AddMemberDialogFragment extends DialogFragment {
         builder.setMessage("Add member")
                 .setPositiveButton("Invite", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Invite pplz
+                        ParseHelper.addUserToGroup(textField.getText().toString().trim(), groupName);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

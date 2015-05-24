@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.R;
 
 /**
@@ -20,7 +21,7 @@ public class AddGroupDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View addMemberLayout = View.inflate(getActivity(), R.layout.add_dialog, null);
-        EditText textField = (EditText) addMemberLayout.findViewById(R.id.member_field);
+        final EditText textField = (EditText) addMemberLayout.findViewById(R.id.member_field);
         textField.setHint("The new group's name");
         textField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -35,7 +36,7 @@ public class AddGroupDialogFragment extends DialogFragment {
         builder.setMessage("Create group")
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Invite pplz
+                        ParseHelper.createGroup(textField.getText().toString().trim());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

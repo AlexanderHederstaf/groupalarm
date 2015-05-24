@@ -91,11 +91,7 @@ public class GroupActivity extends ActionBarActivity {
             AddGroupDialogFragment dialog = new AddGroupDialogFragment();
             dialog.show(getFragmentManager(), "MyGroupDF");
 
-            // start dialog
-
-            // enter name
-
-            // send new group to cloud
+            runOnUiThread(runParseListUpdate); // update list gui
 
             return true;
         }

@@ -142,19 +142,13 @@ public class MainActivity extends ActionBarActivity {
 
         if (id == R.id.action_refresh) {
 
-            /* TODO: List sharedAlarm = obtain shared alarm
-             *       cancelAlarms
-             *       delete old shared alarms
-             *       add new shared alarms
-             *       setAlarms
-             *
-             *       do in runnable
-             */
             final Context context = this;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
+
+                    Log.d(TAG, "size of Shared-alarm: " + sharedAlarms.size());
 
                     AlarmHelper.cancelAlarms(context);
 
@@ -259,11 +253,10 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         if (item.getTitle() == "Go to group") {
-            String groupname = ParseHelper.getGroupsForUser().get(0);
-            //TODO: find real group
+            String groupName = ParseHelper.getGroupFromAlarm(listItem);
 
             Intent intent = new Intent(this, EditGroupActivity.class);
-            intent.putExtra("group", groupname);
+            intent.putExtra("group", groupName);
             startActivity(intent);
             return true;
         }
