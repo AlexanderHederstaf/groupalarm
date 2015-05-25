@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -115,9 +116,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             // If there is, step straight to MainActivity
-            this.finish();
-            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-            LoginActivity.this.startActivity(myIntent);
+            launchMainActivity();
         }
     }
 
@@ -362,11 +361,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mAuthTask = null;
             showProgress(false);
 
-            // After asynchronus task has been executed, launch MainActivity if successful
+            // After asynchronus task has been executed
             if (success) {
-                finish();
-                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                LoginActivity.this.startActivity(myIntent);
+                launchMainActivity();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -436,5 +433,24 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void launchMainActivity() {
+        // Associate the device with a user
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put("user", ParseUser.getCurrentUser());
+
+        try {
+            installation.save();
+            Log.d(TAG, "User added to installation");
+        } catch (ParseException e) {
+            Log.d(TAG, "Struggling to add user to installation!");
+        }
+        Log.d(TAG, "Installation user: " + ParseInstallation.getCurrentInstallation().get("user"));
+
+        // Start MainActivity
+        this.finish();
+        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+        LoginActivity.this.startActivity(myIntent);
     }
 }
