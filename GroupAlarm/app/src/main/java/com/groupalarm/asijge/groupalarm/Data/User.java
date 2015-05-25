@@ -20,7 +20,7 @@ public class User implements Comparable<User> {
 
     public User(String name) {
         this.name = name;
-        status = Status.OFF;
+        status = Status.STOP;
     }
 
     @Override
