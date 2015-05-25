@@ -22,11 +22,15 @@ public class ParseHelper {
     private static final String TABLE_GROUPS = "Groups";
     private static final String TABLE_USER = "User";
     private static final String TABLE_ALARMS = "Alarms";
+    private static final String TABLE_ALARMSTATUS = "alarmStatus";
 
     private static final String COLUMN_NAME = "Name";
     private static final String COLUMN_USERS = "Users";
     private static final String COLUMN_ALARMS = "Alarms";
     private static final String COLUMN_USERNAME = "username";
+    private static final String COLUMN_GROUP = "Group";
+    private static final String COLUMN_ALARMSTATUS = "Group";
+
 
     public static final String COLUMN_ID = "ID";
     public static final String COLUMN_MESSAGE = "Message";
@@ -342,10 +346,6 @@ public class ParseHelper {
         }
     }
 
-    public static void userSnoozedAlarm() {
-        // not implemented
-    }
-
     private static ParseUser getUserFromString(String user) {
         ParseUser userObject = null;
 
@@ -441,6 +441,45 @@ public class ParseHelper {
         parseAlarm.put(COLUMN_SNOOZE, snoozeValue);
 
         return parseAlarm;
+    }
+
+    public static String getAlarmStatusUserPerGroup (String user, String group) {
+
+        String output = "";
+        ParseObject alarmStatusObject = null;
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
+        query.whereEqualTo(COLUMN_USERNAME, user);
+        query.whereEqualTo(COLUMN_GROUP, group);
+
+        try {
+            alarmStatusObject = query.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return alarmStatusObject.getString(COLUMN_ALARMSTATUS);
+    }
+
+    public static void setMyAlarmStatusPerGroup (String group, String status) {
+
+        String user = ParseUser.getCurrentUser().getUsername();
+
+        // create an entry in the alarmStatus table
+        ParseObject alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
+        alarmStatus.put(COLUMN_USERNAME, user);
+        alarmStatus.put(COLUMN_GROUP, group);
+        alarmStatus.put(COLUMN_ALARMSTATUS, status);
+        try {
+            alarmStatus.save();
+            Log.d(TAG, "User: " + user + " in group: " + group + " alarmStatus: " + status);
+        } catch (ParseException e) {
+            Log.d(TAG, "Could not set alarmStatus");
+        }
+    }
+
+    public static void userSnoozedAlarm() {
+        // not implemented
     }
 }
 
