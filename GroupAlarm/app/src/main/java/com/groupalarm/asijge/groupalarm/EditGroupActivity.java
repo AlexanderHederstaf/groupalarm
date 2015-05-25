@@ -3,6 +3,7 @@ package com.groupalarm.asijge.groupalarm;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,12 @@ import com.groupalarm.asijge.groupalarm.DialogFragment.AddMemberDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.UserListViewAdapter;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,18 +86,42 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
+    private void sendNotificationToGroup(String message) {
+        Log.d("EditGroupActivity", "Installation user: " + ParseInstallation.getCurrentInstallation().get("user"));
+
+        // Find users in the group
+        ParseObject groupObject = ParseHelper.getGroupFromString(groupName);
+
+        ParseRelation relation = groupObject.getRelation("Users");
+        ParseQuery queryRelation = relation.getQuery();
+        queryRelation.whereNotEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+
+        // Find devices associated with these users
+        ParseQuery pushQuery = ParseInstallation.getQuery();
+        pushQuery.whereMatchesQuery("user", queryRelation);
+
+        // Send push notification to query
+        ParsePush push = new ParsePush();
+        push.setQuery(pushQuery); // Set our Installation query
+        push.setMessage(message);
+        push.sendInBackground();
+    }
+
     private class NewAlarm extends AlarmParseUpdate {
         @Override
         public void run() {
             ParseHelper.addNewAlarmToGroup(alarm, groupName);
+            sendNotificationToGroup("New alarm added to group: " + groupName);
             super.run();
         }
     }
+
 
     private class DeleteAlarm extends AlarmParseUpdate {
         @Override
         public void run() {
             ParseHelper.deleteAlarm(alarm);
+            sendNotificationToGroup("Alarm removed from group: " + groupName);
             super.run();
         }
     }
@@ -99,6 +130,7 @@ public class EditGroupActivity extends ActionBarActivity {
         @Override
         public void run() {
             ParseHelper.editAlarm(alarm);
+            sendNotificationToGroup("Alarm changed in group: " + groupName);
             super.run();
         }
     }
