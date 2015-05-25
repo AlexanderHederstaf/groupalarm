@@ -360,7 +360,7 @@ public class ParseHelper {
         return userObject;
     }
 
-    private static ParseObject getGroupFromString(String group) {
+    public static ParseObject getGroupFromString(String group) {
         ParseObject groupObject = null;
         ParseQuery<ParseObject> query1 = ParseQuery.getQuery(TABLE_GROUPS);
         query1.whereEqualTo(COLUMN_NAME, group);
