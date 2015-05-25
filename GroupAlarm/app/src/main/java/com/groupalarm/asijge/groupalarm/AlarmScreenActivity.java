@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 
 
 //TODO override the back button
@@ -27,12 +28,21 @@ public class AlarmScreenActivity extends Activity {
     public static final String TAG = "AlarmScreenActivity";
 
     /**
+     * String constants for alarmStatus
+     */
+    private static final String STATUS_STOPPED = "stopped";
+    private static final String STATUS_SNOOZED = "snoozed";
+    private static final String STATUS_RINGING = "ringing";
+    private static final String STATUS_OFF = "off";
+
+    /**
      * Default timeout for the Alarm ringing, if no response within one minute
      * the wakelock is released.
      */
     public static final int WAKELOCK_TIMEOUT = 60 * 1000; // 1 minute
     private PowerManager.WakeLock lock;
     private MediaPlayer mediaPlayer;
+    private String group;
 
     /**
      * {@inheritDoc}
@@ -44,6 +54,10 @@ public class AlarmScreenActivity extends Activity {
 
         TextView message = ((TextView) findViewById(R.id.alarm_textView));
         message.setText(getIntent().getStringExtra("MESSAGE"));
+
+        group = getIntent().getStringExtra("GROUP");
+        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_RINGING);
+
 
         Log.d(TAG, "AlarmScreen started");
 
@@ -76,6 +90,7 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
+                    ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
                 }
                 finish();
             }
@@ -97,6 +112,7 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
+                    ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_SNOOZED);
                 }
 
                 finish();

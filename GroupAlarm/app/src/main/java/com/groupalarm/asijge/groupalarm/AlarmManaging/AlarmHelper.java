@@ -241,6 +241,10 @@ public class AlarmHelper extends BroadcastReceiver {
         intent.putExtra("SNOOZE", alarm.getSnoozeInterval().getValue());
         intent.putExtra("ID", alarm.getId());
 
+        if (alarm.isGroupAlarm()) {
+            intent.putExtra("GROUP", ParseHelper.getGroupFromAlarm(alarm));
+        }
+
         // start the service and "show" something when Alarm goes off.
         return PendingIntent.getService(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
