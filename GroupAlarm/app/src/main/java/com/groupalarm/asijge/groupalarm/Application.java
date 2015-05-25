@@ -1,6 +1,7 @@
 package com.groupalarm.asijge.groupalarm;
 
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 
 /**
  * Created by sehlstedt on 24/05/15.
@@ -12,5 +13,6 @@ public class Application extends android.app.Application {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "FId7HlOrHpQ3O8UCZkZtUP6vdxCR0T0DfFgbRitf", "6jgsndZW6hvsVHenBLpuQ7egH6HPjGPIBPqn89A1");
+        ParseInstallation.getCurrentInstallation().saveInBackground();
     }
 }
