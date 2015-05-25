@@ -209,7 +209,6 @@ public class AlarmHelper extends BroadcastReceiver {
         // This list is empty if the alarm is not repeating
         for (int i : days) {
             int distance = i - ((now.get(Calendar.DAY_OF_WEEK) - 2) % 7);
-            Log.d(TAG, "i = " + i + " now.DAY_OF_WEEK = " + now.get(Calendar.DAY_OF_WEEK));
             if (distance < 0) {
                 distance += 7; // next week.
             }
@@ -225,7 +224,6 @@ public class AlarmHelper extends BroadcastReceiver {
             // Set the day of the alarm to today + distance to
             // that day.
             if (distance < maxDistance) {
-                Log.d(TAG, "Distance = " + distance + " MaxDistance = " + maxDistance);
                 day = (now.get(Calendar.DAY_OF_WEEK) + distance) % 7;
                 maxDistance = distance;
             }
@@ -233,7 +231,6 @@ public class AlarmHelper extends BroadcastReceiver {
 
         // Set day of alarm to the calculated day.
         cal.set(Calendar.DAY_OF_WEEK, day);
-        Log.d(TAG, "Day = " + day);
         return cal;
     }
 

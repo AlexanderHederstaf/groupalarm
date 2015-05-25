@@ -28,6 +28,9 @@
                 android:text="Group Members"
                 android:id="@+id/group_member_title" />
 
+            <ProgressBar android:id="@+id/user_fetch_progress" style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" android:visibility="gone" />
             <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -41,6 +44,7 @@
                     android:id="@+id/group_members_listView" />
             </ScrollView>
         </LinearLayout>
+
 
         <LinearLayout
             android:orientation="vertical"
@@ -56,6 +60,9 @@
                 android:text="Group Alarms"
                 android:id="@+id/group_alarm_title" />
 
+            <ProgressBar android:id="@+id/alarm_fetch_progress" style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" android:visibility="gone" />
             <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"

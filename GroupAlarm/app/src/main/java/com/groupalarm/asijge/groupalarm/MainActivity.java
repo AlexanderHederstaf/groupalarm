@@ -22,6 +22,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -56,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         listView = (ListView) findViewById(R.id.alarmlist);
+        Collections.sort(rowItems);
         adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
@@ -106,6 +108,7 @@ public class MainActivity extends ActionBarActivity {
                 for (Alarm alarm : AlarmHelper.getAlarms()) {
                     rowItems.add(alarm);
                 }
+                Collections.sort(rowItems);
                 adapter.notifyDataSetChanged();
             }
         };

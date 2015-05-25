@@ -61,6 +61,8 @@ public class EditAlarmActivity extends ActionBarActivity {
         parentIntent = getIntent();
         newAlarm = (Alarm) parentIntent.getSerializableExtra("alarm");
 
+        setTitle("Edit Alarm");
+
         // Connect UI elements with class
         alarmMessage = (EditText) findViewById(R.id.editTextAlarmMessage);
         alarmTime = (TextView) findViewById(R.id.textTime);
