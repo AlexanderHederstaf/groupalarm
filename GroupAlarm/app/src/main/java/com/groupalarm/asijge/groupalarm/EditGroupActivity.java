@@ -20,6 +20,7 @@ import com.parse.Parse;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,11 +56,13 @@ public class EditGroupActivity extends ActionBarActivity {
                 for(String user : users) {
                     userItems.add(user);
                 }
+                Collections.sort(userItems);
                 userAdapter.notifyDataSetChanged();
 
                 for(Alarm alarm : alarms) {
                     alarmItems.add(alarm);
                 }
+                Collections.sort(alarmItems);
                 alarmAdapter.notifyDataSetChanged();
             }
         };

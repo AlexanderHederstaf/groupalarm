@@ -25,6 +25,7 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class GroupActivity extends ActionBarActivity {
                 for(String group : groups) {
                     rowItems.add(group);
                 }
+                Collections.sort(rowItems);
                 adapter.notifyDataSetChanged();
             }
         };

@@ -8,7 +8,7 @@ import java.util.List;
  * Alarm object contains the data relevant for setting alarms and displaying relevant information
  * when they go off.
  */
-public class Alarm implements Serializable {
+public class Alarm implements Serializable, Comparable<Alarm> {
     private int hour;
     private int minute;
 
@@ -24,6 +24,13 @@ public class Alarm implements Serializable {
 
     public final static String NO_PARSE_ID = "";
     private String parseID;
+
+    @Override
+    public int compareTo(Alarm other) {
+        int oHour = other.hour;
+        int oMinute = other.minute;
+        return (hour*60 + minute) - (oHour*60 + oMinute);
+    }
 
     /**
      * Enum representing the intervals to snooze.
