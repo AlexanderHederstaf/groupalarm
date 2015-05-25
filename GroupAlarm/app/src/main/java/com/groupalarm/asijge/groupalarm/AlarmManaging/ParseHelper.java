@@ -459,7 +459,7 @@ public class ParseHelper {
 
     public static String getAlarmStatusUserPerGroup (String user, String group) {
 
-        String output = "stopped";
+        String output = "";
         ParseObject alarmStatusObject = null;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
