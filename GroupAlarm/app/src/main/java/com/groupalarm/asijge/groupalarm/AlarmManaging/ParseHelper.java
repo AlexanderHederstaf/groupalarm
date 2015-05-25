@@ -164,7 +164,7 @@ public class ParseHelper {
         try {
             alarmObjectList = queryRelation.find();
             for (ParseObject alarmObject : alarmObjectList) {
-                groupAlarmList.add(getAlarmFromParseObject(alarmObject));
+                groupAlarmList.add(getAlarmFromParseObject(alarmObject, 0));
             }
         } catch (ParseException e) {
             Log.d(TAG, "getAlarmsFromGroup alarmObjectList empty");
@@ -202,7 +202,7 @@ public class ParseHelper {
                 for (ParseObject alarmObject : alarmObjectList) {
                     try {
                         alarmObject.fetchIfNeeded();
-                        usersAllAlarms.add(getAlarmFromParseObject(alarmObject));
+                        usersAllAlarms.add(getAlarmFromParseObject(alarmObject, usersAllAlarms.size()));
                     } catch (ParseException e) {
                         e.printStackTrace();
                         Log.d(TAG, "getAllRemoteAlarmsForUser struggle to query the Parse cloud for alarmObject.");
@@ -373,10 +373,10 @@ public class ParseHelper {
         return groupObject;
     }
 
-    private static Alarm getAlarmFromParseObject(ParseObject parseObject) {
+    private static Alarm getAlarmFromParseObject(ParseObject parseObject, int offset) {
 
         //Alarm alarm = new Alarm(parseObject.getInt(COLUMN_ID));
-        Alarm alarm = new Alarm(AlarmDB.getInstance().getNewId());
+        Alarm alarm = new Alarm(AlarmDB.getInstance().getNewId() + offset);
 
         alarm.setMessage(parseObject.getString(COLUMN_MESSAGE));
 
