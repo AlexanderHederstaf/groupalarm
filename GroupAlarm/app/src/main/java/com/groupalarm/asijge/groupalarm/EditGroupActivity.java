@@ -166,6 +166,7 @@ public class EditGroupActivity extends ActionBarActivity {
         @Override
         public void run() {
             ParseHelper.addUserToGroup(user, groupName);
+            sendNotificationToGroup("New member added to group: " + user);
             super.run();
         }
     }
