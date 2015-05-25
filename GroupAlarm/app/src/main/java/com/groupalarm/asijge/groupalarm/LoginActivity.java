@@ -15,10 +15,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -60,6 +63,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mProgressView;
     private View mLoginFormView;
     private TextView mMessageBox;
+    private Button mEmailSignInButton;
+    private Button mEmailRegisterButton;
 
 
     /**
@@ -87,7 +92,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,7 +100,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         });
 
-        Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -268,8 +273,20 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-
         addEmailsToAutoComplete(emails);
+
+        // Check if there is an internet connection
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        Log.d(TAG, "Internet: " + isConnected);
+
+        if (!isConnected) {
+            mEmailRegisterButton.setEnabled(false);
+            mEmailSignInButton.setEnabled(false);
+            mMessageBox.setText("You don't have an internet connection. Please check and retry login when connected!");
+            mMessageBox.setError("");
+        }
     }
 
     @Override
@@ -406,7 +423,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (success) {
                 mEmailView.setText(mEmail);
                 mPasswordView.setText(mPassword);
-                mMessageBox.setText("Your registration was succesful! You can now log on.");
+                mMessageBox.setText("Your registration was successful! You can now log on.");
                 mMessageBox.setError(null);
             } else {
                 mMessageBox.setText("Oops! Something went wrong with your registration.");
