@@ -71,6 +71,19 @@ public class ParseHelper {
 
         try {
             newGroup.save();
+
+            // create an entry in the alarmStatus table
+            ParseObject alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
+            alarmStatus.put(COLUMN_USERNAME, user);
+            alarmStatus.put(COLUMN_GROUP, name);
+            alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
+
+            try {
+                alarmStatus.save();
+                Log.d(TAG, "User: " + user + " in group: " + name + " alarmStatus: stopped");
+            } catch (ParseException e) {
+                Log.d(TAG, "Could not set alarmStatus");
+            }
         } catch (ParseException e) {
             Log.d(TAG, "createGroup was not able to store group in cloud");
         }
@@ -471,6 +484,7 @@ public class ParseHelper {
         } catch (ParseException e) {
             Log.d(TAG, "No row matching query: " + group + ", " + user);
         }
+
 
         output = alarmStatusObject.getString(COLUMN_ALARMSTATUS);
 
