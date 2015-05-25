@@ -74,7 +74,7 @@ public class ParseHelper {
 
             // create an entry in the alarmStatus table
             ParseObject alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
-            alarmStatus.put(COLUMN_USERNAME, user);
+            alarmStatus.put(COLUMN_USERNAME, user.getUsername());
             alarmStatus.put(COLUMN_GROUP, name);
             alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
 
