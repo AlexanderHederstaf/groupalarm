@@ -458,7 +458,9 @@ public class ParseHelper {
             e.printStackTrace();
         }
 
-        return alarmStatusObject.getString(COLUMN_ALARMSTATUS);
+        output = alarmStatusObject.getString(COLUMN_ALARMSTATUS);
+
+        return output;
     }
 
     public static void setMyAlarmStatusPerGroup (String group, String status) {
