@@ -10,35 +10,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.groupalarm.asijge.groupalarm.Data.User;
 import com.groupalarm.asijge.groupalarm.R;
 
 import java.util.List;
 
-public class UserListViewAdapter extends ArrayAdapter<String> {
+public class UserListViewAdapter extends ArrayAdapter<User> {
 
     private Context context;
 
-    public enum Status {
-        RING,
-        SNOOZE,
-        OFF
-    };
-
-    private Status status = Status.OFF;
-
-    public void setStatus(Status status) {
-        this.status = status;
-
-    }
     public UserListViewAdapter(Context context, int resourceId,
-                               List<String> items) {
+                               List<User> items) {
         super(context, resourceId, items);
         this.context = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String groupName = getItem(position);
+        User user = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
@@ -49,20 +38,24 @@ public class UserListViewAdapter extends ArrayAdapter<String> {
         }
 
         TextView view = (TextView) convertView.findViewById(R.id.user_name);
-        view.setText(groupName);
+        view.setText(user.getName());
 
         ImageView image = (ImageView) convertView.findViewById(R.id.user_status);
 
-        switch (status) {
+        switch (user.getStatus()) {
             case RING:
                 image.setImageResource(R.drawable.ic_action_ring);
                 break;
             case SNOOZE:
                 image.setImageResource(R.drawable.ic_action_snooze);
                 break;
-            case OFF:
-            default:
+            case STOP:
                 image.setImageResource(R.drawable.ic_action_off);
+                break;
+            case OFF:
+                image.setImageResource(R.drawable.ic_action_mute);
+                break;
+            default:
                 break;
         }
         return convertView;

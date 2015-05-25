@@ -460,6 +460,8 @@ public class ParseHelper {
 
         output = alarmStatusObject.getString(COLUMN_ALARMSTATUS);
 
+        Log.d(TAG, "Status is: " + output);
+
         return output;
     }
 

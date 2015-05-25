@@ -20,6 +20,7 @@ import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.SetAlarms;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
+import com.groupalarm.asijge.groupalarm.Data.User;
 import com.groupalarm.asijge.groupalarm.DialogFragment.AddMemberDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.UserListViewAdapter;
@@ -36,6 +37,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class EditGroupActivity extends ActionBarActivity {
@@ -51,7 +56,7 @@ public class EditGroupActivity extends ActionBarActivity {
     private View userProgress;
     private View alarmProgress;
 
-    private List<String> userItems;
+    private List<User> userItems;
     private List<Alarm> alarmItems;
 
     private AlarmListViewAdapter alarmAdapter;
@@ -73,8 +78,8 @@ public class EditGroupActivity extends ActionBarActivity {
                 userItems.clear();
                 alarmItems.clear();
 
-                for(String user : users) {
-                    userItems.add(user);
+                for(String userName : users) {
+                    userItems.add(new User(userName));
                 }
                 Collections.sort(userItems);
                 userAdapter.notifyDataSetChanged();
@@ -155,6 +160,8 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
+    Runnable updateStatusNotification;
+
     private class NewUser extends ParseUpdate {
 
         private String user;
@@ -181,8 +188,8 @@ public class EditGroupActivity extends ActionBarActivity {
 
         setAlarms = new SetAlarms(this);
 
-        userItems = new ArrayList<String>();
-        alarmItems = new ArrayList<Alarm>();
+        userItems = new ArrayList<>();
+        alarmItems = new ArrayList<>();
 
         userListView = (ListView) findViewById(R.id.group_members_listView);
         alarmListView = (ListView) findViewById(R.id.group_alarm_listView);
@@ -197,7 +204,13 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmListView.setAdapter(alarmAdapter);
         registerForContextMenu(alarmListView);
 
+
     }
+
+
+    // refresh service for the status of users in the group.
+    private ExecutorService refresh;
+    private ScheduledExecutorService scheduledRefresh;
 
     /**
      * @{inheritDoc}
@@ -207,6 +220,51 @@ public class EditGroupActivity extends ActionBarActivity {
         super.onResume();
         showProgress(true);
         (new Thread(new AlarmParseUpdate())).start();
+
+        // Update notifications every 15 seconds.
+        refresh = Executors.newCachedThreadPool();
+        scheduledRefresh = Executors.newSingleThreadScheduledExecutor();
+        scheduledRefresh.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                refresh.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (User user : userItems) {
+                            switch (ParseHelper.getAlarmStatusUserPerGroup(user.getName(), groupName)) {
+                                case User.OFF:
+                                    user.setStatus(User.Status.OFF);
+                                    break;
+                                case User.STOP:
+                                    user.setStatus(User.Status.STOP);
+                                    break;
+                                case User.RING:
+                                    user.setStatus(User.Status.RING);
+                                    break;
+                                case User.SNOOZE:
+                                    user.setStatus(User.Status.SNOOZE);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                userAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
+            }
+        }, 15, 15, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onPause() {
+        scheduledRefresh.shutdown();
+        refresh.shutdown();
+        super.onPause();
     }
 
     @Override
