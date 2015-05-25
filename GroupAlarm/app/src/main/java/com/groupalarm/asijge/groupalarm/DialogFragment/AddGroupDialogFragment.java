@@ -16,6 +16,14 @@ import com.groupalarm.asijge.groupalarm.R;
  * Created by Sebastian on 2015-05-20.
  */
 public class AddGroupDialogFragment extends DialogFragment {
+
+    private String groupName = "";
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
@@ -36,7 +44,7 @@ public class AddGroupDialogFragment extends DialogFragment {
         builder.setMessage("Create group")
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ParseHelper.createGroup(textField.getText().toString().trim());
+                        groupName = textField.getText().toString().trim();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

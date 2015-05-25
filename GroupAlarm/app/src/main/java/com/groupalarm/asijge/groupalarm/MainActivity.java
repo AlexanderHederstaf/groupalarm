@@ -38,6 +38,8 @@ public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
 
+    private Runnable refreshNetAlarm;
+
     /**
      * {@inheritDoc}
      */
@@ -57,16 +59,44 @@ public class MainActivity extends ActionBarActivity {
         adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Add code for what happens when you click on a alarm
-                Log.d(TAG, "Something was clicked");
-                //runOnUiThread(runListUpdate);
-                //((CheckBox) findViewById(R.id.on_off)).isChecked();
+                Alarm alarm = (Alarm) listView.getItemAtPosition(position);
+                if (!alarm.isGroupAlarm()) {
+                    editAlarm(alarm.getId());
+                }
             }
-        });*/
+        });
+
+        final Context context = this;
+
+        refreshNetAlarm = new Runnable() {
+            @Override
+            public void run() {
+
+                Log.d(TAG, "refresh alarm thread");
+
+                List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
+
+                Log.d(TAG, "size of Shared-alarm: " + sharedAlarms.size());
+
+                AlarmHelper.cancelAlarms(context);
+
+                for (Alarm alarm : AlarmHelper.getAlarms()) {
+                    if (alarm.isGroupAlarm()) {
+                        AlarmHelper.removeAlarm(alarm.getId());
+                    }
+                }
+                for (Alarm alarm : sharedAlarms) {
+                    AlarmHelper.addAlarm(alarm);
+                }
+
+                AlarmHelper.setAlarms(context);
+                runOnUiThread(runListUpdate);
+            }
+        };
 
         runListUpdate = new Runnable(){
             public void run(){
@@ -77,11 +107,19 @@ public class MainActivity extends ActionBarActivity {
                     rowItems.add(alarm);
                 }
                 adapter.notifyDataSetChanged();
-                //listView.invalidateViews();
-                //listView.refreshDrawableState();
             }
         };
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume Main");
+        (new Thread(refreshNetAlarm)).start();
     }
 
     /**
@@ -138,35 +176,6 @@ public class MainActivity extends ActionBarActivity {
             // Start the remove activity.
             Intent removeAlarmActivity = new Intent(this, RemoveActivity.class);
             startActivityForResult(removeAlarmActivity, REMOVE_ALARM_CODE);
-            return true;
-        }
-
-        if (id == R.id.action_refresh) {
-
-            final Context context = this;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
-
-                    Log.d(TAG, "size of Shared-alarm: " + sharedAlarms.size());
-
-                    AlarmHelper.cancelAlarms(context);
-
-                    for (Alarm alarm : AlarmHelper.getAlarms()) {
-                        if (alarm.isGroupAlarm()) {
-                            AlarmHelper.removeAlarm(alarm.getId());
-                        }
-                    }
-                    for (Alarm alarm : sharedAlarms) {
-                        AlarmHelper.addAlarm(alarm);
-                    }
-
-                    AlarmHelper.setAlarms(context);
-                    runOnUiThread(runListUpdate);
-                }
-            }).start();
-
             return true;
         }
 

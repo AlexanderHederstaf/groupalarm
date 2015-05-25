@@ -17,13 +17,21 @@ import com.parse.Parse;
  * Created by Sebastian on 2015-05-20.
  */
 public class AddMemberDialogFragment extends DialogFragment {
+
+    private String userToAdd = "";
+
+    public String getUserToAdd() {
+        return userToAdd;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View addMemberLayout = View.inflate(getActivity(), R.layout.add_dialog, null);
+
         final EditText textField = (EditText) addMemberLayout.findViewById(R.id.member_field);
-        final String groupName = getArguments().getString("groupname");
         textField.setHint("The new member's username");
         textField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -33,12 +41,14 @@ public class AddMemberDialogFragment extends DialogFragment {
                 }
             }
         });
+
         addMemberLayout.setTag(textField);
+
         builder.setView(addMemberLayout);
         builder.setMessage("Add member")
                 .setPositiveButton("Invite", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ParseHelper.addUserToGroup(textField.getText().toString().trim(), groupName);
+                        userToAdd = textField.getText().toString().trim();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -20,6 +20,7 @@ import com.parse.Parse;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -37,9 +38,85 @@ public class EditGroupActivity extends ActionBarActivity {
     private AlarmListViewAdapter alarmAdapter;
     private UserListViewAdapter userAdapter;
 
-    private Runnable runListUpdate;
+    private List<Alarm> alarms = new LinkedList<>();
+    private List<String> users = new LinkedList<>();
+
+    //private Runnable runParseUpdate;
 
     private String groupName;
+
+    // Threads to update Parse data
+    private class ParseUpdate implements Runnable {
+        Runnable runListUpdate = new Runnable() {
+            public void run() {
+                userItems.clear();
+                alarmItems.clear();
+
+                for(String user : users) {
+                    userItems.add(user);
+                }
+                userAdapter.notifyDataSetChanged();
+
+                for(Alarm alarm : alarms) {
+                    alarmItems.add(alarm);
+                }
+                alarmAdapter.notifyDataSetChanged();
+            }
+        };
+
+        public void run() {
+            alarms = ParseHelper.getAlarmsFromGroup(groupName);
+            users = ParseHelper.getUsersInGroup(groupName);
+            runOnUiThread(runListUpdate);
+        }
+    }
+
+    private class AlarmParseUpdate extends ParseUpdate {
+        protected Alarm alarm;
+
+        public void setAlarm(Alarm alarm) {
+            this.alarm = alarm;
+        }
+    }
+
+    private class NewAlarm extends AlarmParseUpdate {
+        @Override
+        public void run() {
+            ParseHelper.addNewAlarmToGroup(alarm, groupName);
+            super.run();
+        }
+    }
+
+    private class DeleteAlarm extends AlarmParseUpdate {
+        @Override
+        public void run() {
+            ParseHelper.deleteAlarm(alarm);
+            super.run();
+        }
+    }
+
+    private class EditAlarm extends AlarmParseUpdate {
+        @Override
+        public void run() {
+            ParseHelper.editAlarm(alarm);
+            super.run();
+        }
+    }
+
+    private class NewUser extends ParseUpdate {
+
+        private String user;
+
+        public void setUser(String user) {
+            this.user = user;
+        }
+
+        @Override
+        public void run() {
+            ParseHelper.addUserToGroup(user, groupName);
+            super.run();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,21 +139,15 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmListView.setAdapter(alarmAdapter);
         registerForContextMenu(alarmListView);
 
-        runListUpdate = new Runnable() {
-            public void run() {
-                userItems.clear();
-                alarmItems.clear();
+    }
 
-                for(String user : ParseHelper.getUsersInGroup(groupName)) {
-                    userItems.add(user);
-                }
-
-                for(Alarm alarm : ParseHelper.getAlarmsFromGroup(groupName)) {
-                    alarmItems.add(alarm);
-                }
-            }
-        };
-        runOnUiThread(runListUpdate);
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        (new Thread(new AlarmParseUpdate())).start();
     }
 
     @Override
@@ -117,18 +188,21 @@ public class EditGroupActivity extends ActionBarActivity {
         if (id == R.id.action_add_member) {
             AddMemberDialogFragment dialog = new AddMemberDialogFragment();
             Bundle args = new Bundle();
-            args.putString("groupname", groupName);
-            dialog.setArguments(args);
             dialog.show(getFragmentManager(), "MyAddMemberDF");
 
-            runOnUiThread(runListUpdate); // update list gui
+            String user = dialog.getUserToAdd();
+            if (user != "") {
+                NewUser run = new NewUser();
+                run.setUser(user);
+                (new Thread(run)).start();
+            }
+
             return true;
         }
 
         if (id == R.id.action_leave) {
             ParseHelper.leaveGroup(groupName);
             finish();
-            //TODO might need to refresh group view too
             return true;
         }
 
@@ -166,9 +240,11 @@ public class EditGroupActivity extends ActionBarActivity {
             return true;
         }
         else if (item.getTitle() == "Delete") {
-            ParseHelper.deleteAlarm(alarm);
 
-            runOnUiThread(runListUpdate); // update list gui
+            DeleteAlarm run = new DeleteAlarm();
+            run.setAlarm(alarm);
+            (new Thread(run)).start();
+
             return true;
         }
         return super.onContextItemSelected(item);
@@ -180,18 +256,18 @@ public class EditGroupActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm alarm = (Alarm) data.getSerializableExtra("EditedAlarm");
 
-                ParseHelper.addNewAlarmToGroup(alarm, groupName);
-
-                runOnUiThread(runListUpdate); // update list gui
+                NewAlarm run = new NewAlarm();
+                run.setAlarm(alarm);
+                (new Thread(run)).start();
             }
         }
         if (requestCode == EDIT_ALARM_CODE) {
             if (resultCode == RESULT_OK) {
                 Alarm alarm = (Alarm) data.getSerializableExtra("EditedAlarm");
 
-                ParseHelper.editAlarm(alarm);
-
-                runOnUiThread(runListUpdate); // update list gui
+                EditAlarm run = new EditAlarm();
+                run.setAlarm(alarm);
+                (new Thread(run)).start();
             }
         }
     }

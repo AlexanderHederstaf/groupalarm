@@ -25,6 +25,7 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -33,9 +34,49 @@ public class GroupActivity extends ActionBarActivity {
     private ListView listView;
     private List<String> rowItems;
     private GroupListViewAdapter adapter;
-    private Runnable runParseListUpdate;
 
     private static final String TAG = "GroupActivity";
+
+
+    private class ParseUpdate implements Runnable {
+
+        private List<String> groups = new LinkedList<String>();
+
+        Runnable runListUpdate = new Runnable() {
+            public void run() {
+                rowItems.clear();
+
+                Log.d(TAG, "run listUpdate");
+                for(String group : groups) {
+                    rowItems.add(group);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        };
+
+        @Override
+        public void run() {
+
+            Log.d(TAG, "run parseUpdate");
+            groups = ParseHelper.getGroupsForUser();
+            runOnUiThread(runListUpdate);
+        }
+    }
+
+    private class NewGroup extends ParseUpdate {
+
+        private String groupName;
+
+        public void setGroupName(String groupName) {
+            this.groupName = groupName;
+        }
+
+        @Override
+        public void run() {
+            ParseHelper.createGroup(groupName);
+            super.run();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,18 +100,18 @@ public class GroupActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
-
-        runParseListUpdate = new Runnable() {
-            public void run() {
-                Log.d(TAG, "runParseListUpdate");
-                rowItems.clear();
-                for(String group : ParseHelper.getGroupsForUser()) {
-                    rowItems.add(group);
-                }
-            }
-        };
-        runOnUiThread(runParseListUpdate);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume group view");
+        (new Thread(new ParseUpdate())).start();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,8 +131,11 @@ public class GroupActivity extends ActionBarActivity {
 
             AddGroupDialogFragment dialog = new AddGroupDialogFragment();
             dialog.show(getFragmentManager(), "MyGroupDF");
+            String groupName = dialog.getGroupName();
 
-            runOnUiThread(runParseListUpdate); // update list gui
+            NewGroup run = new NewGroup();
+            run.setGroupName(groupName);
+            (new Thread(run)).start();
 
             return true;
         }
