@@ -1,7 +1,11 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +36,7 @@ import java.util.List;
 
 public class GroupActivity extends ActionBarActivity {
 
+    private View progress;
     private ListView listView;
     private List<String> rowItems;
     private GroupListViewAdapter adapter;
@@ -47,19 +52,17 @@ public class GroupActivity extends ActionBarActivity {
             public void run() {
                 rowItems.clear();
 
-                Log.d(TAG, "run listUpdate");
                 for(String group : groups) {
                     rowItems.add(group);
                 }
                 Collections.sort(rowItems);
                 adapter.notifyDataSetChanged();
+                showProgress(false);
             }
         };
 
         @Override
         public void run() {
-
-            Log.d(TAG, "run parseUpdate");
             groups = ParseHelper.getGroupsForUser();
             runOnUiThread(runListUpdate);
         }
@@ -87,8 +90,9 @@ public class GroupActivity extends ActionBarActivity {
 
         getSupportActionBar().setTitle("Groups");
 
-        rowItems = new ArrayList<String>();
+        progress = findViewById(R.id.group_fetch_progress);
         listView = (ListView) findViewById(R.id.group_alarmlist);
+        rowItems = new ArrayList<String>();
         adapter = new GroupListViewAdapter(this, R.layout.group_list_item, rowItems);
         listView.setAdapter(adapter);
 
@@ -110,7 +114,7 @@ public class GroupActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume group view");
+        showProgress(true);
         (new Thread(new ParseUpdate())).start();
     }
 
@@ -143,5 +147,9 @@ public class GroupActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showProgress(boolean show) {
+        ViewHelper.showProgress(show, progress, listView, this);
     }
 }

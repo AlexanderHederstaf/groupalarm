@@ -1,6 +1,11 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -33,6 +38,9 @@ public class EditGroupActivity extends ActionBarActivity {
     private ListView userListView;
     private ListView alarmListView;
 
+    private View userProgress;
+    private View alarmProgress;
+
     private List<String> userItems;
     private List<Alarm> alarmItems;
 
@@ -64,6 +72,7 @@ public class EditGroupActivity extends ActionBarActivity {
                 }
                 Collections.sort(alarmItems);
                 alarmAdapter.notifyDataSetChanged();
+                showProgress(false);
             }
         };
 
@@ -135,6 +144,9 @@ public class EditGroupActivity extends ActionBarActivity {
         userListView = (ListView) findViewById(R.id.group_members_listView);
         alarmListView = (ListView) findViewById(R.id.group_alarm_listView);
 
+        userProgress = findViewById(R.id.user_fetch_progress);
+        alarmProgress = findViewById(R.id.alarm_fetch_progress);
+
         userAdapter = new UserListViewAdapter(this, R.layout.user_list_item, userItems);
         userListView.setAdapter(userAdapter);
 
@@ -150,6 +162,7 @@ public class EditGroupActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+        showProgress(true);
         (new Thread(new AlarmParseUpdate())).start();
     }
 
@@ -273,5 +286,10 @@ public class EditGroupActivity extends ActionBarActivity {
                 (new Thread(run)).start();
             }
         }
+    }
+
+    private void showProgress(boolean show) {
+        ViewHelper.showProgress(show, userProgress, userListView, this);
+        ViewHelper.showProgress(show, alarmProgress, alarmListView, this);
     }
 }
