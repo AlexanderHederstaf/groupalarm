@@ -110,6 +110,20 @@ public class ParseHelper {
             relation.add(userObject);
             try {
                 groupObject.save();
+
+                // create an entry in the alarmStatus table
+                ParseObject alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
+                alarmStatus.put(COLUMN_USERNAME, user);
+                alarmStatus.put(COLUMN_GROUP, group);
+                alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
+
+                try {
+                    alarmStatus.save();
+                    Log.d(TAG, "User: " + user + " in group: " + group + " alarmStatus: stopped");
+                } catch (ParseException e) {
+                    Log.d(TAG, "Could not set alarmStatus");
+                }
+
                 Log.d(TAG, "addUserToGroup successful");
             } catch (ParseException e) {
                 Log.d(TAG, "addUserToGroup not successful");
@@ -445,7 +459,7 @@ public class ParseHelper {
 
     public static String getAlarmStatusUserPerGroup (String user, String group) {
 
-        String output = "";
+        String output = "stopped";
         ParseObject alarmStatusObject = null;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
