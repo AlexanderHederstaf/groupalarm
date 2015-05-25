@@ -5,11 +5,13 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
+import com.groupalarm.asijge.groupalarm.EditGroupActivity;
 import com.groupalarm.asijge.groupalarm.R;
 import com.parse.Parse;
 
@@ -17,12 +19,6 @@ import com.parse.Parse;
  * Created by Sebastian on 2015-05-20.
  */
 public class AddMemberDialogFragment extends DialogFragment {
-
-    private String userToAdd = "";
-
-    public String getUserToAdd() {
-        return userToAdd;
-    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -48,7 +44,7 @@ public class AddMemberDialogFragment extends DialogFragment {
         builder.setMessage("Add member")
                 .setPositiveButton("Invite", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        userToAdd = textField.getText().toString().trim();
+                        ((EditGroupActivity)getActivity()).addUser(textField.getText().toString().trim());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

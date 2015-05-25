@@ -137,16 +137,17 @@ public class GroupActivity extends ActionBarActivity {
 
             AddGroupDialogFragment dialog = new AddGroupDialogFragment();
             dialog.show(getFragmentManager(), "MyGroupDF");
-            String groupName = dialog.getGroupName();
-
-            NewGroup run = new NewGroup();
-            run.setGroupName(groupName);
-            (new Thread(run)).start();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addGroup(String groupName) {
+        NewGroup run = new NewGroup();
+        run.setGroupName(groupName);
+        (new Thread(run)).start();
     }
 
     public void showProgress(boolean show) {

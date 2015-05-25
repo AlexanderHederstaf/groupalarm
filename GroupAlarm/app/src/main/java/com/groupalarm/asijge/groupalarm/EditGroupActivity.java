@@ -40,6 +40,8 @@ import java.util.List;
 
 public class EditGroupActivity extends ActionBarActivity {
 
+    private static final String TAG = "EditGroupActivity";
+
     private static final int NEW_ALARM_CODE = 999;
     private static final int EDIT_ALARM_CODE = 998;
 
@@ -246,13 +248,6 @@ public class EditGroupActivity extends ActionBarActivity {
             Bundle args = new Bundle();
             dialog.show(getFragmentManager(), "MyAddMemberDF");
 
-            String user = dialog.getUserToAdd();
-            if (user != "") {
-                NewUser run = new NewUser();
-                run.setUser(user);
-                (new Thread(run)).start();
-            }
-
             return true;
         }
 
@@ -263,6 +258,18 @@ public class EditGroupActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Used by dialog to set data.
+     * @param user
+     */
+    public void addUser(String user) {
+        if (user != "") {
+            NewUser run = new NewUser();
+            run.setUser(user);
+            (new Thread(run)).start();
+        }
     }
 
     /**

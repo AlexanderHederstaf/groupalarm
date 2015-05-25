@@ -10,19 +10,14 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
+import com.groupalarm.asijge.groupalarm.EditGroupActivity;
+import com.groupalarm.asijge.groupalarm.GroupActivity;
 import com.groupalarm.asijge.groupalarm.R;
 
 /**
  * Created by Sebastian on 2015-05-20.
  */
 public class AddGroupDialogFragment extends DialogFragment {
-
-    private String groupName = "";
-
-    public String getGroupName() {
-        return groupName;
-    }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -44,7 +39,7 @@ public class AddGroupDialogFragment extends DialogFragment {
         builder.setMessage("Create group")
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        groupName = textField.getText().toString().trim();
+                        ((GroupActivity)getActivity()).addGroup(textField.getText().toString().trim());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
