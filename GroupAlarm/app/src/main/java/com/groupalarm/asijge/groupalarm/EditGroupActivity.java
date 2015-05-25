@@ -97,7 +97,6 @@ public class EditGroupActivity extends ActionBarActivity {
             alarms = ParseHelper.getAlarmsFromGroup(groupName);
             users = ParseHelper.getUsersInGroup(groupName);
             runOnUiThread(runListUpdate);
-            (new Thread(updateStatusNotification)).start();
         }
     }
 
