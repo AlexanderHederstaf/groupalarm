@@ -142,7 +142,6 @@ public class AlarmDB extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        db.close();
         return value;
     }
 
@@ -170,7 +169,6 @@ public class AlarmDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.insert(TABLE_ALARMS, null, values);
-        db.close();
     }
 
     /**
@@ -210,7 +208,6 @@ public class AlarmDB extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        db.close();
         return alarmList;
     }
 
@@ -233,7 +230,6 @@ public class AlarmDB extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        db.close();
         return alarm;
     }
 
@@ -290,7 +286,6 @@ public class AlarmDB extends SQLiteOpenHelper {
 
         db.delete(TABLE_ALARMS, COLUMN_ID + " = ?", new String[]{"" + id});
 
-        db.close();
     }
 
     /**

@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.SetAlarms;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.DialogFragment.AddMemberDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
@@ -60,6 +61,8 @@ public class EditGroupActivity extends ActionBarActivity {
     //private Runnable runParseUpdate;
 
     private String groupName;
+
+    private SetAlarms setAlarms;
 
     // Threads to update Parse data
     private class ParseUpdate implements Runnable {
@@ -125,6 +128,7 @@ public class EditGroupActivity extends ActionBarActivity {
             ParseHelper.addNewAlarmToGroup(alarm, groupName);
             sendNotificationToGroup("New alarm added to group: " + groupName);
             super.run();
+            (new Thread(setAlarms)).start();
         }
     }
 
@@ -135,6 +139,7 @@ public class EditGroupActivity extends ActionBarActivity {
             ParseHelper.deleteAlarm(alarm);
             sendNotificationToGroup("Alarm removed from group: " + groupName);
             super.run();
+            (new Thread(setAlarms)).start();
         }
     }
 
@@ -144,6 +149,7 @@ public class EditGroupActivity extends ActionBarActivity {
             ParseHelper.editAlarm(alarm);
             sendNotificationToGroup("Alarm changed in group: " + groupName);
             super.run();
+            (new Thread(setAlarms)).start();
         }
     }
 
@@ -169,6 +175,8 @@ public class EditGroupActivity extends ActionBarActivity {
 
         groupName = getIntent().getExtras().getString("group");
         getSupportActionBar().setTitle(groupName);
+
+        setAlarms = new SetAlarms(this);
 
         userItems = new ArrayList<String>();
         alarmItems = new ArrayList<Alarm>();

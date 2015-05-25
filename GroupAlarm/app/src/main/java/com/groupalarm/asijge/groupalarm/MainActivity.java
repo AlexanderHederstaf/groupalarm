@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
+import com.groupalarm.asijge.groupalarm.AlarmManaging.SetAlarms;
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmDB;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
@@ -74,28 +75,10 @@ public class MainActivity extends ActionBarActivity {
 
         final Context context = this;
 
-        refreshNetAlarm = new Runnable() {
+        refreshNetAlarm = new SetAlarms(this) {
             @Override
             public void run() {
-
-                Log.d(TAG, "refresh alarm thread");
-
-                List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
-
-                Log.d(TAG, "size of Shared-alarm: " + sharedAlarms.size());
-
-                AlarmHelper.cancelAlarms(context);
-
-                for (Alarm alarm : AlarmHelper.getAlarms()) {
-                    if (alarm.isGroupAlarm()) {
-                        AlarmHelper.removeAlarm(alarm.getId());
-                    }
-                }
-                for (Alarm alarm : sharedAlarms) {
-                    AlarmHelper.addAlarm(alarm);
-                }
-
-                AlarmHelper.setAlarms(context);
+                super.run();
                 runOnUiThread(runListUpdate);
             }
         };
