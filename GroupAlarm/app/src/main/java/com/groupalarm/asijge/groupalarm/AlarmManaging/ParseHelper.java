@@ -29,7 +29,7 @@ public class ParseHelper {
     private static final String COLUMN_ALARMS = "Alarms";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_GROUP = "Group";
-    private static final String COLUMN_ALARMSTATUS = "Group";
+    private static final String COLUMN_ALARMSTATUS = "alarmStatus";
 
 
     public static final String COLUMN_ID = "ID";
@@ -110,6 +110,20 @@ public class ParseHelper {
             relation.add(userObject);
             try {
                 groupObject.save();
+
+                // create an entry in the alarmStatus table
+                ParseObject alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
+                alarmStatus.put(COLUMN_USERNAME, user);
+                alarmStatus.put(COLUMN_GROUP, group);
+                alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
+
+                try {
+                    alarmStatus.save();
+                    Log.d(TAG, "User: " + user + " in group: " + group + " alarmStatus: stopped");
+                } catch (ParseException e) {
+                    Log.d(TAG, "Could not set alarmStatus");
+                }
+
                 Log.d(TAG, "addUserToGroup successful");
             } catch (ParseException e) {
                 Log.d(TAG, "addUserToGroup not successful");
@@ -455,7 +469,7 @@ public class ParseHelper {
         try {
             alarmStatusObject = query.getFirst();
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.d(TAG, "No row matching query: " + group + ", " + user);
         }
 
         output = alarmStatusObject.getString(COLUMN_ALARMSTATUS);
@@ -468,22 +482,34 @@ public class ParseHelper {
     public static void setMyAlarmStatusPerGroup (String group, String status) {
 
         String user = ParseUser.getCurrentUser().getUsername();
+        ParseObject alarmStatus = null;
 
-        // create an entry in the alarmStatus table
-        ParseObject alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
+        // Find user and group row if exist
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
+        query.whereContains(COLUMN_USERNAME, user);
+        query.whereContains(COLUMN_GROUP, group);
+
+        try {
+            alarmStatus = query.getFirst();
+        } catch (ParseException e) {
+            Log.d(TAG, "No row matching query: " + group + ", " + user);
+        }
+
+        if (alarmStatus == null) {
+            // create an entry in the alarmStatus table
+            alarmStatus = new ParseObject(TABLE_ALARMSTATUS);
+        }
+
         alarmStatus.put(COLUMN_USERNAME, user);
         alarmStatus.put(COLUMN_GROUP, group);
         alarmStatus.put(COLUMN_ALARMSTATUS, status);
+
         try {
             alarmStatus.save();
             Log.d(TAG, "User: " + user + " in group: " + group + " alarmStatus: " + status);
         } catch (ParseException e) {
             Log.d(TAG, "Could not set alarmStatus");
         }
-    }
-
-    public static void userSnoozedAlarm() {
-        // not implemented
     }
 }
 
