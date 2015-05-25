@@ -97,6 +97,7 @@ public class EditGroupActivity extends ActionBarActivity {
             alarms = ParseHelper.getAlarmsFromGroup(groupName);
             users = ParseHelper.getUsersInGroup(groupName);
             runOnUiThread(runListUpdate);
+            (new Thread(updateStatusNotification)).start();
         }
     }
 
@@ -204,7 +205,35 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmListView.setAdapter(alarmAdapter);
         registerForContextMenu(alarmListView);
 
-
+        updateStatusNotification = new Runnable() {
+            @Override
+            public void run() {
+                for (User user : userItems) {
+                    switch (ParseHelper.getAlarmStatusUserPerGroup(user.getName(), groupName)) {
+                        case User.OFF:
+                            user.setStatus(User.Status.OFF);
+                            break;
+                        case User.STOP:
+                            user.setStatus(User.Status.STOP);
+                            break;
+                        case User.RING:
+                            user.setStatus(User.Status.RING);
+                            break;
+                        case User.SNOOZE:
+                            user.setStatus(User.Status.SNOOZE);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        userAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        };
     }
 
 
@@ -227,35 +256,7 @@ public class EditGroupActivity extends ActionBarActivity {
         scheduledRefresh.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                refresh.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (User user : userItems) {
-                            switch (ParseHelper.getAlarmStatusUserPerGroup(user.getName(), groupName)) {
-                                case User.OFF:
-                                    user.setStatus(User.Status.OFF);
-                                    break;
-                                case User.STOP:
-                                    user.setStatus(User.Status.STOP);
-                                    break;
-                                case User.RING:
-                                    user.setStatus(User.Status.RING);
-                                    break;
-                                case User.SNOOZE:
-                                    user.setStatus(User.Status.SNOOZE);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                });
+                refresh.submit(updateStatusNotification);
             }
         }, 15, 15, TimeUnit.SECONDS);
     }
