@@ -1,4 +1,4 @@
-package com.groupalarm.asijge.groupalarm;
+package com.groupalarm.asijge.groupalarm.AlarmManaging;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
