@@ -37,8 +37,6 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
     /**
      *  Constructs a new AlarmListViewAdapter containing elements based on those in
      *  the list (the "items" param), with a layout based on the resourceId.
-     *  Constructs a new CustomListViewAdapter containing elements based on those in
-     *  the list (the "items" param), with a basic layout based on the resourceId.
      *
      * @param context           The Context in which it is used.
      * @param resourceId        The ID of the XML resource that is to be used.
