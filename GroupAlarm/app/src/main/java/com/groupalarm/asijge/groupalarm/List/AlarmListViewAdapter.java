@@ -3,6 +3,7 @@ package com.groupalarm.asijge.groupalarm.List;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,17 +190,12 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
                     AlarmHelper.setActive(alarm.getId(), false);
                     alarm.setActive(false);
                 }
-                AlarmHelper.setAlarms(context);
-                reDrawUi();
+
+                AlarmHelper.setAlarm(context, alarm.getId());
+
+                notifyDataSetChanged();
             }
         };
-    }
-
-    /**
-     * Notifies that some data has been changed and that the View needs to be redrawn.
-     */
-    private void reDrawUi() {
-        notifyDataSetChanged();
     }
 
     /**

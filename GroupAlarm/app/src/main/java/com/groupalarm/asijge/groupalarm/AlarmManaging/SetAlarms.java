@@ -21,7 +21,7 @@ public class SetAlarms implements Runnable {
     @Override
     public void run() {
 
-        List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
+        Log.d("SetAlarms", "thread started");
 
         AlarmHelper.cancelAlarms(context);
 
@@ -30,10 +30,18 @@ public class SetAlarms implements Runnable {
                 AlarmHelper.removeAlarm(alarm.getId());
             }
         }
+
+        List<Alarm> sharedAlarms = ParseHelper.getAllRemoteAlarmsForUser();
+
         for (Alarm alarm : sharedAlarms) {
             AlarmHelper.addAlarm(alarm);
         }
 
+        Log.d("SetAlarms", "set alarm started");
+
         AlarmHelper.setAlarms(context);
+
+        Log.d("SetAlarms", "set alarm done");
+
     }
 }

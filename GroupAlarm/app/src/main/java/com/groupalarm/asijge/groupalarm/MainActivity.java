@@ -62,16 +62,16 @@ public class MainActivity extends ActionBarActivity {
         adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Alarm alarm = (Alarm) listView.getItemAtPosition(position);
-                if (!alarm.isGroupAlarm()) {
-                    editAlarm(alarm.getId());
-                }
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Alarm alarm = (Alarm) listView.getItemAtPosition(position);
+//                if (!alarm.isGroupAlarm()) {
+//                    editAlarm(alarm.getId());
+//                }
+//            }
+//        });
 
         final Context context = this;
 
@@ -92,6 +92,7 @@ public class MainActivity extends ActionBarActivity {
                     rowItems.add(alarm);
                 }
                 Collections.sort(rowItems);
+                Log.d(TAG, "set data changed ");
                 adapter.notifyDataSetChanged();
             }
         };
@@ -187,11 +188,11 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm editedAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
 
-                AlarmHelper.cancelAlarms(this);
+                AlarmHelper.cancelAlarm(this, editedAlarm.getId());
                 AlarmHelper.removeAlarm(editedAlarm.getId());
                 AlarmHelper.addAlarm(editedAlarm);
-                AlarmHelper.setAlarms(this);
-                runOnUiThread(runListUpdate);
+//                AlarmHelper.setAlarms(this);
+//                runOnUiThread(runListUpdate);
             }
         }
 
@@ -200,10 +201,10 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
                 AlarmHelper.addAlarm(updatedNewAlarm);
-                Log.d(TAG, "Alarm added");
-                AlarmHelper.setAlarms(this);
-                Log.d(TAG, "Alarms set");
-                runOnUiThread(runListUpdate); // update list gui
+//                Log.d(TAG, "Alarm added");
+//                AlarmHelper.setAlarms(this);
+//                Log.d(TAG, "Alarms set");
+//                runOnUiThread(runListUpdate); // update list gui
             }
         }
 
@@ -211,8 +212,8 @@ public class MainActivity extends ActionBarActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
 
-                Log.d(TAG, "Remove alarm ok");
-                runOnUiThread(runListUpdate); // update list gui
+//                Log.d(TAG, "Remove alarm ok");
+//                runOnUiThread(runListUpdate); // update list gui
             }
         }
     }
@@ -250,9 +251,8 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         else if (item.getTitle() == "Delete") {
-            AlarmHelper.cancelAlarms(this);
+            AlarmHelper.cancelAlarm(this, alarmId);
             AlarmHelper.removeAlarm(alarmId);
-            AlarmHelper.setAlarms(this);
             runOnUiThread(runListUpdate);
             return true;
         }

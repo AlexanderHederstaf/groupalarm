@@ -113,6 +113,18 @@ public class AlarmHelper extends BroadcastReceiver {
         setAlarms(context);
     }
 
+    public static void setAlarm(Context context, int alarmID) {
+        cancelAlarm(context, alarmID);
+        Alarm alarm = getAlarm(alarmID);
+        setAlarm(context, getNextAlarmTime(alarm), createIntent(context, alarm));
+    }
+
+    public static void cancelAlarm(Context context, int alarmID) {
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        manager.cancel(createIntent(context, getAlarm(alarmID)));
+    }
+
     /**
      * Sets up the system to "ring" the Alarms that have Active status.
      *
@@ -125,9 +137,8 @@ public class AlarmHelper extends BroadcastReceiver {
         for(Alarm a : AlarmDB.getInstance().getAlarms()) {
             // Set the alarm, if enabled.
 
-            Log.d(TAG, "Setting alarm: " + a.toString() +  " msg=" +a.getMessage());
+            Log.d(TAG, "Setting alarm: " + a.toString() +  " msg=" +a.getMessage() + ", active = " + a.getStatus());
             if (a.getStatus()) {
-                Log.d(TAG, "Status active");
                 setAlarm(context, getNextAlarmTime(a), createIntent(context, a));
             }
         }
