@@ -43,6 +43,7 @@ public class AlarmScreenActivity extends Activity {
     private PowerManager.WakeLock lock;
     private MediaPlayer mediaPlayer;
     private String group;
+    private boolean isGroup;
 
     /**
      * {@inheritDoc}
@@ -55,10 +56,10 @@ public class AlarmScreenActivity extends Activity {
         TextView message = ((TextView) findViewById(R.id.alarm_textView));
         message.setText(getIntent().getStringExtra("MESSAGE"));
 
-        group = getIntent().getStringExtra("GROUP");
-        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_RINGING);
-
-
+        isGroup = getIntent().getBooleanExtra("IS_GROUP", false);
+        if (isGroup) {
+            group = getIntent().getStringExtra("GROUP");
+        }
         Log.d(TAG, "AlarmScreen started");
 
         //Ensure wakelock release
@@ -77,6 +78,9 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
+                    if (isGroup) {
+                        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                    }
                 }
             }
         };
@@ -90,7 +94,9 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
-                    ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                    if (isGroup) {
+                        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                    }
                 }
                 finish();
             }
@@ -112,7 +118,9 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     mediaPlayer = null;
-                    ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_SNOOZED);
+                    if (isGroup) {
+                        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_SNOOZED);
+                    }
                 }
 
                 finish();
@@ -159,6 +167,10 @@ public class AlarmScreenActivity extends Activity {
             mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
+        }
+
+        if (isGroup) {
+            ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_RINGING);
         }
     }
 

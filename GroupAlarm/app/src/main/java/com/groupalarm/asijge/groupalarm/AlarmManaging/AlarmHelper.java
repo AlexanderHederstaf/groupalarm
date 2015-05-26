@@ -241,6 +241,7 @@ public class AlarmHelper extends BroadcastReceiver {
         intent.putExtra("SNOOZE", alarm.getSnoozeInterval().getValue());
         intent.putExtra("ID", alarm.getId());
 
+        intent.putExtra("IS_GROUP", alarm.isGroupAlarm());
         if (alarm.isGroupAlarm()) {
             intent.putExtra("GROUP", ParseHelper.getGroupFromAlarm(alarm));
         }
