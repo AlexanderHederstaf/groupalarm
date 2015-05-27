@@ -13,14 +13,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by sehlstedt on 19/05/15.
+ * ParseHelper has got a selection of methods for querying the Parse.com clould service.
  */
 public class ParseHelper {
 
     private static final String TAG = "ParseHelper";
 
+    // String constants for the
     private static final String TABLE_GROUPS = "Groups";
-    private static final String TABLE_USER = "User";
     private static final String TABLE_ALARMS = "Alarms";
     private static final String TABLE_ALARMSTATUS = "alarmStatus";
 
@@ -31,8 +31,8 @@ public class ParseHelper {
     private static final String COLUMN_GROUP = "Group";
     private static final String COLUMN_ALARMSTATUS = "alarmStatus";
     private static final String COLUMN_ALARMSIGNAL = "alarmSignal";
+    private static final String COLUMN_PUNISHABLE = "punishable";
 
-    public static final String COLUMN_ID = "ID";
     public static final String COLUMN_MESSAGE = "Message";
     public static final String COLUMN_TIME = "Time";
     public static final String COLUMN_STATUS = "Status";
@@ -77,6 +77,8 @@ public class ParseHelper {
             alarmStatus.put(COLUMN_USERNAME, user.getUsername());
             alarmStatus.put(COLUMN_GROUP, name);
             alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
+            alarmStatus.put(COLUMN_ALARMSIGNAL, "default");
+            alarmStatus.put(COLUMN_PUNISHABLE, false);
 
             try {
                 alarmStatus.save();
@@ -129,6 +131,8 @@ public class ParseHelper {
                 alarmStatus.put(COLUMN_USERNAME, user);
                 alarmStatus.put(COLUMN_GROUP, group);
                 alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
+                alarmStatus.put(COLUMN_ALARMSIGNAL, "default");
+                alarmStatus.put(COLUMN_PUNISHABLE, false);
 
                 try {
                     alarmStatus.save();
@@ -568,6 +572,51 @@ public class ParseHelper {
         output = alarmSignalObject.getString(COLUMN_ALARMSIGNAL);
 
         Log.d(TAG, "Alarm signal is: " + output);
+
+        return output;
+    }
+
+    public static void setPunishable(String group, String user, Boolean punishable) {
+        ParseObject alarmStatus = null;
+
+        // Find user and group row if exist
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
+        query.whereContains(COLUMN_USERNAME, user);
+        query.whereContains(COLUMN_GROUP, group);
+
+        try {
+            alarmStatus = query.getFirst();
+            alarmStatus.put(COLUMN_PUNISHABLE, punishable);
+        } catch (ParseException e) {
+            Log.d(TAG, "No row matching query: " + group + ", " + user);
+        }
+
+        try {
+            alarmStatus.save();
+            Log.d(TAG, "User: " + user + ", Group: " + group + ", Punishable: " + punishable);
+        } catch (ParseException e) {
+            Log.d(TAG, "Could not set punishable");
+        }
+    }
+
+    public static Boolean getPunishable(String group, String user) {
+
+        Boolean output = false;
+        ParseObject alarmSignalObject = null;
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
+        query.whereEqualTo(COLUMN_USERNAME, user);
+        query.whereEqualTo(COLUMN_GROUP, group);
+
+        try {
+            alarmSignalObject = query.getFirst();
+        } catch (ParseException e) {
+            Log.d(TAG, "No row matching query: " + group + ", " + user);
+        }
+
+        output = alarmSignalObject.getBoolean(COLUMN_PUNISHABLE);
+
+        Log.d(TAG, "Punishable: " + output);
 
         return output;
     }
