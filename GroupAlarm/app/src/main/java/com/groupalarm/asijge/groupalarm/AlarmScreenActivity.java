@@ -95,6 +95,7 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer = null;
                     if (isGroup) {
                         ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                        ParseHelper.setAlarmSignal(group, ParseUser.getCurrentUser().getUsername(), "classic_alarm");
                     }
                 }
                 finish();
