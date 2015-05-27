@@ -64,21 +64,32 @@ public class SignalChangeActivity extends ActionBarActivity {
         final Context context = this;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
                 // Set new signal for current snoozing user
                 Toast toast = null;
-                Bundle extras = getIntent().getExtras();
+                final Bundle extras = getIntent().getExtras();
+
+                (new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (position == 0) {
+                            ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "bomb_siren");
+                        } else if (position == 1) {
+                            ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "classic_alarm");
+                        } else if (position == 2) {
+                            ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "railroad_crossing_bell");
+                        }
+                        ParseHelper.setPunishable(extras.getString("groupname"), extras.getString("user"), false);
+                    }
+                })).start();
+
                 if (position == 0) {
-                    ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "bomb_siren");
                     toast = Toast.makeText(context, "Set the signal Bomb Siren for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 1) {
-                    ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "classic_alarm");
                     toast = Toast.makeText(context, "Set the signal Classic Alarm for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 2) {
-                    ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "railroad_crossing_bell");
                     toast = Toast.makeText(context, "Set the signal Railroad Crossing Bell for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 }
-                ParseHelper.setPunishable(extras.getString("groupname"), extras.getString("user"), false);
                 toast.show();
                 finish();
             }
