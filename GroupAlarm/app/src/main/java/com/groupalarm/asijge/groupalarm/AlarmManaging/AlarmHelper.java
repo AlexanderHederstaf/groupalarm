@@ -66,7 +66,7 @@ public class AlarmHelper extends BroadcastReceiver {
 
         switch (time) {
             case 1:
-                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.FIVE);
+                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.ONE);
                 break;
             case 5:
                 snoozeAlarm.setSnoozeInterval(Alarm.Snooze.FIVE);
@@ -279,7 +279,7 @@ public class AlarmHelper extends BroadcastReceiver {
         intent.putExtra("ID", alarm.getId());
 
         intent.putExtra("IS_GROUP", groupName != null);
-        if (alarm.isGroupAlarm()) {
+        if (groupName != null) {
             intent.putExtra("GROUP", groupName);
         }
 
