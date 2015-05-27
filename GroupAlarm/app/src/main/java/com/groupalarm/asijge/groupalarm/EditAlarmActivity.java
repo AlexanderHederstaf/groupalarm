@@ -230,7 +230,6 @@ public class EditAlarmActivity extends ActionBarActivity {
             .setTitle("Set alarm days")
             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    // Okey'd.
                     Log.d(TAG, "AlarmDaysDialog pressed OK button");
                     for (int i = 0; i < resultBool.length; i++) {
                         newAlarm.setDay(i, resultBool[i]);
