@@ -1,11 +1,6 @@
 package com.groupalarm.asijge.groupalarm;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +19,6 @@ import com.groupalarm.asijge.groupalarm.Data.User;
 import com.groupalarm.asijge.groupalarm.DialogFragment.AddMemberDialogFragment;
 import com.groupalarm.asijge.groupalarm.List.AlarmListViewAdapter;
 import com.groupalarm.asijge.groupalarm.List.UserListViewAdapter;
-import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;

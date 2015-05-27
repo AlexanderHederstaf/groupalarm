@@ -188,11 +188,14 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm editedAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
 
+                Log.d("TAG", "Alarm edited: id=" + editedAlarm.getId());
+
                 AlarmHelper.cancelAlarm(this, editedAlarm.getId());
                 AlarmHelper.removeAlarm(editedAlarm.getId());
                 AlarmHelper.addAlarm(editedAlarm);
+
 //                AlarmHelper.setAlarms(this);
-//                runOnUiThread(runListUpdate);
+                runOnUiThread(runListUpdate);
             }
         }
 
@@ -204,7 +207,7 @@ public class MainActivity extends ActionBarActivity {
 //                Log.d(TAG, "Alarm added");
 //                AlarmHelper.setAlarms(this);
 //                Log.d(TAG, "Alarms set");
-//                runOnUiThread(runListUpdate); // update list gui
+                runOnUiThread(runListUpdate); // update list gui
             }
         }
 
@@ -213,7 +216,7 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
 
 //                Log.d(TAG, "Remove alarm ok");
-//                runOnUiThread(runListUpdate); // update list gui
+                runOnUiThread(runListUpdate); // update list gui
             }
         }
     }
