@@ -251,7 +251,7 @@ public class EditGroupActivity extends ActionBarActivity {
             public void run() {
                 refresh.submit(updateStatusNotification);
             }
-        }, 15, 15, TimeUnit.SECONDS);
+        }, 4, 5, TimeUnit.SECONDS);
     }
 
     @Override
