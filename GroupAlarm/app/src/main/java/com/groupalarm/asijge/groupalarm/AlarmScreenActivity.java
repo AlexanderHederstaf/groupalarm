@@ -113,6 +113,7 @@ public class AlarmScreenActivity extends Activity {
                 if (snoozeTime > 0) {
                     if (isGroup) {
                         AlarmHelper.setSnooze(c, snoozeTime, group);
+                        ParseHelper.setPunishable(group, ParseUser.getCurrentUser().getUsername(), true);
                     } else {
                         AlarmHelper.setSnooze(c, snoozeTime, null);
                     }

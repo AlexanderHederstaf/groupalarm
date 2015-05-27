@@ -94,7 +94,6 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
             holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
             holder.checkBox = (Switch) convertView.findViewById(R.id.on_off);
             holder.checkBox.setThumbTextPadding(4);//holder.checkBox.getWidth() / 2);
-            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(alarm));
             holder.monday = (TextView) convertView.findViewById(R.id.monday);
             holder.tuesday = (TextView) convertView.findViewById(R.id.tuesday);
             holder.wednesday = (TextView) convertView.findViewById(R.id.wednesday);
@@ -108,7 +107,6 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
         // the new/updated View.
         } else {
             holder = (ViewHolder) convertView.getTag();
-            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(alarm));
         }
 
         // Add the TextViews to the "days" list as to be able to loop through them.
@@ -132,6 +130,7 @@ public class AlarmListViewAdapter extends ArrayAdapter<Alarm> {
         } else {
             holder.checkBox.setEnabled(true);
             holder.checkBox.setVisibility(View.VISIBLE);
+            holder.checkBox.setOnCheckedChangeListener(alarmCheckedListener(alarm));
             holder.imageView.setImageResource(R.drawable.ic_single_user);
             if(holder.checkBox.isChecked() != alarm.getStatus()) {
                 holder.checkBox.setChecked(alarm.getStatus());

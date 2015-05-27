@@ -65,14 +65,14 @@ public class SignalChangeActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // Set new signal for current snoozing user
                 Bundle extras = getIntent().getExtras();
-                if(position == 0) {
-                    ParseHelper.setAlarmSignal(extras.getString("groupname"),extras.getString("user"), "bomb_siren");
-                } else if(position == 1) {
-                    ParseHelper.setAlarmSignal(extras.getString("groupname"),extras.getString("user"), "classic_alarm");
-                } else if(position == 2) {
-                    ParseHelper.setAlarmSignal(extras.getString("groupname"),extras.getString("user"), "railroad_crossing_bell");
+                if (position == 0) {
+                    ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "bomb_siren");
+                } else if (position == 1) {
+                    ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "classic_alarm");
+                } else if (position == 2) {
+                    ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "railroad_crossing_bell");
                 }
-
+                ParseHelper.setPunishable(extras.getString("groupname"), extras.getString("user"), false);
                 finish();
             }
         });

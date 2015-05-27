@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.groupalarm.asijge.groupalarm.Data.User;
 import com.groupalarm.asijge.groupalarm.R;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class UserListViewAdapter extends ArrayAdapter<User> {
 
     private Context context;
+    private String userGroup;
 
     public UserListViewAdapter(Context context, int resourceId,
                                List<User> items) {
@@ -41,6 +43,15 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
         view.setText(user.getName());
 
         ImageView snoozing = (ImageView) convertView.findViewById(R.id.snoozing);
+
+        if(ParseHelper.getPunishable(userGroup,user.getName())) {
+            snoozing.setEnabled(true);
+            snoozing.setVisibility(View.VISIBLE);
+        } else {
+            snoozing.setEnabled(false);
+            snoozing.setVisibility(View.INVISIBLE);
+        }
+
         ImageView status = (ImageView) convertView.findViewById(R.id.user_status);
 
         switch (user.getStatus()) {
@@ -60,5 +71,9 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
                 break;
         }
         return convertView;
+    }
+
+    public void setUserGroup(String group) {
+        userGroup = group;
     }
 }

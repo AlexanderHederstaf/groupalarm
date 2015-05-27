@@ -193,6 +193,7 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmProgress = findViewById(R.id.alarm_fetch_progress);
 
         userAdapter = new UserListViewAdapter(this, R.layout.user_list_item, userItems);
+        userAdapter.setUserGroup(groupName);
         userListView.setAdapter(userAdapter);
 
         alarmAdapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, alarmItems);
@@ -203,10 +204,12 @@ public class EditGroupActivity extends ActionBarActivity {
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(context, SignalChangeActivity.class);
-                intent.putExtra("user", userItems.get(position).getName());
-                intent.putExtra("groupname", groupName );
-                startActivity(intent);
+                if(ParseHelper.getPunishable(groupName, userItems.get(position).getName())) {
+                    Intent intent = new Intent(context, SignalChangeActivity.class);
+                    intent.putExtra("user", userItems.get(position).getName());
+                    intent.putExtra("groupname", groupName);
+                    startActivity(intent);
+                }
             }
         });
 
