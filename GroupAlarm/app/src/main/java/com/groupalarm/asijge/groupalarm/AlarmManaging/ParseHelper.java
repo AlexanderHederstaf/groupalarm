@@ -30,8 +30,8 @@ public class ParseHelper {
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_GROUP = "Group";
     private static final String COLUMN_ALARMSTATUS = "alarmStatus";
-
-
+    private static final String COLUMN_ALARMSIGNAL = "alarmSignal";
+    
     public static final String COLUMN_ID = "ID";
     public static final String COLUMN_MESSAGE = "Message";
     public static final String COLUMN_TIME = "Time";
@@ -523,6 +523,30 @@ public class ParseHelper {
             Log.d(TAG, "User: " + user + " in group: " + group + " alarmStatus: " + status);
         } catch (ParseException e) {
             Log.d(TAG, "Could not set alarmStatus");
+        }
+    }
+
+    public static void setAlarmSignal (String group, String user, String alarmSignal) {
+
+        ParseObject alarmStatus = null;
+
+        // Find user and group row if exist
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
+        query.whereContains(COLUMN_USERNAME, user);
+        query.whereContains(COLUMN_GROUP, group);
+
+        try {
+            alarmStatus = query.getFirst();
+            alarmStatus.put(COLUMN_ALARMSIGNAL, alarmSignal);
+        } catch (ParseException e) {
+            Log.d(TAG, "No row matching query: " + group + ", " + user);
+        }
+
+        try {
+            alarmStatus.save();
+            Log.d(TAG, "User: " + user + ", Group: " + group + ", AlarmSignal: " + alarmSignal);
+        } catch (ParseException e) {
+            Log.d(TAG, "Could not set alarmSignal");
         }
     }
 }
