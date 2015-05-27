@@ -112,7 +112,11 @@ public class AlarmScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (snoozeTime > 0) {
-                    AlarmHelper.setSnooze(c, snoozeTime);
+                    if (isGroup) {
+                        AlarmHelper.setSnooze(c, snoozeTime, group);
+                    } else {
+                        AlarmHelper.setSnooze(c, snoozeTime, null);
+                    }
                 }
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();

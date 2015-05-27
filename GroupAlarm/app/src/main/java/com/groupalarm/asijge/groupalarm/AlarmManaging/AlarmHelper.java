@@ -21,6 +21,7 @@ public class AlarmHelper extends BroadcastReceiver {
     private static final String TAG = "AlarmHelper";
 
     private static Alarm snoozeAlarm;
+    private static String snoozeGroup;
 
     public static List<Alarm> getAlarms() {
         return AlarmDB.getInstance().getAlarms();
@@ -45,14 +46,17 @@ public class AlarmHelper extends BroadcastReceiver {
      *
      * @param context The Application Context.
      * @param time The number of minutes to delay the snooze alarm.
+     * @param groupName Name of the group of the original alarm, can be null
      */
-    public static void setSnooze(Context context, int time) {
+    public static void setSnooze(Context context, int time, String groupName) {
         if (time <= 0) {
             return;
         }
         int snoozeID = -1;
         snoozeAlarm = new Alarm(snoozeID);
         snoozeAlarm.setActive(true);
+
+        snoozeGroup = groupName;
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, time);
@@ -75,7 +79,7 @@ public class AlarmHelper extends BroadcastReceiver {
                 break;
         }
 
-        PendingIntent snoozeIntent = createIntent(context, snoozeAlarm);
+        PendingIntent snoozeIntent = createIntent(context, snoozeAlarm, snoozeGroup);
 
         setAlarm(context, cal, snoozeIntent);
     }
@@ -88,7 +92,7 @@ public class AlarmHelper extends BroadcastReceiver {
     public static void cancelSnooze(Context context) {
         if (snoozeAlarm != null) {
             AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            manager.cancel(createIntent(context, snoozeAlarm));
+            manager.cancel(createIntent(context, snoozeAlarm, snoozeGroup));
             snoozeAlarm = null;
         }
     }
@@ -116,13 +120,23 @@ public class AlarmHelper extends BroadcastReceiver {
     public static void setAlarm(Context context, int alarmID) {
         cancelAlarm(context, alarmID);
         Alarm alarm = getAlarm(alarmID);
-        setAlarm(context, getNextAlarmTime(alarm), createIntent(context, alarm));
+
+        if (alarm.isGroupAlarm()) {
+            setAlarm(context, getNextAlarmTime(alarm), createIntent(context, alarm, ParseHelper.getGroupFromAlarm(alarm)));
+        } else {
+            setAlarm(context, getNextAlarmTime(alarm), createIntent(context, alarm, null));
+        }
     }
 
     public static void cancelAlarm(Context context, int alarmID) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Alarm alarm = getAlarm(alarmID);
 
-        manager.cancel(createIntent(context, getAlarm(alarmID)));
+        if (alarm.isGroupAlarm()) {
+            manager.cancel(createIntent(context, alarm, ParseHelper.getGroupFromAlarm(alarm)));
+        } else {
+            manager.cancel(createIntent(context, alarm, null));
+        }
     }
 
     /**
@@ -139,7 +153,11 @@ public class AlarmHelper extends BroadcastReceiver {
 
             Log.d(TAG, "Setting alarm: " + a.toString() +  " msg=" +a.getMessage() + ", active = " + a.getStatus());
             if (a.getStatus()) {
-                setAlarm(context, getNextAlarmTime(a), createIntent(context, a));
+                if (a.isGroupAlarm()) {
+                    setAlarm(context, getNextAlarmTime(a), createIntent(context, a, ParseHelper.getGroupFromAlarm(a)));
+                } else {
+                    setAlarm(context, getNextAlarmTime(a), createIntent(context, a, null));
+                }
             }
         }
     }
@@ -184,7 +202,12 @@ public class AlarmHelper extends BroadcastReceiver {
 
         for(Alarm a : AlarmDB.getInstance().getAlarms()) {
             // Cancel the alarm.
-            manager.cancel(createIntent(context, a));
+            if (a.isGroupAlarm()) {
+                manager.cancel(createIntent(context, a, ParseHelper.getGroupFromAlarm(a)));
+
+            } else {
+                manager.cancel(createIntent(context, a, null));
+            }
         }
     }
 
@@ -245,16 +268,16 @@ public class AlarmHelper extends BroadcastReceiver {
         return cal;
     }
 
-    private static PendingIntent createIntent(Context context, Alarm alarm){
+    private static PendingIntent createIntent(Context context, Alarm alarm, String groupName){
         Intent intent = new Intent(context, AlarmService.class);
 
         intent.putExtra("MESSAGE", alarm.getMessage());
         intent.putExtra("SNOOZE", alarm.getSnoozeInterval().getValue());
         intent.putExtra("ID", alarm.getId());
 
-        intent.putExtra("IS_GROUP", alarm.isGroupAlarm());
+        intent.putExtra("IS_GROUP", groupName != null);
         if (alarm.isGroupAlarm()) {
-            intent.putExtra("GROUP", ParseHelper.getGroupFromAlarm(alarm));
+            intent.putExtra("GROUP", groupName);
         }
 
         // start the service and "show" something when Alarm goes off.
