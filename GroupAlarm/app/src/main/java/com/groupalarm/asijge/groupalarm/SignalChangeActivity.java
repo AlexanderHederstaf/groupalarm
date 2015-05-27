@@ -53,8 +53,9 @@ public class SignalChangeActivity extends ActionBarActivity {
 
         listView = (ListView) findViewById(R.id.signal_list);
         rowItems = new ArrayList<String>();
-        rowItems.add("Test1");
-        rowItems.add("Test2");
+        rowItems.add("Bomb Siren");
+        rowItems.add("Classic Alarm");
+        rowItems.add("Railroad Crossing Bell");
         adapter = new SignalListViewAdapter(this, R.layout.signal_list_item, rowItems);
         listView.setAdapter(adapter);
 
@@ -63,9 +64,16 @@ public class SignalChangeActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // Set new signal for current snoozing user
-                //Intent intent = new Intent(context, EditGroupActivity.class);
-                //intent.putExtra("group", rowItems.get(position));
-                //startActivity(intent);
+                Bundle extras = getIntent().getExtras();
+                if(position == 0) {
+                    ParseHelper.setAlarmSignal(extras.getString("groupname"),extras.getString("user"), "bomb_siren");
+                } else if(position == 1) {
+                    ParseHelper.setAlarmSignal(extras.getString("groupname"),extras.getString("user"), "classic_alarm");
+                } else if(position == 2) {
+                    ParseHelper.setAlarmSignal(extras.getString("groupname"),extras.getString("user"), "railroad_crossing_bell");
+                }
+
+                finish();
             }
         });
     }

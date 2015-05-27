@@ -40,20 +40,21 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
         TextView view = (TextView) convertView.findViewById(R.id.user_name);
         view.setText(user.getName());
 
-        ImageView image = (ImageView) convertView.findViewById(R.id.user_status);
+        ImageView snoozing = (ImageView) convertView.findViewById(R.id.snoozing);
+        ImageView status = (ImageView) convertView.findViewById(R.id.user_status);
 
         switch (user.getStatus()) {
             case RING:
-                image.setImageResource(R.drawable.ic_action_ring);
+                status.setImageResource(R.drawable.ic_action_ring);
                 break;
             case SNOOZE:
-                image.setImageResource(R.drawable.ic_action_snooze);
+                status.setImageResource(R.drawable.ic_action_snooze);
                 break;
             case STOP:
-                image.setImageResource(R.drawable.ic_action_off);
+                status.setImageResource(R.drawable.ic_action_off);
                 break;
             case OFF:
-                image.setImageResource(R.drawable.ic_action_mute);
+                status.setImageResource(R.drawable.ic_action_mute);
                 break;
             default:
                 break;

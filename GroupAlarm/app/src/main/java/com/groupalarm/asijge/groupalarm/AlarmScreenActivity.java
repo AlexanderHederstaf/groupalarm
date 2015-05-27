@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
-
+import com.parse.ParseUser;
 
 
 public class AlarmScreenActivity extends Activity {
@@ -167,7 +167,22 @@ public class AlarmScreenActivity extends Activity {
             Log.d(TAG, "lock acquired");
         }
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
+            if(isGroup) {
+                switch (ParseHelper.getAlarmSignal(group, ParseUser.getCurrentUser().getUsername())) {
+                    case "bomb_siren":
+                        mediaPlayer = MediaPlayer.create(this, R.raw.bomb_siren);
+                        break;
+                    case "classic_alarm":
+                        mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
+                        break;
+                    case "railroad_crossing_bell":
+                        mediaPlayer = MediaPlayer.create(this, R.raw.railroad_crossing_bell);
+                        break;
+                }
+
+            } else {
+                mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
+            }
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
         }

@@ -204,7 +204,8 @@ public class EditGroupActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent = new Intent(context, SignalChangeActivity.class);
-                intent.putExtra("signal", userItems.get(position).getName());
+                intent.putExtra("user", userItems.get(position).getName());
+                intent.putExtra("groupname", groupName );
                 startActivity(intent);
             }
         });
