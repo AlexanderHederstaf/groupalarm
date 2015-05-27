@@ -422,9 +422,6 @@ public class ParseHelper {
         alarm.setDay(6, parseObject.getBoolean(COLUMN_SUNDAY));
 
         switch (parseObject.getInt(COLUMN_SNOOZE)) {
-            case 1:
-                alarm.setSnoozeInterval(Alarm.Snooze.ONE);
-                break;
             case 5:
                 alarm.setSnoozeInterval(Alarm.Snooze.FIVE);
                 break;

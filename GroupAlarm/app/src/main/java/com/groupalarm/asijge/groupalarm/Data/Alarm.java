@@ -37,7 +37,6 @@ public class Alarm implements Serializable, Comparable<Alarm> {
      */
     public enum Snooze {
         NO_SNOOZE(0),
-        ONE(1),
         FIVE(5),
         TEN(10),
         FIFTEEN(15);
