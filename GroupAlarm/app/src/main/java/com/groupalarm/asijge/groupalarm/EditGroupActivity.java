@@ -59,8 +59,9 @@ public class EditGroupActivity extends ActionBarActivity {
     private AlarmListViewAdapter alarmAdapter;
     private UserListViewAdapter userAdapter;
 
-
-    //private Runnable runParseUpdate;
+    private List<Alarm> alarms = new LinkedList<>();
+    private List<String> users = new LinkedList<>();
+    private Map<String, Boolean> punishable = new HashMap<>();
 
     private String groupName;
 
@@ -69,19 +70,13 @@ public class EditGroupActivity extends ActionBarActivity {
     // Threads to update Parse data
     private class ParseUpdate implements Runnable {
 
-        private List<Alarm> alarms = new LinkedList<>();
-        private List<String> users = new LinkedList<>();
-        private Map<String, Boolean> punishable = new HashMap<>();
-
         Runnable runListUpdate = new Runnable() {
             public void run() {
                 userItems.clear();
                 alarmItems.clear();
 
                 for(String userName : users) {
-                    User toAdd = new User(userName);
-                    toAdd.setPunishable(punishable.get(userName));
-                    userItems.add(toAdd);
+                    userItems.add(new User(userName));
                 }
                 Collections.sort(userItems);
                 userAdapter.notifyDataSetChanged();
@@ -98,10 +93,6 @@ public class EditGroupActivity extends ActionBarActivity {
         public void run() {
             alarms = ParseHelper.getAlarmsFromGroup(groupName);
             users = ParseHelper.getUsersInGroup(groupName);
-
-            for (String user : users) {
-                punishable.put(user, ParseHelper.getPunishable(groupName, user));
-            }
 
             runOnUiThread(runListUpdate);
         }
@@ -167,7 +158,7 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
-    Runnable updateStatusNotification;
+    private Runnable updateStatusNotification;
 
     private class NewUser extends ParseUpdate {
 
@@ -256,6 +247,9 @@ public class EditGroupActivity extends ActionBarActivity {
                         default:
                             break;
                     }
+
+                    user.setPunishable(ParseHelper.getPunishable(groupName, user.getName()));
+
                 }
                 runOnUiThread(new Runnable() {
                     @Override

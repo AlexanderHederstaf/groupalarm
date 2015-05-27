@@ -62,7 +62,7 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
 
         holder.userName.setText(user.getName());
 
-        if(ParseHelper.getPunishable(userGroup,user.getName())) {
+        if(user.isPunishable()) {
             holder.snoozeIcon.setEnabled(true);
             holder.snoozeIcon.setVisibility(View.VISIBLE);
         } else {
