@@ -18,8 +18,7 @@ import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 
 
-//TODO override the back button
-//TODO full screen activity
+
 public class AlarmScreenActivity extends Activity {
 
     /**

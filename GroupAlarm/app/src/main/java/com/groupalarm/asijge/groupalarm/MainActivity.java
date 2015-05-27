@@ -78,7 +78,9 @@ public class MainActivity extends ActionBarActivity {
         refreshNetAlarm = new SetAlarms(this) {
             @Override
             public void run() {
-                super.run();
+                synchronized (this) {
+                    super.run();
+                }
                 runOnUiThread(runListUpdate);
             }
         };
@@ -167,7 +169,9 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (id == R.id.action_logout) {
-            ParseUser.logOut();
+            synchronized (refreshNetAlarm) {
+                ParseUser.logOut();
+            }
             Intent i = new Intent(this, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
@@ -194,7 +198,6 @@ public class MainActivity extends ActionBarActivity {
                 AlarmHelper.removeAlarm(editedAlarm.getId());
                 AlarmHelper.addAlarm(editedAlarm);
 
-//                AlarmHelper.setAlarms(this);
                 runOnUiThread(runListUpdate);
             }
         }
@@ -204,9 +207,7 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 Alarm updatedNewAlarm = (Alarm) data.getSerializableExtra("EditedAlarm");
                 AlarmHelper.addAlarm(updatedNewAlarm);
-//                Log.d(TAG, "Alarm added");
-//                AlarmHelper.setAlarms(this);
-//                Log.d(TAG, "Alarms set");
+
                 runOnUiThread(runListUpdate); // update list gui
             }
         }
@@ -214,8 +215,6 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == REMOVE_ALARM_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-
-//                Log.d(TAG, "Remove alarm ok");
                 runOnUiThread(runListUpdate); // update list gui
             }
         }

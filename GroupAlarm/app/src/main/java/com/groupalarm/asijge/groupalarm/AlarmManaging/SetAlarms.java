@@ -21,8 +21,6 @@ public class SetAlarms implements Runnable {
     @Override
     public void run() {
 
-        Log.d("SetAlarms", "thread started");
-
         AlarmHelper.cancelAlarms(context);
 
         for (Alarm alarm : AlarmHelper.getAlarms()) {
@@ -37,11 +35,6 @@ public class SetAlarms implements Runnable {
             AlarmHelper.addAlarm(alarm);
         }
 
-        Log.d("SetAlarms", "set alarm started");
-
         AlarmHelper.setAlarms(context);
-
-        Log.d("SetAlarms", "set alarm done");
-
     }
 }
