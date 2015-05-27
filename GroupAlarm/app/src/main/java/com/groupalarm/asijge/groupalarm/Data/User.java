@@ -17,6 +17,7 @@ public class User implements Comparable<User> {
 
     private String name;
     private Status status;
+    private boolean punishable;
 
     public User(String name) {
         this.name = name;
@@ -38,5 +39,13 @@ public class User implements Comparable<User> {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setPunishable(boolean punishable) {
+        this.punishable = punishable;
+    }
+
+    public boolean isPunishable() {
+        return punishable;
     }
 }

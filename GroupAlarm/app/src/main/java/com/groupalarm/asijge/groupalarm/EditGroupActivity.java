@@ -30,8 +30,10 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,8 +59,6 @@ public class EditGroupActivity extends ActionBarActivity {
     private AlarmListViewAdapter alarmAdapter;
     private UserListViewAdapter userAdapter;
 
-    private List<Alarm> alarms = new LinkedList<>();
-    private List<String> users = new LinkedList<>();
 
     //private Runnable runParseUpdate;
 
@@ -68,13 +68,20 @@ public class EditGroupActivity extends ActionBarActivity {
 
     // Threads to update Parse data
     private class ParseUpdate implements Runnable {
+
+        private List<Alarm> alarms = new LinkedList<>();
+        private List<String> users = new LinkedList<>();
+        private Map<String, Boolean> punishable = new HashMap<>();
+
         Runnable runListUpdate = new Runnable() {
             public void run() {
                 userItems.clear();
                 alarmItems.clear();
 
                 for(String userName : users) {
-                    userItems.add(new User(userName));
+                    User toAdd = new User(userName);
+                    toAdd.setPunishable(punishable.get(userName));
+                    userItems.add(toAdd);
                 }
                 Collections.sort(userItems);
                 userAdapter.notifyDataSetChanged();
@@ -91,6 +98,11 @@ public class EditGroupActivity extends ActionBarActivity {
         public void run() {
             alarms = ParseHelper.getAlarmsFromGroup(groupName);
             users = ParseHelper.getUsersInGroup(groupName);
+
+            for (String user : users) {
+                punishable.put(user, ParseHelper.getPunishable(groupName, user));
+            }
+
             runOnUiThread(runListUpdate);
         }
     }
@@ -214,7 +226,8 @@ public class EditGroupActivity extends ActionBarActivity {
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if(ParseHelper.getPunishable(groupName, userItems.get(position).getName())) {
+                User user = userAdapter.getItem(position);
+                if(user.isPunishable()) {
                     Intent intent = new Intent(context, SignalChangeActivity.class);
                     intent.putExtra("user", userItems.get(position).getName());
                     intent.putExtra("groupname", groupName);
