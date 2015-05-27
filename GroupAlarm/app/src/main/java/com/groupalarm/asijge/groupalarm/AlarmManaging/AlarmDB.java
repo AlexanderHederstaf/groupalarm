@@ -254,6 +254,9 @@ public class AlarmDB extends SQLiteOpenHelper {
             case 0:
                 alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
                 break;
+            case 1:
+                alarm.setSnoozeInterval(Alarm.Snooze.ONE);
+                break;
             case 5:
                 alarm.setSnoozeInterval(Alarm.Snooze.FIVE);
                 break;

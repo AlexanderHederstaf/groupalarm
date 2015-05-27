@@ -65,6 +65,9 @@ public class AlarmHelper extends BroadcastReceiver {
         snoozeAlarm.setMessage("Snooze");
 
         switch (time) {
+            case 1:
+                snoozeAlarm.setSnoozeInterval(Alarm.Snooze.FIVE);
+                break;
             case 5:
                 snoozeAlarm.setSnoozeInterval(Alarm.Snooze.FIVE);
                 break;
