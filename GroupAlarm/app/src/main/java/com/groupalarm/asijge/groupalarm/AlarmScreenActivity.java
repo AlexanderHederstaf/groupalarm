@@ -43,6 +43,7 @@ public class AlarmScreenActivity extends Activity {
     private MediaPlayer mediaPlayer;
     private String group;
     private boolean isGroup;
+    private int alarmID;
 
     /**
      * {@inheritDoc}
@@ -54,6 +55,8 @@ public class AlarmScreenActivity extends Activity {
 
         TextView message = ((TextView) findViewById(R.id.alarm_textView));
         message.setText(getIntent().getStringExtra("MESSAGE"));
+
+        alarmID = getIntent().getIntExtra("ID", 0);
 
         isGroup = getIntent().getBooleanExtra("IS_GROUP", false);
         if (isGroup) {
@@ -107,13 +110,11 @@ public class AlarmScreenActivity extends Activity {
          */
         final int snoozeTime = getIntent().getIntExtra("SNOOZE", 0);
         final Context c = this;
-        final Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
+        Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
         snooze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (snoozeTime > 0) {
-                    snooze.setEnabled(true);
-                    snooze.setVisibility(View.VISIBLE);
                     if (isGroup) {
                         AlarmHelper.setSnooze(c, snoozeTime, group);
                         ParseHelper.setPunishable(group, ParseUser.getCurrentUser().getUsername(), true);
@@ -195,6 +196,10 @@ public class AlarmScreenActivity extends Activity {
 
         if (isGroup) {
             ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_RINGING);
+        }
+
+        if (alarmID < 0) {
+            AlarmHelper.removeSnooze(alarmID);
         }
     }
 

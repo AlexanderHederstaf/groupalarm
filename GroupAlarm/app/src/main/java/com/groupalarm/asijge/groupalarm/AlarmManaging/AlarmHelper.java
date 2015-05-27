@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -20,7 +21,8 @@ public class AlarmHelper extends BroadcastReceiver {
 
     private static final String TAG = "AlarmHelper";
 
-    private static Alarm snoozeAlarm;
+    private static int snoozeID = -1;
+    private static List<Alarm> snoozeAlarms = new ArrayList<>();
     private static String snoozeGroup;
 
     public static List<Alarm> getAlarms() {
@@ -52,8 +54,9 @@ public class AlarmHelper extends BroadcastReceiver {
         if (time <= 0) {
             return;
         }
-        int snoozeID = -1;
-        snoozeAlarm = new Alarm(snoozeID);
+        // sufficiently large number, no real application will have 1000 active snoozes.
+        snoozeID = (AlarmHelper.snoozeID % 1000) - 1;
+        Alarm snoozeAlarm = new Alarm(snoozeID);
         snoozeAlarm.setActive(true);
 
         snoozeGroup = groupName;
@@ -79,6 +82,8 @@ public class AlarmHelper extends BroadcastReceiver {
                 break;
         }
 
+        snoozeAlarms.add(snoozeAlarm);
+
         PendingIntent snoozeIntent = createIntent(context, snoozeAlarm, snoozeGroup);
 
         setAlarm(context, cal, snoozeIntent);
@@ -89,11 +94,31 @@ public class AlarmHelper extends BroadcastReceiver {
      *
      * @param context The Application Context
      */
-    public static void cancelSnooze(Context context) {
-        if (snoozeAlarm != null) {
-            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            manager.cancel(createIntent(context, snoozeAlarm, snoozeGroup));
-            snoozeAlarm = null;
+    public static void cancelSnooze(Context context, int ID) {
+        for (Alarm alarm : snoozeAlarms) {
+            if (alarm.getId() == ID) {
+                AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                manager.cancel(createIntent(context, alarm, snoozeGroup));
+            }
+        }
+        removeSnooze(ID);
+    }
+
+
+    /**
+     * Removes the snooze alarm from the current list.
+     * The alarm should not be active when removed, or it can not be cancelled.
+     * @param ID The ID of the snooze alarm to remove.
+     */
+    public static void removeSnooze(int ID) {
+        Alarm toRemove = null;
+        for (Alarm alarm : snoozeAlarms) {
+            if (alarm.getId() == ID) {
+                toRemove = alarm;
+            }
+        }
+        if (toRemove != null) {
+            snoozeAlarms.remove(toRemove);
         }
     }
 
