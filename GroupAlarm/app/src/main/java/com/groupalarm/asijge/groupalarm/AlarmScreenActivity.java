@@ -81,7 +81,12 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                     if (isGroup) {
-                        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                        (new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                            }
+                        })).start();
                     }
                 }
             }
@@ -97,8 +102,13 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                     if (isGroup) {
-                        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
-                        ParseHelper.setAlarmSignal(group, ParseUser.getCurrentUser().getUsername(), "classic_alarm");
+                        (new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
+                                ParseHelper.setAlarmSignal(group, ParseUser.getCurrentUser().getUsername(), "classic_alarm");
+                            }
+                        })).start();
                     }
                 }
                 finish();
@@ -117,8 +127,12 @@ public class AlarmScreenActivity extends Activity {
                 if (snoozeTime > 0) {
                     if (isGroup) {
                         AlarmHelper.setSnooze(c, snoozeTime, group);
-                        ParseHelper.setPunishable(group, ParseUser.getCurrentUser().getUsername(), true);
-                        Log.d(TAG, "Snooze button was pressed, snoozetime = " + snoozeTime);
+                        (new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ParseHelper.setPunishable(group, ParseUser.getCurrentUser().getUsername(), true);
+                            }
+                        })).start();
                     } else {
                         AlarmHelper.setSnooze(c, snoozeTime, null);
                     }
@@ -128,7 +142,12 @@ public class AlarmScreenActivity extends Activity {
                     mediaPlayer.release();
                     mediaPlayer = null;
                     if (isGroup) {
-                        ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_SNOOZED);
+                        (new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_SNOOZED);
+                            }
+                        })).start();
                     }
                 }
 
@@ -174,28 +193,38 @@ public class AlarmScreenActivity extends Activity {
             Log.d(TAG, "lock acquired");
         }
         if (mediaPlayer == null) {
-            if(isGroup) {
-                switch (ParseHelper.getAlarmSignal(group, ParseUser.getCurrentUser().getUsername())) {
-                    case "bomb_siren":
-                        mediaPlayer = MediaPlayer.create(this, R.raw.bomb_siren);
-                        break;
-                    case "classic_alarm":
-                        mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
-                        break;
-                    case "railroad_crossing_bell":
-                        mediaPlayer = MediaPlayer.create(this, R.raw.railroad_crossing_bell);
-                        break;
+            final Context context = this;
+            (new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if(isGroup) {
+                        switch (ParseHelper.getAlarmSignal(group, ParseUser.getCurrentUser().getUsername())) {
+                            case "bomb_siren":
+                                mediaPlayer = MediaPlayer.create(context, R.raw.bomb_siren);
+                                break;
+                            case "classic_alarm":
+                                mediaPlayer = MediaPlayer.create(context, R.raw.classic_alarm);
+                                break;
+                            case "railroad_crossing_bell":
+                                mediaPlayer = MediaPlayer.create(context, R.raw.railroad_crossing_bell);
+                                break;
+                        }
+                    } else {
+                        mediaPlayer = MediaPlayer.create(context, R.raw.classic_alarm);
+                    }
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.start();
                 }
-
-            } else {
-                mediaPlayer = MediaPlayer.create(this, R.raw.classic_alarm);
-            }
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
+            })).start();
         }
 
         if (isGroup) {
-            ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_RINGING);
+            (new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_RINGING);
+                }
+            })).start();
         }
 
         if (alarmID < 0) {
