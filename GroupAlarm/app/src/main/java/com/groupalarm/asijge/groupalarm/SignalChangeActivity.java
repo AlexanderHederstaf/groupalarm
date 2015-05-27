@@ -70,13 +70,13 @@ public class SignalChangeActivity extends ActionBarActivity {
                 Bundle extras = getIntent().getExtras();
                 if (position == 0) {
                     ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "bomb_siren");
-                    toast = Toast.makeText(getParent(), "Set the signal Bomb Siren for " + extras.getString("user"),Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(context, "Set the signal Bomb Siren for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 1) {
                     ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "classic_alarm");
-                    toast = Toast.makeText(getParent(), "Set the signal Classic Alarm for " + extras.getString("user"),Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(context, "Set the signal Classic Alarm for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 2) {
                     ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "railroad_crossing_bell");
-                    toast = Toast.makeText(getParent(), "Set the signal Railroad Crossing Bell for " + extras.getString("user"),Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(context, "Set the signal Railroad Crossing Bell for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 }
                 ParseHelper.setPunishable(extras.getString("groupname"), extras.getString("user"), false);
                 toast.show();
