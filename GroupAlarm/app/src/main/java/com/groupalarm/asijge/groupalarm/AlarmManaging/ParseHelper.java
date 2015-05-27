@@ -31,7 +31,7 @@ public class ParseHelper {
     private static final String COLUMN_GROUP = "Group";
     private static final String COLUMN_ALARMSTATUS = "alarmStatus";
     private static final String COLUMN_ALARMSIGNAL = "alarmSignal";
-    
+
     public static final String COLUMN_ID = "ID";
     public static final String COLUMN_MESSAGE = "Message";
     public static final String COLUMN_TIME = "Time";
@@ -551,6 +551,28 @@ public class ParseHelper {
         } catch (ParseException e) {
             Log.d(TAG, "Could not set alarmSignal");
         }
+    }
+
+    public static String getAlarmSignal(String group, String user) {
+
+        String output = "";
+        ParseObject alarmSignalObject = null;
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(TABLE_ALARMSTATUS);
+        query.whereEqualTo(COLUMN_USERNAME, user);
+        query.whereEqualTo(COLUMN_GROUP, group);
+
+        try {
+            alarmSignalObject = query.getFirst();
+        } catch (ParseException e) {
+            Log.d(TAG, "No row matching query: " + group + ", " + user);
+        }
+
+        output = alarmSignalObject.getString(COLUMN_ALARMSIGNAL);
+
+        Log.d(TAG, "Alarm signal is: " + output);
+
+        return output;
     }
 }
 
