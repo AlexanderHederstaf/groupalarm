@@ -6,8 +6,7 @@
     <TextView
         android:id="@+id/instruction_message"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select alarm signal:"/>
+        android:layout_height="wrap_content" />
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/signal_list"

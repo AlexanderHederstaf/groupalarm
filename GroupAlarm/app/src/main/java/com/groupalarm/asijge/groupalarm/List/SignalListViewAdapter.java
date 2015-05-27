@@ -32,7 +32,7 @@ public class SignalListViewAdapter extends ArrayAdapter<String> {
         // If convertView is null we need to construct the layout of our holder that is to be used
         // in the View.
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.change_snooze_dialog, null);
+            convertView = mInflater.inflate(R.layout.signal_list_item, null);
         }
 
         TextView view = (TextView) convertView.findViewById(R.id.signal_name);

@@ -85,6 +85,11 @@
                 android:value="com.groupalarm.asijge.groupalarm.GroupActivity" />
         </activity>
 
+        <activity
+            android:name=".SignalChangeActivity"
+            android:label="SignalChangeActivity"
+            android:parentActivityName="com.groupalarm.asijge.groupalarm.EditGroupActivity" />
+
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>

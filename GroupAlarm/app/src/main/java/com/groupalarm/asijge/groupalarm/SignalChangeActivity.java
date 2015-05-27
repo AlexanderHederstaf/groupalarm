@@ -44,41 +44,18 @@ public class SignalChangeActivity extends ActionBarActivity {
 
     private static final String TAG = "GroupActivity";
 
-
-    private class ParseUpdate implements Runnable {
-
-        private List<String> signals = new LinkedList<String>();
-
-        Runnable runListUpdate = new Runnable() {
-            public void run() {
-                rowItems.clear();
-
-                for(String signal : signals) {
-                    rowItems.add(signal);
-                }
-                Collections.sort(rowItems);
-                adapter.notifyDataSetChanged();
-            }
-        };
-
-        @Override
-        public void run() {
-            //signals = getSignals();
-            runOnUiThread(runListUpdate);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group);
+        setContentView(R.layout.activity_change_signal);
 
-        getSupportActionBar().setTitle("Groups");
+        getSupportActionBar().setTitle("Select alarm signal");
 
-        progress = findViewById(R.id.group_fetch_progress);
-        listView = (ListView) findViewById(R.id.group_alarmlist);
+        listView = (ListView) findViewById(R.id.signal_list);
         rowItems = new ArrayList<String>();
-        adapter = new SignalListViewAdapter(this, R.layout.group_list_item, rowItems);
+        rowItems.add("Test1");
+        rowItems.add("Test2");
+        adapter = new SignalListViewAdapter(this, R.layout.signal_list_item, rowItems);
         listView.setAdapter(adapter);
 
         final Context context = this;
@@ -91,15 +68,5 @@ public class SignalChangeActivity extends ActionBarActivity {
                 //startActivity(intent);
             }
         });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-        //showProgress(true);
-        //(new Thread(new ParseUpdate())).start();
     }
 }

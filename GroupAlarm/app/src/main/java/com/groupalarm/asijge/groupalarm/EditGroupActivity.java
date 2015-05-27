@@ -1,5 +1,6 @@
 package com.groupalarm.asijge.groupalarm;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -197,6 +198,16 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmAdapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, alarmItems);
         alarmListView.setAdapter(alarmAdapter);
         registerForContextMenu(alarmListView);
+
+        final Context context = this;
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(context, SignalChangeActivity.class);
+                intent.putExtra("signal", userItems.get(position).getName());
+                startActivity(intent);
+            }
+        });
 
         updateStatusNotification = new Runnable() {
             @Override
