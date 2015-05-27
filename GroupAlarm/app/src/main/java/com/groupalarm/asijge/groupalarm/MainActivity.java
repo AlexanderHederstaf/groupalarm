@@ -69,6 +69,11 @@ public class MainActivity extends ActionBarActivity {
                 Alarm alarm = (Alarm) listView.getItemAtPosition(position);
                 if (!alarm.isGroupAlarm()) {
                     editAlarm(alarm.getId());
+                } else {
+                    String groupName = ParseHelper.getGroupFromAlarm(alarm);
+                    Intent intent = new Intent(MainActivity.this, EditGroupActivity.class);
+                    intent.putExtra("group", groupName);
+                    startActivity(intent);
                 }
             }
         });

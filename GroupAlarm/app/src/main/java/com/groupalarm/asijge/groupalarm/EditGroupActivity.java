@@ -201,6 +201,16 @@ public class EditGroupActivity extends ActionBarActivity {
         registerForContextMenu(alarmListView);
 
         final Context context = this;
+        alarmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent editAlarmActivity = new Intent(context, EditAlarmActivity.class);
+                editAlarmActivity.putExtra("alarm", alarmItems.get(position));
+                startActivityForResult(editAlarmActivity, EDIT_ALARM_CODE);
+            }
+        });
+
+
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -266,7 +276,7 @@ public class EditGroupActivity extends ActionBarActivity {
             public void run() {
                 refresh.submit(updateStatusNotification);
             }
-        }, 4, 5, TimeUnit.SECONDS);
+        }, 5, 15, TimeUnit.SECONDS);
     }
 
     @Override

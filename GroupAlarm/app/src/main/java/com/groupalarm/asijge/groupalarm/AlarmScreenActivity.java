@@ -106,14 +106,17 @@ public class AlarmScreenActivity extends Activity {
          */
         final int snoozeTime = getIntent().getIntExtra("SNOOZE", 0);
         final Context c = this;
-        Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
+        final Button snooze = (Button) findViewById(R.id.alarm_snooze_button);
         snooze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (snoozeTime > 0) {
+                    snooze.setEnabled(true);
+                    snooze.setVisibility(View.VISIBLE);
                     if (isGroup) {
                         AlarmHelper.setSnooze(c, snoozeTime, group);
                         ParseHelper.setPunishable(group, ParseUser.getCurrentUser().getUsername(), true);
+                        Log.d(TAG, "Snooze button was pressed, snoozetime = " + snoozeTime);
                     } else {
                         AlarmHelper.setSnooze(c, snoozeTime, null);
                     }
@@ -134,6 +137,7 @@ public class AlarmScreenActivity extends Activity {
         // Disable snooze button if the time is 0 == no snooze.
         if (snoozeTime == 0) {
             snooze.setEnabled(false);
+            snooze.setVisibility(View.INVISIBLE);
         }
 
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
