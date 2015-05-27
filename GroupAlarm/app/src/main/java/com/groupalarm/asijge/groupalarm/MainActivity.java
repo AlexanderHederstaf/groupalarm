@@ -62,16 +62,16 @@ public class MainActivity extends ActionBarActivity {
         adapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, rowItems);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Alarm alarm = (Alarm) listView.getItemAtPosition(position);
-//                if (!alarm.isGroupAlarm()) {
-//                    editAlarm(alarm.getId());
-//                }
-//            }
-//        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Alarm alarm = (Alarm) listView.getItemAtPosition(position);
+                if (!alarm.isGroupAlarm()) {
+                    editAlarm(alarm.getId());
+                }
+            }
+        });
 
         final Context context = this;
 

@@ -51,6 +51,13 @@
                 android:text="Alarm message:"
                 android:id="@+id/labelAlarmMessage" />
 
+            <!-- Dummy item to prevent the editTextAlarmMessage from receiving focus-->
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0px"
+                android:layout_height="0px"></LinearLayout>
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
