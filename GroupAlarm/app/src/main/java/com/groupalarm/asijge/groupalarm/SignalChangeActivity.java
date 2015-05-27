@@ -3,6 +3,7 @@ package com.groupalarm.asijge.groupalarm;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
@@ -64,15 +66,20 @@ public class SignalChangeActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // Set new signal for current snoozing user
+                Toast toast = null;
                 Bundle extras = getIntent().getExtras();
                 if (position == 0) {
                     ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "bomb_siren");
+                    toast = Toast.makeText(getParent(), "Set the signal Bomb Siren for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 1) {
                     ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "classic_alarm");
+                    toast = Toast.makeText(getParent(), "Set the signal Classic Alarm for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 2) {
                     ParseHelper.setAlarmSignal(extras.getString("groupname"), extras.getString("user"), "railroad_crossing_bell");
+                    toast = Toast.makeText(getParent(), "Set the signal Railroad Crossing Bell for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 }
                 ParseHelper.setPunishable(extras.getString("groupname"), extras.getString("user"), false);
+                toast.show();
                 finish();
             }
         });
