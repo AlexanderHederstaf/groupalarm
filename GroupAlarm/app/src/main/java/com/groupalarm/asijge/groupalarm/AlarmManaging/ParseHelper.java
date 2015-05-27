@@ -77,7 +77,7 @@ public class ParseHelper {
             alarmStatus.put(COLUMN_USERNAME, user.getUsername());
             alarmStatus.put(COLUMN_GROUP, name);
             alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
-            alarmStatus.put(COLUMN_ALARMSIGNAL, "default");
+            alarmStatus.put(COLUMN_ALARMSIGNAL, "classic_alarm");
             alarmStatus.put(COLUMN_PUNISHABLE, false);
 
             try {
@@ -131,7 +131,7 @@ public class ParseHelper {
                 alarmStatus.put(COLUMN_USERNAME, user);
                 alarmStatus.put(COLUMN_GROUP, group);
                 alarmStatus.put(COLUMN_ALARMSTATUS, "stopped");
-                alarmStatus.put(COLUMN_ALARMSIGNAL, "default");
+                alarmStatus.put(COLUMN_ALARMSIGNAL, "classic_alarm");
                 alarmStatus.put(COLUMN_PUNISHABLE, false);
 
                 try {
