@@ -29,7 +29,9 @@ import com.groupalarm.asijge.groupalarm.R;
 import java.util.List;
 
 /**
- *  
+ *  RemoveListViewAdapter provides the functionality of the ArrayAdapter class as well
+ *  as extended functionality which allows it to contain the desired alarm elements and
+ *  layout of the ListView used when removing personal alarms.
  *
  *  @author asijge
  */
@@ -39,7 +41,7 @@ public class RemoveListViewAdapter extends ArrayAdapter<Alarm> {
     private Context context;
     public boolean[] itemsToRemove;
 
-    /** Constructs a new CustomListViewAdapter containing elements based on those in
+    /** Constructs a new RemoveListViewAdapter containing elements based on those in
      *  the list (the "items" param), with a layout based on the resourceId.
      *
      * @param context           The Context in which it is used.
@@ -113,37 +115,30 @@ public class RemoveListViewAdapter extends ArrayAdapter<Alarm> {
      * Creates and returns a OnCheckedChangeListener with the desired functionality for
      * a button that is to be used in the View created in the getView method.
      *
-     * @param postition The position of the object tick box change.
+     * @param position The position of the object tick box change.
      *
      * @return          Returns a CompoundButton.OnCheckedChangeListener
      */
-    private CompoundButton.OnCheckedChangeListener removeAlarmCheckedListener(final int postition) {
+    private CompoundButton.OnCheckedChangeListener removeAlarmCheckedListener(final int position) {
         return new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    itemsToRemove[postition] = true;
-                    Log.d(TAG, "checked: " + postition);
+                    itemsToRemove[position] = true;
+                    Log.d(TAG, "checked: " + position);
                 } else {
-                    itemsToRemove[postition] = false;
-                    Log.d(TAG, "unchecked: " + postition);
+                    itemsToRemove[position] = false;
+                    Log.d(TAG, "unchecked: " + position);
                 }
 
                 for (int i = 0; i < itemsToRemove.length; i++) {
                     Log.d(TAG, i + ":" + itemsToRemove[i]);
                 }
                 
-                reDrawUi();
+                notifyDataSetChanged();
             }
         };
-    }
-
-    /**
-     * Notifies that some data has been changed and that the View needs to be redrawn.
-     */
-    private void reDrawUi() {
-        this.notifyDataSetChanged();
     }
 }
 

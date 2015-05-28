@@ -24,10 +24,7 @@ import com.groupalarm.asijge.groupalarm.R;
 public class AddGroupDialogFragment extends DialogFragment {
 
     /**
-     *
-     *
-     * @param savedInstanceState
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -54,7 +51,7 @@ public class AddGroupDialogFragment extends DialogFragment {
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Cancel
+                        // Cancel, handles it self through inherited functionality
                     }
                 });
         // Create the AlertDialog object and return it

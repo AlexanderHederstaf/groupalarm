@@ -16,10 +16,17 @@ import com.groupalarm.asijge.groupalarm.R;
 import com.parse.Parse;
 
 /**
- * Created by Sebastian on 2015-05-20.
+ * AddMemberDialogFragment provides the functionality of the DialogFragment class as well as
+ * a modified version of the onCreateDialog function that creates a dialog suitable for
+ * adding a member to a group.
+ *
+ * @author asijge
  */
 public class AddMemberDialogFragment extends DialogFragment {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -49,7 +56,7 @@ public class AddMemberDialogFragment extends DialogFragment {
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Cancel
+                        // Cancel, handles it self through inherited functionality
                     }
                 });
         // Create the AlertDialog object and return it

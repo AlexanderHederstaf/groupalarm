@@ -16,10 +16,25 @@ import com.groupalarm.asijge.groupalarm.R;
 
 import java.util.List;
 
+/**
+ *  UserListViewAdapter provides the functionality of the ArrayAdapter class as well
+ *  as extended functionality which allows it to contain the desired user elements and
+ *  layout of the ListView used for displaying users in a group.
+ *
+ *  @author asijge
+ */
 public class UserListViewAdapter extends ArrayAdapter<User> {
 
     private Context context;
 
+    /** Constructs a new UserListViewAdapter containing elements based on those in
+     *  the list (the "items" param), with a layout based on the resourceId.
+     *
+     * @param context           The Context in which it is used.
+     * @param resourceId        The ID of the XML resource that is to be used.
+     * @param items             A List containing Users, which in turn contain the
+     *                          data relevant for each item that is to be presented.
+     */
     public UserListViewAdapter(Context context, int resourceId,
                                List<User> items) {
         super(context, resourceId, items);
@@ -36,6 +51,17 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
         ImageView status;
     }
 
+    /**
+     *  Creates a View containing graphical objects that are based on data
+     *  from the List<User> provided in the constructor.
+     *
+     * @param position          The position of the element which a new View has been requested for.
+     * @param convertView       The instructions for how to construct the new View, used to recycle
+     *                          views as to not have too many running at once.
+     * @param parent            The object which contains this view, in our case a ListView.
+     *
+     * @return                  Returns the new/updated View for the desired element.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         User user = getItem(position);
@@ -53,19 +79,18 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
             holder.status = (ImageView) convertView.findViewById(R.id.user_status);
             convertView.setTag(holder);
 
-            // If convertView is not null we can reuse information provided in it for us to construct
-            // the new/updated View.
+        // If convertView is not null we can reuse information provided in it for us to construct
+        // the new/updated View.
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         holder.userName.setText(user.getName());
 
+        // Display an icon when a user is punishable, otherwise do not
         if(user.isPunishable()) {
-            holder.snoozeIcon.setEnabled(true);
             holder.snoozeIcon.setVisibility(View.VISIBLE);
         } else {
-            holder.snoozeIcon.setEnabled(false);
             holder.snoozeIcon.setVisibility(View.INVISIBLE);
         }
 
