@@ -7,7 +7,10 @@ import android.content.Context;
 import android.os.Build;
 import android.view.View;
 
-
+/**
+ *
+ * @author asijge
+ */
 public class ViewHelper {
     /**
      * Shows the progress UI and hides the login form.

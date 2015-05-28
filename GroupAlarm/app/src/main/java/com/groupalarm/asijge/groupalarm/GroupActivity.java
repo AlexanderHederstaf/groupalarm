@@ -22,6 +22,8 @@ import java.util.List;
 /**
  * Activity that displays a list with the groups that the logged in user is a member of.
  * If a group is clicked the user is directed to the EditGroupActivity for that group.
+ *
+ * @author asijge
  */
 public class GroupActivity extends ActionBarActivity {
 

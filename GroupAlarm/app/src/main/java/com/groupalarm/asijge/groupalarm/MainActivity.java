@@ -29,6 +29,8 @@ import java.util.List;
 /**
  * Main screen Activity. Displays all the user's alarms and has ActionBar options to navigate
  * to groups, create new alarms, and delete alarms.
+ *
+ * @author asijge
  */
 public class MainActivity extends ActionBarActivity {
 

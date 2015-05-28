@@ -16,6 +16,8 @@ import java.util.List;
 /**
  * Activity for removing alarms from the database. The alarms are displayed in a listview with
  * checkboxes for the alarms to remove.
+ *
+ * @author asijge
  */
 public class RemoveActivity extends ActionBarActivity {
 

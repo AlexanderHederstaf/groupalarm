@@ -45,6 +45,8 @@ import java.util.concurrent.TimeUnit;
  * The users of the group can be interacted with if they snooze an alarm.
  *
  * The ActionBar has options to invite more members, create new alarms and leaving the group.
+ *
+ * @author asijge
  */
 public class EditGroupActivity extends ActionBarActivity {
 
