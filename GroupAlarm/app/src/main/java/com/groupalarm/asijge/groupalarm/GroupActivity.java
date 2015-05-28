@@ -19,7 +19,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+ * Activity that displays a list with the groups that the logged in user is a member of.
+ * If a group is clicked the user is directed to the EditGroupActivity for that group.
+ */
 public class GroupActivity extends ActionBarActivity {
 
     private View progress;
@@ -29,12 +32,14 @@ public class GroupActivity extends ActionBarActivity {
 
     private static final String TAG = "GroupActivity";
 
-
+    /**
+     * Runnable to update the view of the groups.
+     */
     private class ParseUpdate implements Runnable {
 
         private List<String> groups = new LinkedList<String>();
 
-        Runnable runListUpdate = new Runnable() {
+        private Runnable runListUpdate = new Runnable() {
             public void run() {
                 rowItems.clear();
 
@@ -54,6 +59,9 @@ public class GroupActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * Runnable to create a new group, and then update the view of the groups.
+     */
     private class NewGroup extends ParseUpdate {
 
         private String groupName;
@@ -69,6 +77,9 @@ public class GroupActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +107,8 @@ public class GroupActivity extends ActionBarActivity {
 
     /**
      * {@inheritDoc}
+     *
+     * Updates the groups lists
      */
     @Override
     public void onResume() {
@@ -104,7 +117,9 @@ public class GroupActivity extends ActionBarActivity {
         (new Thread(new ParseUpdate())).start();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -112,6 +127,9 @@ public class GroupActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -130,12 +148,21 @@ public class GroupActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Adds a new group to the Parse cloud with the current user as a member.
+     *
+     * @param groupName The name of the new group.
+     */
     public void addGroup(String groupName) {
         NewGroup run = new NewGroup();
         run.setGroupName(groupName);
         (new Thread(run)).start();
     }
 
+    /**
+     * Shows the progress animation while the groups are loaded.
+     * @param show True if the animation should be shown, false if it should be hidden.
+     */
     public void showProgress(boolean show) {
         ViewHelper.showProgress(show, progress, listView, this);
     }

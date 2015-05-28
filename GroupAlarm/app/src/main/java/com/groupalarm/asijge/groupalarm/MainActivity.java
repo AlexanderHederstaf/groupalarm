@@ -26,7 +26,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Main screen Activity. Displays all the user's alarms and has ActionBar options to navigate
+ * to groups, create new alarms, and delete alarms.
+ */
 public class MainActivity extends ActionBarActivity {
 
     private static final int NEW_ALARM_CODE = 999;
@@ -44,6 +47,8 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * {@inheritDoc}
+     *
+     * Sets up database, click listeners and threads for refreshing the content.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +113,8 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * {@inheritDoc}
+     *
+     * Refreshes the visible alarms.
      */
     @Override
     public void onResume() {
@@ -131,13 +138,10 @@ public class MainActivity extends ActionBarActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handles action bar item clicks.
         int id = item.getItemId();
 
         if (id == R.id.action_group) {
-
             Intent newGroupActivity = new Intent(this, GroupActivity.class);
             startActivity(newGroupActivity);
 
@@ -174,6 +178,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (id == R.id.action_logout) {
+            // Do not log out while the update thread is running.
             synchronized (refreshNetAlarm) {
                 ParseUser.logOut();
             }

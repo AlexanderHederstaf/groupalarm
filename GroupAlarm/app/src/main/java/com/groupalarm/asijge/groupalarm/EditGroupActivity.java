@@ -39,38 +39,75 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
+/**
+ * An activity for a group that displays the users in the group and the alarms for the group.
+ *
+ * The users of the group can be interacted with if they snooze an alarm.
+ *
+ * The ActionBar has options to invite more members, create new alarms and leaving the group.
+ */
 public class EditGroupActivity extends ActionBarActivity {
 
+    /**
+     * Debug TAG for the EditGroupActivity class.
+     */
     private static final String TAG = "EditGroupActivity";
 
+    /**
+     * Result code for a new alarm being created.
+     */
     private static final int NEW_ALARM_CODE = 999;
+
+    /**
+     * Result code for an alarm being edited.
+     */
     private static final int EDIT_ALARM_CODE = 998;
 
+    // List Views to display users and alarms
     private ListView userListView;
     private ListView alarmListView;
 
+    // Progress view for when users and alarms are loading.
     private View userProgress;
     private View alarmProgress;
 
+    // The items to display in the list.
     private List<User> userItems;
     private List<Alarm> alarmItems;
 
+    // The adapters that contain the data from the Lists.
     private AlarmListViewAdapter alarmAdapter;
     private UserListViewAdapter userAdapter;
 
+    // The temporary storage containers for data obtained from the Parse cloud.
     private List<Alarm> alarms = new LinkedList<>();
     private List<String> users = new LinkedList<>();
     private Map<String, Boolean> punishable = new HashMap<>();
 
+    // The name of the group the activity is currently focused on.
     private String groupName;
 
+    // A SetAlarms thread used to update the alarm ListView.
     private SetAlarms setAlarms;
+
+    /*
+     * Runnable used to update the User statuses.
+     * defined in onCreate.
+     */
+    private Runnable updateStatusNotification;
+
 
     // Threads to update Parse data
     private class ParseUpdate implements Runnable {
 
         Runnable runListUpdate = new Runnable() {
+            /**
+             * {@inheritDoc}
+             *
+             * Updates the listViews of alarms with the data stored in the temporary
+             * storage lists and map.
+             */
+            @Override
             public void run() {
                 userItems.clear();
                 alarmItems.clear();
@@ -90,6 +127,12 @@ public class EditGroupActivity extends ActionBarActivity {
             }
         };
 
+        /**
+         * Updates the temporary data using the Parse Cloud.
+         *
+         * Then updates the UI with this data.
+         */
+        @Override
         public void run() {
             alarms = ParseHelper.getAlarmsFromGroup(groupName);
             users = ParseHelper.getUsersInGroup(groupName);
@@ -98,6 +141,9 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * ParseUpdate thread with saved Alarm Object to use when changing Alarms.
+     */
     private class AlarmParseUpdate extends ParseUpdate {
         protected Alarm alarm;
 
@@ -106,27 +152,9 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
-    private void sendNotificationToGroup(String message) {
-        Log.d("EditGroupActivity", "Installation user: " + ParseInstallation.getCurrentInstallation().get("user"));
-
-        // Find users in the group
-        ParseObject groupObject = ParseHelper.getGroupFromString(groupName);
-
-        ParseRelation relation = groupObject.getRelation("Users");
-        ParseQuery queryRelation = relation.getQuery();
-        queryRelation.whereNotEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
-
-        // Find devices associated with these users
-        ParseQuery pushQuery = ParseInstallation.getQuery();
-        pushQuery.whereMatchesQuery("user", queryRelation);
-
-        // Send push notification to query
-        ParsePush push = new ParsePush();
-        push.setQuery(pushQuery); // Set our Installation query
-        push.setMessage(message);
-        push.sendInBackground();
-    }
-
+    /**
+     * Thread that adds a new alarm to the group, and then updates the view and sets alarms.
+     */
     private class NewAlarm extends AlarmParseUpdate {
         @Override
         public void run() {
@@ -137,7 +165,9 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
-
+    /**
+     * Thread that removes an alarm from the group, and then updates the view and sets alarms.
+     */
     private class DeleteAlarm extends AlarmParseUpdate {
         @Override
         public void run() {
@@ -148,6 +178,9 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * Thread that edits and alarm in the group, and then updates the view and sets alarms.
+     */
     private class EditAlarm extends AlarmParseUpdate {
         @Override
         public void run() {
@@ -158,8 +191,10 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
-    private Runnable updateStatusNotification;
 
+    /**
+     * Thread that adds a new user to the group, and then updates the view.
+     */
     private class NewUser extends ParseUpdate {
 
         private String user;
@@ -176,6 +211,10 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *  Creates the listViews and threads that are used to update the views.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -260,13 +299,15 @@ public class EditGroupActivity extends ActionBarActivity {
         };
     }
 
-
-    // refresh service for the status of users in the group.
+    // refresher service for the status of users in the group.
     private ExecutorService refresh;
     private ScheduledExecutorService scheduledRefresh;
 
     /**
      * @{inheritDoc}
+     *
+     * Updates the lists with data from the ParseCloud.
+     * Starts a schedule to refresh status of the Users every few seconds.
      */
     @Override
     public void onResume() {
@@ -282,9 +323,14 @@ public class EditGroupActivity extends ActionBarActivity {
             public void run() {
                 refresh.submit(updateStatusNotification);
             }
-        }, 5, 15, TimeUnit.SECONDS);
+        }, 3, 4, TimeUnit.SECONDS);
     }
 
+    /**
+     * @{inheritDoc}
+     *
+     * Cancels the refreshing of status of the Users.
+     */
     @Override
     public void onPause() {
         scheduledRefresh.shutdown();
@@ -292,6 +338,9 @@ public class EditGroupActivity extends ActionBarActivity {
         super.onPause();
     }
 
+    /**
+     * @{inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -299,6 +348,9 @@ public class EditGroupActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * @{inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -345,8 +397,8 @@ public class EditGroupActivity extends ActionBarActivity {
     }
 
     /**
-     * Used by dialog to set data.
-     * @param user
+     * Used by dialog to add a new User to the group.
+     * @param user The name of the user to add.
      */
     public void addUser(String user) {
         if (user != "") {
@@ -397,6 +449,9 @@ public class EditGroupActivity extends ActionBarActivity {
         return super.onContextItemSelected(item);
     }
 
+    /**
+     * @{inheritDoc}
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == NEW_ALARM_CODE) {
@@ -419,8 +474,34 @@ public class EditGroupActivity extends ActionBarActivity {
         }
     }
 
+    // shows progress bar for the two lists.
     private void showProgress(boolean show) {
         ViewHelper.showProgress(show, userProgress, userListView, this);
         ViewHelper.showProgress(show, alarmProgress, alarmListView, this);
+    }
+
+    /**
+     * Sends a notification to the cloud.
+     * @param message The message of the notification.
+     */
+    private void sendNotificationToGroup(String message) {
+        Log.d("EditGroupActivity", "Installation user: " + ParseInstallation.getCurrentInstallation().get("user"));
+
+        // Find users in the group
+        ParseObject groupObject = ParseHelper.getGroupFromString(groupName);
+
+        ParseRelation relation = groupObject.getRelation("Users");
+        ParseQuery queryRelation = relation.getQuery();
+        queryRelation.whereNotEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+
+        // Find devices associated with these users
+        ParseQuery pushQuery = ParseInstallation.getQuery();
+        pushQuery.whereMatchesQuery("user", queryRelation);
+
+        // Send push notification to query
+        ParsePush push = new ParsePush();
+        push.setQuery(pushQuery); // Set our Installation query
+        push.setMessage(message);
+        push.sendInBackground();
     }
 }
