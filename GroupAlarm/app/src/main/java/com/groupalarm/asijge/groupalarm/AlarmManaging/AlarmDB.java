@@ -146,10 +146,16 @@ public class AlarmDB extends SQLiteOpenHelper {
     }
 
     /**
-     * Add a new Alarm to the database.
+     * Add a new Alarm to the database. This saves all the data.
+     * To retrieve the Alarm as an Alarm object again use getAlarm()
+     * with the ID of the alarm, or use getAlarms() for all Alarms.
+     *
      * @param alarm An alarm to add to the database.
      */
     protected void addAlarm(Alarm alarm) {
+        // All the values from the alarm must be added to the ContentValues
+        // or the data will not be written to the database.
+
         boolean[] tmp = alarm.getDays();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, alarm.getId());
@@ -191,6 +197,8 @@ public class AlarmDB extends SQLiteOpenHelper {
      * Returns all the Alarms in the database as a list.
      *
      * Modifying the alarms in this list does not change the data of the database.
+     *
+     * @return A list of all alarms in the database as Alarm objects.
      */
     protected List<Alarm> getAlarms() {
         List<Alarm> alarmList = new LinkedList<Alarm>();
@@ -233,8 +241,16 @@ public class AlarmDB extends SQLiteOpenHelper {
         return alarm;
     }
 
-    // Provides the alarms from a cursor from the database.
+    /**
+     * Given a cursor of a row in the database containing alarm table data an Alarm object representing the
+     * database tables are returned.
+     * @param cursor A cursor for a row from the alarm database table.
+     * @return An Alarm object representing the database row.
+     */
     private Alarm getAlarmFromCursor(Cursor cursor) {
+        // The get functions from the cursor depend on the
+        // relative locations of the data in the table
+        // If more columns are added this must be updated.
         Alarm alarm = new Alarm(cursor.getInt(0));
 
         alarm.setGroupAlarm(cursor.getString(1));
@@ -246,10 +262,12 @@ public class AlarmDB extends SQLiteOpenHelper {
         int minute = Integer.valueOf(alarmTime.substring(5));
         alarm.setTime(hour, minute);
 
-        // Using Integer value instead as DB saves 1 or 0.
+        // Using Integer value instead of boolean as DB saves 1 or 0.
         // Boolean.valueOf returns false for both these values.
         alarm.setActive(Integer.valueOf(cursor.getString(4)) == 1);
 
+        // Set the status of the alarm using an enum. The status is not stored in the
+        // database as an enum and the switch case is required.
         switch (cursor.getInt(5)) {
             case 0:
                 alarm.setSnoozeInterval(Alarm.Snooze.NO_SNOOZE);
@@ -268,6 +286,7 @@ public class AlarmDB extends SQLiteOpenHelper {
                 break;
         }
 
+        // Set the repeating days status for all days.
         for (int i = 6; i <= 12; i++) {
             alarm.setDay(i-6, Integer.valueOf(cursor.getString(i)) == 1);
         }
@@ -285,7 +304,6 @@ public class AlarmDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_ALARMS, COLUMN_ID + " = ?", new String[]{"" + id});
-
     }
 
     /**
