@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- *
+ * A Helper class to interact with the database and manage the system alarms.
  */
 public class AlarmHelper extends BroadcastReceiver {
 
@@ -25,19 +25,43 @@ public class AlarmHelper extends BroadcastReceiver {
     private static List<Alarm> snoozeAlarms = new ArrayList<>();
     private static String snoozeGroup;
 
+    /**
+     * Gets all the alarms stored in the database as a List. This List can be changed
+     * without changing the content of the database.
+     *
+     * @return A List of Alarm Objects representing all the alarms in the database.
+     */
     public static List<Alarm> getAlarms() {
         return AlarmDB.getInstance().getAlarms();
     }
 
+    /**
+     * Get a single alarm stored in the database as an Alarm Object. The alarm can be changed
+     * without changing the content of the database. The returned alarm will be null if it
+     * is not found.
+     *
+     * @param Id The ID of the alarm to retrieve from the database.
+     * @return An Alarm Object representing the database information, or null if the alarm could not be found.
+     */
     public static Alarm getAlarm(int Id) {
         return AlarmDB.getInstance().getAlarm(Id);
     }
 
+    /**
+     * Adds and alarm to the database.
+     * @param alarm The Alarm Object representation to store in the database.
+     */
     public static void addAlarm(Alarm alarm) {
         Log.d(TAG, "Adding alarm with id: " + alarm.getId());
         AlarmDB.getInstance().addAlarm(alarm);
     }
 
+    /**
+     * Removes the alarm from the database that has the given ID. If the database does not have an
+     * alarm with the given ID nothing is removed.
+     *
+     * @param Id The ID of the alarm to remove.
+     */
     public static void removeAlarm(int Id) {
         Log.d(TAG, "Removing alarm with id: " + Id);
         AlarmDB.getInstance().deleteAlarm(Id);
@@ -45,6 +69,7 @@ public class AlarmHelper extends BroadcastReceiver {
 
     /**
      * Sets a separate snooze alarm in the near future this alarm works separately from the rest of the alarms.
+     *  The snooze alarms are created separate from the normal Alarms and they have negative IDs.
      *
      * @param context The Application Context.
      * @param time The number of minutes to delay the snooze alarm.
@@ -54,7 +79,8 @@ public class AlarmHelper extends BroadcastReceiver {
         if (time <= 0) {
             return;
         }
-        // sufficiently large number, no real application will have 1000 active snoozes.
+        // Sufficiently large number, no real application will have 1000 active snoozes.
+        // If the IDs are equal the older alarm with the same ID will be overwritten and not go off.
         snoozeID = (AlarmHelper.snoozeID % 1000) - 1;
         Alarm snoozeAlarm = new Alarm(snoozeID);
         snoozeAlarm.setActive(true);
@@ -90,10 +116,12 @@ public class AlarmHelper extends BroadcastReceiver {
     }
 
     /**
-     * Cancels the separate snooze Alarm.
+     * Cancels the snooze Alarm. The snooze alarms are created separate from the normal Alarms
+     * and they should have negative IDs.
      *
      * @param context The Application Context
      */
+    // This method is relevant to the continued development, but it is currently not used.
     public static void cancelSnooze(Context context, int ID) {
         for (Alarm alarm : snoozeAlarms) {
             if (alarm.getId() == ID) {
@@ -102,12 +130,14 @@ public class AlarmHelper extends BroadcastReceiver {
             }
         }
         removeSnooze(ID);
+        // Update status if group alarm.
     }
 
 
     /**
      * Removes the snooze alarm from the current list.
      * The alarm should not be active when removed, or it can not be cancelled.
+     *
      * @param ID The ID of the snooze alarm to remove.
      */
     public static void removeSnooze(int ID) {
@@ -142,6 +172,12 @@ public class AlarmHelper extends BroadcastReceiver {
         setAlarms(context);
     }
 
+    /**
+     * Sets a single Alarm in the database to ring.
+     *
+     * @param context The Application Context.
+     * @param alarmID The ID of the alarm to set.
+     */
     public static void setAlarm(Context context, int alarmID) {
         cancelAlarm(context, alarmID);
         Alarm alarm = getAlarm(alarmID);
@@ -153,6 +189,12 @@ public class AlarmHelper extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Cancels a single alarm in the database with the given ID if found.
+     *
+     * @param context The Application Context.
+     * @param alarmID the ID of the alarm to cancel.
+     */
     public static void cancelAlarm(Context context, int alarmID) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Alarm alarm = getAlarm(alarmID);
@@ -218,6 +260,8 @@ public class AlarmHelper extends BroadcastReceiver {
      * Cancels all alarms in the system using the data of the currently stored Alarms
      * If an alarm is active in the system and it's original Alarm data has been altered it
      * can not be cancelled.
+     *
+     * This method does not cancel Snooze alarms, they must be cancelled separately.
      *
      * @param context The Application Context.
      */
@@ -293,6 +337,17 @@ public class AlarmHelper extends BroadcastReceiver {
         return cal;
     }
 
+    /**
+     * Creates an Intent from an Alarm object. The Intent is used to scheduele alarms and display
+     * information when they go off.
+     *
+     * The intent saves the message, snooze status, id and group status of the alarm.
+     *
+     * @param context The context to start the alarm with.
+     * @param alarm The Alarm object to start an alarm for.
+     * @param groupName The name of the group this alarm is related to, null for local alarms.
+     * @return A PendingIntent that can be used to scheduele or cancel alarms.
+     */
     private static PendingIntent createIntent(Context context, Alarm alarm, String groupName){
         Intent intent = new Intent(context, AlarmService.class);
 
@@ -305,7 +360,6 @@ public class AlarmHelper extends BroadcastReceiver {
             intent.putExtra("GROUP", groupName);
         }
 
-        // start the service and "show" something when Alarm goes off.
         return PendingIntent.getService(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
