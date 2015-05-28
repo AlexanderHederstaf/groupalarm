@@ -21,6 +21,8 @@ import java.util.*;
  *
  * The database saves the Alarm objects and not the system service that actually sets alarms.
  * @see Alarm
+ *
+ * @author asijge
  */
 public class AlarmDB extends SQLiteOpenHelper {
 

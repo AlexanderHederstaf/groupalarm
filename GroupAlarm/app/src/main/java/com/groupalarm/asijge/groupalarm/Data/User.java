@@ -2,6 +2,8 @@ package com.groupalarm.asijge.groupalarm.Data;
 
 /**
  * Data class containing the information required to display a User of a group
+ *
+ * @author asijge
  */
 public class User implements Comparable<User> {
 

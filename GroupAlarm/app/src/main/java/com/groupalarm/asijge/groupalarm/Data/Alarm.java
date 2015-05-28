@@ -7,6 +7,8 @@ import java.util.List;
 /**
  * Alarm object contains the data relevant for setting alarms and displaying relevant information
  * when they go off.
+ *
+ * @author asijge
  */
 public class Alarm implements Serializable, Comparable<Alarm> {
     private int hour;

@@ -10,6 +10,8 @@ import com.groupalarm.asijge.groupalarm.AlarmScreenActivity;
 /**
  * This class is a service that starts when an alarm goes off.
  * It starts the Alarm Activity which displays a screen and plays a sound.
+ *
+ * @author asijge
  */
 public class AlarmService extends Service {
 
