@@ -8,29 +8,35 @@ import android.os.Build;
 import android.view.View;
 
 /**
+ * Helper class for hiding a view and displaying another view.
+ * This can be mainly used to hide and display progress bars when the content is loading.
  *
  * @author asijge
  */
 public class ViewHelper {
+
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress UI and hides the original content view.
      *
-     * @param show, show the progress bar if true, otherwise animate gone sequence.
+     * @param show Shows a progress bar if true, else the content.
+     * @param progress The view of the progress bar.
+     * @param content The view of the original content
+     * @param context The Activity context in which the views are changed.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public static void showProgress(final boolean show, final View progress, final View otherwise, Context context) {
+    public static void showProgress(final boolean show, final View progress, final View content, Context context) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = context.getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            otherwise.setVisibility(show ? View.GONE : View.VISIBLE);
-            otherwise.animate().setDuration(shortAnimTime).alpha(
+            content.setVisibility(show ? View.GONE : View.VISIBLE);
+            content.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    otherwise.setVisibility(show ? View.GONE : View.VISIBLE);
+                    content.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -47,7 +53,7 @@ public class ViewHelper {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             progress.setVisibility(show ? View.VISIBLE : View.GONE);
-            otherwise.setVisibility(show ? View.GONE : View.VISIBLE);
+            content.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 }
