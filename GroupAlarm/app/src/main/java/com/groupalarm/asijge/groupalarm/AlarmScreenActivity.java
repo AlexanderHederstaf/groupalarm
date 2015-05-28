@@ -107,6 +107,7 @@ public class AlarmScreenActivity extends Activity {
                             public void run() {
                                 ParseHelper.setMyAlarmStatusPerGroup(group, STATUS_STOPPED);
                                 ParseHelper.setAlarmSignal(group, ParseUser.getCurrentUser().getUsername(), "classic_alarm");
+                                ParseHelper.setPunishable(group, ParseUser.getCurrentUser().getUsername(), false);
                             }
                         })).start();
                     }

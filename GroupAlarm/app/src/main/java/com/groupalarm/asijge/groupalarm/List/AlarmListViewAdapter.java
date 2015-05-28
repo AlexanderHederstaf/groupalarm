@@ -25,7 +25,7 @@ import java.util.List;
 /**
  *  AlarmListViewAdapter provides the functionality of the ArrayAdapter class as well
  *  as extended functionality which allows it to contain the desired elements and layout
- *  of the ListView used in the MainActivity class.
+ *  of the ListView used in some of the Activity classes.
  *
  *  @author asijge
  */

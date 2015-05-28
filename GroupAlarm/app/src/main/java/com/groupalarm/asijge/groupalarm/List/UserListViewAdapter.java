@@ -19,7 +19,6 @@ import java.util.List;
 public class UserListViewAdapter extends ArrayAdapter<User> {
 
     private Context context;
-    private String userGroup;
 
     public UserListViewAdapter(Context context, int resourceId,
                                List<User> items) {
@@ -70,6 +69,7 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
             holder.snoozeIcon.setVisibility(View.INVISIBLE);
         }
 
+        // Change the icon based on the user's status
         switch (user.getStatus()) {
             case RING:
                 holder.status.setImageResource(R.drawable.ic_action_ring);
@@ -87,9 +87,5 @@ public class UserListViewAdapter extends ArrayAdapter<User> {
                 break;
         }
         return convertView;
-    }
-
-    public void setUserGroup(String group) {
-        userGroup = group;
     }
 }

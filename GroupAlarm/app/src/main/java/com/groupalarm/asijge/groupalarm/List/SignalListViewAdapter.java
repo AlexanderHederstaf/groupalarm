@@ -23,6 +23,17 @@ public class SignalListViewAdapter extends ArrayAdapter<String> {
         this.context = context;
     }
 
+    /**
+     *  Creates a View containing graphical objects that are based on data
+     *  from the List<String> provided in the constructor.
+     *
+     * @param position          The position of the element which a new View has been requested for.
+     * @param convertView       The instructions for how to construct the new View, used to recycle
+     *                          views as to not have too many running at once.
+     * @param parent            The object which contains this view, in our case a ListView.
+     *
+     * @return                  Returns the new/updated View for the desired element.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         String signalName = getItem(position);

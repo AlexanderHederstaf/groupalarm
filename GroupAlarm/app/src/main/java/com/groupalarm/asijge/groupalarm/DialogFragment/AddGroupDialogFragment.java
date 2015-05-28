@@ -15,10 +15,20 @@ import com.groupalarm.asijge.groupalarm.GroupActivity;
 import com.groupalarm.asijge.groupalarm.R;
 
 /**
- * Created by Sebastian on 2015-05-20.
+ * AddGroupDialogFragment provides the functionality of the DialogFragment class as well as
+ * a modified version of the onCreateDialog function that creates a dialog suitable for
+ * creating a new group.
+ *
+ * @author asijge
  */
 public class AddGroupDialogFragment extends DialogFragment {
 
+    /**
+     *
+     *
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction

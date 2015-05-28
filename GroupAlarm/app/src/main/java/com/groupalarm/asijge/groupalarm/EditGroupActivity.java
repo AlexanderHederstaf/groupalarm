@@ -196,7 +196,6 @@ public class EditGroupActivity extends ActionBarActivity {
         alarmProgress = findViewById(R.id.alarm_fetch_progress);
 
         userAdapter = new UserListViewAdapter(this, R.layout.user_list_item, userItems);
-        userAdapter.setUserGroup(groupName);
         userListView.setAdapter(userAdapter);
 
         alarmAdapter = new AlarmListViewAdapter(this, R.layout.alarm_list_item, alarmItems);
