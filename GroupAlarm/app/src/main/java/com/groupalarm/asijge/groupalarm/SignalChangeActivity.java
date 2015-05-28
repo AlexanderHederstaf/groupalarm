@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ * Activity for selecting alarm signals for group members that are snoozing. The signals that you
+ * can choose from are presented in a ListView, to set a signal you simply click on it.
  *
  * @author asijge
  */
@@ -30,6 +31,9 @@ public class SignalChangeActivity extends ActionBarActivity {
 
     private static final String TAG = "GroupActivity";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +42,13 @@ public class SignalChangeActivity extends ActionBarActivity {
         getSupportActionBar().setTitle("Select alarm signal");
 
         listView = (ListView) findViewById(R.id.signal_list);
+
+        // Add the representative Strings for the signals at hard coded positions.
         rowItems = new ArrayList<String>();
         rowItems.add("Bomb Siren");
         rowItems.add("Classic Alarm");
         rowItems.add("Railroad Crossing Bell");
+
         adapter = new SignalListViewAdapter(this, R.layout.signal_list_item, rowItems);
         listView.setAdapter(adapter);
 
@@ -53,6 +60,9 @@ public class SignalChangeActivity extends ActionBarActivity {
                 Toast toast = null;
                 final Bundle extras = getIntent().getExtras();
 
+                // Handle the network parts in a new Thread, position represents where in the list
+                // the selected item is. As this is hard coded, we can simply compare them to integers
+                // to find out which element that was clicked.
                 (new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -67,6 +77,8 @@ public class SignalChangeActivity extends ActionBarActivity {
                     }
                 })).start();
 
+                // Create toast message, this can be done on the main thread as it is not connected to
+                // any network functionality
                 if (position == 0) {
                     toast = Toast.makeText(context, "Set the signal Bomb Siren for " + extras.getString("user"),Toast.LENGTH_SHORT);
                 } else if (position == 1) {

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Activity for removing alarms from the database. The alarms are displayed in a listview with
+ * Activity for removing alarms from the database. The alarms are displayed in a ListView with
  * checkboxes for the alarms to remove.
  *
  * @author asijge
