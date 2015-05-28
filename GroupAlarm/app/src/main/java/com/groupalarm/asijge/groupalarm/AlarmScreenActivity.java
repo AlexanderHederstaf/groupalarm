@@ -26,7 +26,7 @@ public class AlarmScreenActivity extends Activity {
      */
     public static final String TAG = "AlarmScreenActivity";
 
-    /**
+    /*
      * String constants for alarmStatus
      */
     private static final String STATUS_STOPPED = "stopped";
@@ -47,6 +47,8 @@ public class AlarmScreenActivity extends Activity {
 
     /**
      * {@inheritDoc}
+     *
+     * Creates the alarm screen based on the information passed in the Intent.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +169,9 @@ public class AlarmScreenActivity extends Activity {
 
     /**
      * {@inheritDoc}
+     *
+     * The alarm has started, creates a thread to play sound based on the set alarm in a group.
+     * or plays the default sound for local alarms.
      */
     @Override
     protected void onResume() {
