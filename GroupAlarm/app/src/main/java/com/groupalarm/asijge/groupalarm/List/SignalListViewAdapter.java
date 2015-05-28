@@ -13,14 +13,37 @@ import com.groupalarm.asijge.groupalarm.R;
 
 import java.util.List;
 
+/**
+ *  SignalListViewAdapter provides the functionality of the ArrayAdapter class as well
+ *  as extended functionality which allows it to contain the desired String elements
+ *  which represent alarm signals.
+ *
+ *  @author asijge
+ */
 public class SignalListViewAdapter extends ArrayAdapter<String> {
 
     private Context context;
 
+    /** Constructs a new SignalListViewAdapter containing elements based on those in
+     *  the list (the "items" param), with a layout based on the resourceId.
+     *
+     * @param context           The Context in which it is used.
+     * @param resourceId        The ID of the XML resource that is to be used.
+     * @param items             A List of Strings, which represent the data
+     *                          relevant for each item that is to be presented.
+     */
     public SignalListViewAdapter(Context context, int resourceId,
                                 List<String> items) {
         super(context, resourceId, items);
         this.context = context;
+    }
+
+    /**
+     * Private class containing the elements required to construct the View in
+     * the getView method.
+     */
+    private class ViewHolder {
+        TextView signal;
     }
 
     /**
@@ -37,18 +60,24 @@ public class SignalListViewAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         String signalName = getItem(position);
+        ViewHolder holder = null;
 
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-        // If convertView is null we need to construct the layout of our holder that is to be used
-        // in the View.
+        // If convertView is null we need to construct the view.
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.signal_list_item, null);
+            holder = new ViewHolder();
+            holder.signal = (TextView) convertView.findViewById(R.id.signal_name);
+            convertView.setTag(holder);
+
+        // If convertView is not null we can reuse information provided in it for us to construct
+        // the new/updated View.
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        TextView view = (TextView) convertView.findViewById(R.id.signal_name);
-
-        view.setText(signalName);
+        holder.signal.setText(signalName);
 
         return convertView;
     }
