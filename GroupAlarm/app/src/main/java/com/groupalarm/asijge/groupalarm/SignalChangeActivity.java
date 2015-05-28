@@ -17,6 +17,11 @@ import com.groupalarm.asijge.groupalarm.List.SignalListViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ *
+ * @author asijge
+ */
 public class SignalChangeActivity extends ActionBarActivity {
 
     private ListView listView;

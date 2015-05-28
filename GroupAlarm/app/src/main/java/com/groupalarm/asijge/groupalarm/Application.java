@@ -4,7 +4,8 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 
 /**
- * Created by sehlstedt on 24/05/15.
+ *
+ * @author asijge
  */
 public class Application extends android.app.Application {
 

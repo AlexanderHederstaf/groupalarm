@@ -18,7 +18,10 @@ import com.groupalarm.asijge.groupalarm.AlarmManaging.AlarmHelper;
 import com.groupalarm.asijge.groupalarm.AlarmManaging.ParseHelper;
 import com.parse.ParseUser;
 
-
+/**
+ *
+ * @author asijge
+ */
 public class AlarmScreenActivity extends Activity {
 
     /**

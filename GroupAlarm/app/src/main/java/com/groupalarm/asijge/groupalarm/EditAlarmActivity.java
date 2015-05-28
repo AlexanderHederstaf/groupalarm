@@ -26,7 +26,10 @@ import android.widget.TimePicker;
 
 import com.groupalarm.asijge.groupalarm.Data.Alarm;
 
-
+/**
+ *
+ * @author asijge
+ */
 public class EditAlarmActivity extends ActionBarActivity {
 
     // Constants

@@ -13,7 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * ParseHelper has got a selection of methods for querying the Parse.com clould service.
+ * ParseHelper has got a selection of methods for querying the Parse.com cloud service.
+ *
+ * @author asijge
  */
 public class ParseHelper {
 

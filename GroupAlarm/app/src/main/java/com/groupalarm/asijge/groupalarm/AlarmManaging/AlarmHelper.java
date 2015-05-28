@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * A Helper class to interact with the database and manage the system alarms.
+ *
+ * @author asijge
  */
 public class AlarmHelper extends BroadcastReceiver {
 
