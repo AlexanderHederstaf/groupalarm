@@ -1,10 +1,11 @@
-A quick-start guide and overlook of the GroupAlarm Android application.
+# GroupAlarm
+#### An Android wake-up alarm for groups with early meetings.
 
+A quick-start guide and overlook of the GroupAlarm Android application.
 ## Getting started
 1. git clone git://github.com/alexanderhederstaf/groupalarm.git or by downloading the application at https://github.com/AlexanderHederstaf/groupalarm
 2. Open the project using Android Studio
 3. Compile the project as an application using Android Studio and run it on your phone
-
 
 ## Dependencies
 - Java 6 SE development environment 
