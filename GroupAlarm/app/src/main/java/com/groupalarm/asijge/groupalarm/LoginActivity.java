@@ -1,13 +1,3 @@
-/**
- * LoginActivity.java
- *
- * A login screen that offers login for login.
- *
- * @author asijge
- * @copyright (c) 2015, asijge
- *
- */
-
 package com.groupalarm.asijge.groupalarm;
 
 import android.app.Activity;
@@ -43,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via username/password.
  *
  * @author asijge
  */
@@ -117,6 +107,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * Get the LoaderManager associated with this Activity to populate the autocomplete list
+     */
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);
     }
@@ -247,6 +240,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         // Required for the implementation of the LoaderCallbacks<Cursor> interface
@@ -394,6 +390,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * Launches the applications Main Activity.
+     *
+     * Before Main activity is launched the installation of the app is associated
+     * with the current logged in user to enable targeted notifications.
+     */
     private void launchMainActivity() {
         // Associate the device with a user
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
@@ -413,6 +415,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         LoginActivity.this.startActivity(myIntent);
     }
 
+    /**
+     * Displays the Progress bar.
+     *
+     * @param show Show progress bar if true, don't show if false.
+     */
     private void showProgress(boolean show) {
         ViewHelper.showProgress(show, mProgressView, mLoginFormView, this);
     }
