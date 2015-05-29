@@ -18,10 +18,7 @@ public class Application extends android.app.Application {
         Parse.enableLocalDatastore(this);
 
         // Initialise Parse.com app Id and Client key
-        // ****************************************************************************
-        // Uncomment and fill in with your Parse credentials:
-        // Parse.initialize(this, "your_application_id", "your_client_key");
-        // ****************************************************************************
+        Parse.initialize(this, "FId7HlOrHpQ3O8UCZkZtUP6vdxCR0T0DfFgbRitf", "6jgsndZW6hvsVHenBLpuQ7egH6HPjGPIBPqn89A1");
 
         // Save details of the current app installation to the Parse cloud
         ParseInstallation.getCurrentInstallation().saveInBackground();
