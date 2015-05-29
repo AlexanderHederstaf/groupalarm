@@ -23,7 +23,8 @@ A quick-start guide and overlook of the GroupAlarm Android application.
 - Product owner: Håkan Burden
 - Scrum master: Alexander Hederstaf
 - Developer team:
-  - Alexander Hederstaf ○ Sebastian Odbjer
+  - Alexander Hederstaf
+  - Sebastian Odbjer
   - Isabel Azcárate
   - Joakim Sehlstedt
   - Gabriella Hallams
